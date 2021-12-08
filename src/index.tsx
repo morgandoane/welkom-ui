@@ -1,17 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import AppThemeProvider from "./providers/AppThemeProvider";
+import DateAdapter from "@mui/lab/AdapterDateFns";
+import { LocalizationProvider } from "@mui/lab";
+import AuthProvider from "./providers/AuthProvider";
+import ApolloProvider from "./providers/ApolloProvider";
+import { SnackbarProvider } from "./providers/SnackbarProvider";
+import { Router } from "./routing/router";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AppThemeProvider>
+      <LocalizationProvider dateAdapter={DateAdapter}>
+        <SnackbarProvider>
+          <AuthProvider>
+            <ApolloProvider>
+              <Router />
+            </ApolloProvider>
+          </AuthProvider>
+        </SnackbarProvider>
+      </LocalizationProvider>
+    </AppThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
