@@ -7,7 +7,7 @@ const Logout = (): ReactElement => {
 
   logout();
 
-  return <Loading />;
+  return <Loading message="Logging out" />;
 };
 
 export default Logout;

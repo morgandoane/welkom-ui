@@ -43,7 +43,7 @@ const LoginRender = (props: LoginRenderProps): ReactElement => {
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
-      if (count == 6) {
+      if (count == 5) {
         setCount(0);
         setIndex((i) => (i == 5 ? 0 : i + 1));
       } else {

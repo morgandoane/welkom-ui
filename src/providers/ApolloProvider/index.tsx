@@ -47,7 +47,7 @@ const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
     connectToDevTools: true,
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading message="Apollo intializing" />;
 
   return <Provider client={apolloClient}>{props.children}</Provider>;
 };
