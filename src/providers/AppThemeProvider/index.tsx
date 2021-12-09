@@ -4,7 +4,29 @@ import {
   ThemeProvider,
   PaletteOptions,
   Theme,
+  responsiveFontSizes,
 } from "@mui/material/styles";
+
+declare module "@mui/material/styles" {
+  interface TypographyVariants {
+    crisp: React.CSSProperties;
+    artifika: React.CSSProperties;
+  }
+
+  // allow configuration using `createTheme`
+  interface TypographyVariantsOptions {
+    crisp?: React.CSSProperties;
+    artifika?: React.CSSProperties;
+  }
+}
+
+// Update the Typography's variant prop options
+declare module "@mui/material/Typography" {
+  interface TypographyPropsVariantOverrides {
+    crisp: true;
+    artifika: true;
+  }
+}
 
 export const getTheme = (mode: "light" | "dark"): Theme => {
   const background: Record<"light" | "dark", PaletteOptions["background"]> = {
@@ -13,8 +35,8 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       paper: "#FFFFFF",
     },
     dark: {
-      // default: "linear-gradient(#1F1F1F, #141414)",
-      default: "#141414",
+      default: "linear-gradient(#1F1F1F, #141414)",
+      // default: "#141414",
       paper: "#212121",
     },
   };
@@ -28,6 +50,19 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       background: background[mode],
       success: {
         main: "#2E8C41",
+      },
+    },
+    shape: {
+      borderRadius: 2,
+    },
+    typography: {
+      h1: {
+        fontWeight: 900,
+        fontSize: "4rem",
+      },
+      artifika: {
+        fontFamily: "Artifika",
+        fontSize: "2rem",
       },
     },
     components: {
@@ -85,8 +120,11 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
 };
 
 const AppThemeProvider = (props: { children: ReactElement }): ReactElement => {
+  const theme = getTheme("dark");
   return (
-    <ThemeProvider theme={getTheme("dark")}>{props.children}</ThemeProvider>
+    <ThemeProvider theme={responsiveFontSizes(theme)}>
+      {props.children}
+    </ThemeProvider>
   );
 };
 

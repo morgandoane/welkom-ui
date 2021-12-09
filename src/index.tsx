@@ -9,6 +9,10 @@ import ApolloProvider from "./providers/ApolloProvider";
 import { SnackbarProvider } from "./providers/SnackbarProvider";
 import { Router } from "./routing/router";
 
+import "@fontsource/roboto";
+import "@fontsource/artifika";
+import "@fontsource/jost";
+
 ReactDOM.render(
   <React.StrictMode>
     <AppThemeProvider>
