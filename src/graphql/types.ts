@@ -1,1 +1,9 @@
-export type TypeNamed<T> = Omit<T, "__typename">;
+export type OperationResult<T> =
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      error: Error;
+    };

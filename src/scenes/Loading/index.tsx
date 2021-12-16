@@ -20,7 +20,7 @@ const Loading = (props: LoadingProps): ReactElement => {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, padding: 8 }}>
-        <CircularProgress />
+        <CircularProgress sx={{ maxHeight: 24, maxWidth: 24 }} />
         <Typography color="textPrimary">{props.message}</Typography>
       </Box>
     </Box>

@@ -11,6 +11,25 @@ import { onError } from "@apollo/client/link/error";
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from "../../scenes/Loading";
 
+export const BaseUnionFields = [
+  "Bol",
+  "Company",
+  "Contact",
+  "Expense",
+  "Folder",
+  "RecipeFolder",
+  "Fulfillment",
+  "Item",
+  "Itinerary",
+  "Location",
+  "Lot",
+  "BucketLot",
+  "ProceduralLot",
+  "Order",
+  "Recipe",
+  "Unit",
+];
+
 const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
   const { getAccessTokenSilently, isLoading } = useAuth0();
 
@@ -43,11 +62,15 @@ const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
 
   const apolloClient = new ApolloClient({
     link: authLink.concat(from([errorLink, httpLink])),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      possibleTypes: {
+        BaseUnion: BaseUnionFields,
+      },
+    }),
     connectToDevTools: true,
   });
 
-  if (isLoading) return <Loading message="Apollo intializing" />;
+  if (isLoading) return <Loading message="Authenticating" />;
 
   return <Provider client={apolloClient}>{props.children}</Provider>;
 };

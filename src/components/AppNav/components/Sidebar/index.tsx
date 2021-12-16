@@ -54,8 +54,13 @@ const Sidebar = (): ReactElement => {
       setFocused("");
       setNavTo(items[0].url);
     } else if (items.length > 1) {
+      setExpanded(true);
       setFocused(focused == label ? "" : label);
     }
+  };
+
+  const iconStyle: React.CSSProperties = {
+    marginBottom: "4px",
   };
 
   const groups: {
@@ -64,27 +69,27 @@ const Sidebar = (): ReactElement => {
     icon: ReactElement;
   }[] = [
     {
-      icon: <MdDocumentScanner />,
+      icon: <MdDocumentScanner style={iconStyle} />,
       label: "Configuration",
       items: [{ label: "Configuration", url: "/configuration" }],
     },
     {
-      icon: <FaHandsHelping />,
+      icon: <FaHandsHelping style={iconStyle} />,
       label: "Contracts",
       items: [{ label: "Contracts", url: "/contracts" }],
     },
     {
-      icon: <MdFolderOpen />,
+      icon: <MdFolderOpen style={iconStyle} />,
       label: "Library",
       items: [
-        { label: "Companies", url: "/library/lots" },
-        { label: "Conversions", url: "/library/lots" },
-        { label: "Items", url: "/library/holds" },
-        { label: "Units", url: "/library/recalls" },
+        { label: "Companies", url: "/library/companies" },
+        { label: "Conversions", url: "/library/conversions" },
+        { label: "Items", url: "/library/items" },
+        { label: "Units", url: "/library/units" },
       ],
     },
     {
-      icon: <FaTruckLoading />,
+      icon: <FaTruckLoading style={iconStyle} />,
       label: "Logistics",
       items: [
         { label: "Order Queue", url: "/logistics/orderqueue" },
@@ -94,7 +99,7 @@ const Sidebar = (): ReactElement => {
     },
 
     {
-      icon: <MdAccountCircle />,
+      icon: <MdAccountCircle style={iconStyle} />,
       label: "People",
       items: [
         { label: "Teams", url: "/people/teams" },
@@ -103,7 +108,7 @@ const Sidebar = (): ReactElement => {
       ],
     },
     {
-      icon: <AiFillBuild />,
+      icon: <AiFillBuild style={iconStyle} />,
       label: "Production",
       items: [
         { label: "Mixing", url: "/production/mixing" },
@@ -112,12 +117,12 @@ const Sidebar = (): ReactElement => {
       ],
     },
     {
-      icon: <MdDescription />,
+      icon: <MdDescription style={iconStyle} />,
       label: "Recipes",
       items: [{ label: "Recipes", url: "/recipes" }],
     },
     {
-      icon: <VscGraphLeft />,
+      icon: <VscGraphLeft style={iconStyle} />,
       label: "Reporting",
       items: [
         { label: "App Usage", url: "/reporting/appusage" },
@@ -127,7 +132,7 @@ const Sidebar = (): ReactElement => {
       ],
     },
     {
-      icon: <AiOutlineNodeIndex />,
+      icon: <AiOutlineNodeIndex style={iconStyle} />,
       label: "Traceabaility",
       items: [
         { label: "Lots", url: "/traceability/lots" },
@@ -136,7 +141,7 @@ const Sidebar = (): ReactElement => {
       ],
     },
     {
-      icon: <FaTruckLoading />,
+      icon: <FaTruckLoading style={iconStyle} />,
       label: "Warehouse",
       items: [
         { label: "Shipping", url: "/warehouse/shipping" },

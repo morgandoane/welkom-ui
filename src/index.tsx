@@ -12,6 +12,7 @@ import { Router } from "./routing/router";
 import "@fontsource/roboto";
 import "@fontsource/artifika";
 import "@fontsource/jost";
+import { UploadProvider } from "./providers/UploadProvider";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,7 +21,9 @@ ReactDOM.render(
         <SnackbarProvider>
           <AuthProvider>
             <ApolloProvider>
-              <Router />
+              <UploadProvider>
+                <Router />
+              </UploadProvider>
             </ApolloProvider>
           </AuthProvider>
         </SnackbarProvider>

@@ -27,7 +27,7 @@ const NotFound = (props: NotFoundProps): ReactElement => {
         color: theme.palette.text.primary,
       }}
     >
-      <Animation type="bb8" style={{ height: 240, width: 240 }} />
+      <Animation type="notFound" style={{ height: 240, width: 240 }} />
       <Typography variant="h2">Not Found</Typography>
       <Button onClick={() => navigate("/home")} startIcon={<MdChevronLeft />}>
         Back to the Falcon

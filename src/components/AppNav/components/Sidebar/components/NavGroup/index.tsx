@@ -27,29 +27,21 @@ const NavGroup = (props: NavGroupProps): ReactElement => {
   const { icon, label, expanded, items, open, onClick, navTo } = props;
 
   const data = matchRoutes(
-    items.map(({ url: path }) => ({ path, caseSensitive: false })),
+    items.map(({ url: path }) => ({ path: path + "/*", caseSensitive: false })),
     location.pathname
   );
 
-  const isActive = navTo
-    ? items.map((item) => item.url).includes(navTo)
-    : data &&
-      items
-        .map((d) => d.url)
-        .some((url) =>
-          data
-            .map((d) => d.pathname)
-            .join("")
-            .includes(url)
-        );
+  const isActive = data !== null;
 
   return (
     <React.Fragment>
-      <ButtonBase
+      <Box
         onClick={() => onClick(props)}
         sx={{
+          cursor: "pointer",
           width: "100%",
           display: "flex",
+          alignItems: "center",
           borderRadius: 24,
           justifyContent: "flex-start",
           color: isActive
@@ -72,7 +64,7 @@ const NavGroup = (props: NavGroupProps): ReactElement => {
               height: 36,
               display: "flex",
               borderRadius: 24,
-              fontSize: "1.25rem",
+              fontSize: "1.35rem",
             }}
           >
             {icon}
@@ -108,7 +100,7 @@ const NavGroup = (props: NavGroupProps): ReactElement => {
             </Anima>
           </Box>
         )}
-      </ButtonBase>
+      </Box>
       {items.length > 1 && (
         <Collapse in={open && expanded}>
           <Box

@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import React, { ReactElement } from "react";
 import { fullScreen } from "../../../../styles/fullScreen";
-import ViewFade from "../../../../components/ViewFade/inex";
 import { IoMdCloudOutline } from "react-icons/io";
 import { AiOutlineTeam, AiOutlineNodeIndex } from "react-icons/ai";
 import { FaTruckLoading } from "react-icons/fa";
 import { BsGear } from "react-icons/bs";
 import { VscGraphLeft } from "react-icons/vsc";
+import ViewFade from "../../../../components/ViewFade";
 
 export interface LoginRenderProps {
   onClick: () => void;

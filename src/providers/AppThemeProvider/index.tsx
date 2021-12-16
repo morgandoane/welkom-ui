@@ -7,6 +7,8 @@ import {
   responsiveFontSizes,
 } from "@mui/material/styles";
 
+import type {} from "@mui/x-data-grid/themeAugmentation";
+
 declare module "@mui/material/styles" {
   interface TypographyVariants {
     crisp: React.CSSProperties;
@@ -35,8 +37,7 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       paper: "#FFFFFF",
     },
     dark: {
-      default: "linear-gradient(#1F1F1F, #141414)",
-      // default: "#141414",
+      default: "#141414",
       paper: "#212121",
     },
   };
@@ -66,6 +67,11 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       },
     },
     components: {
+      MuiTextField: {
+        defaultProps: {
+          variant: "filled",
+        },
+      },
       MuiAutocomplete: {
         styleOverrides: {
           tag: {
@@ -85,6 +91,7 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
         defaultProps: {
           variant: "contained",
           color: "primary",
+          disableElevation: true,
         },
         styleOverrides: {
           root: {
@@ -92,6 +99,7 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
           },
         },
       },
+
       MuiTab: {
         styleOverrides: {
           root: {
@@ -104,14 +112,56 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
         },
       },
       MuiTabs: {
-        defaultProps: {
-          disableRipple: true,
-        },
         styleOverrides: {
           indicator: {
             height: 4,
             maxWidth: 36,
             borderRadius: 2,
+          },
+        },
+      },
+      MuiTableHead: {
+        styleOverrides: {
+          root: {
+            backgroundColor:
+              background[mode] && background[mode]?.paper
+                ? background[mode]?.paper
+                : undefined,
+          },
+        },
+      },
+      MuiDataGrid: {
+        defaultProps: {
+          disableColumnFilter: true,
+          disableColumnMenu: true,
+          disableColumnSelector: true,
+          disableSelectionOnClick: true,
+          disableVirtualization: true,
+          filterMode: "server",
+          pageSize: 50,
+          paginationMode: "server",
+          sortingMode: "server",
+        },
+        styleOverrides: {
+          root: {
+            border: "none",
+          },
+          cell: {
+            border: "none",
+            borderBottom:
+              mode == "light"
+                ? "1px solid rgba(0,0,0,0.12)"
+                : "1px solid rgba(255, 255, 255, 0.12)",
+          },
+          columnSeparator: {
+            display: "none",
+          },
+          columnHeaders: {
+            background: background[mode]?.paper,
+            border: "none",
+          },
+          sortIcon: {
+            display: "none",
           },
         },
       },

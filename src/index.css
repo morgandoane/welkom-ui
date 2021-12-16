@@ -3,8 +3,26 @@ body {
   font-family: "Jost";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overflow: auto;
+  position: relative;
 }
 
 code {
   font-family: "Jost", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 0.425em;
+  height: 0.425em;
+  opacity: 0;
+}
+
+/* ::-webkit-scrollbar-track {
+
+} */
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0.425em;
 }
