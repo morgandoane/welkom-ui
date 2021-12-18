@@ -13,6 +13,7 @@ export interface Unit extends Base {
   spanish?: string;
   english_plural?: string;
   spanish_plural?: string;
+  base_per_unit: number;
 }
 
 export interface TinyUnit {
@@ -22,4 +23,5 @@ export interface TinyUnit {
   spanish?: string;
   english_plural?: string;
   spanish_plural?: string;
+  base_per_unit: number;
 }

@@ -6,6 +6,7 @@ export interface CreateUnitInput {
   spanish?: string;
   english_plural?: string;
   spanish_plural?: string;
+  base_per_unit: number;
 }
 
 export interface UpdateUnitInput {
@@ -15,4 +16,5 @@ export interface UpdateUnitInput {
   english_plural?: string;
   spanish_plural?: string;
   deleted?: boolean;
+  base_per_unit?: number;
 }

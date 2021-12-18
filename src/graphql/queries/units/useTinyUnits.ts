@@ -14,6 +14,7 @@ export const TinyUnits = gql`
         spanish
         english_plural
         spanish_plural
+        base_per_unit
       }
     }
   }

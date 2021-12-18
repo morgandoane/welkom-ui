@@ -2,6 +2,7 @@ import React, { ReactElement } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Companies from "./components/Companies";
 import Items from "./components/Items";
+import Units from "./components/Units";
 
 const Library = (): ReactElement => {
   return (
@@ -10,7 +11,7 @@ const Library = (): ReactElement => {
       <Route path="/companies/*" element={<Companies />} />
       <Route path="conversions" element={<Companies />}></Route>
       <Route path="/items/*" element={<Items />} />
-      <Route path="units" element={<Companies />}></Route>
+      <Route path="/units/*" element={<Units />} />
     </Routes>
   );
 };
