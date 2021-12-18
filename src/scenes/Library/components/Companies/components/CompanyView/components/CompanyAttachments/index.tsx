@@ -1,19 +1,18 @@
 import { Box } from "@mui/material";
 import React, { ReactElement } from "react";
 import { Company } from "../../../../../../../../graphql/schema/Company/Company";
-import FileUpload, {
-  FileTypeCategory,
-} from "../../../../../../../../components/FileUpload";
+import FileUpload from "../../../../../../../../components/FileUpload";
 import { useUploads } from "../../../../../../../../providers/UploadProvider";
-import { SignedUrlCategory } from "../../../../../../../../graphql/schema/SignedUrl/SignedUrl";
 import Files from "../../../../../../../../components/Files";
+import { StorageBucket } from "../../../../../../../../graphql/schema/SignedUrl/SignedUrl";
+import { CompanyQuery } from "../../../../../../../../graphql/queries/companies/useCompany";
 
 export interface CompanyDocumentsProps {
   company: Company;
   refetch: () => void;
 }
 
-const CompanyDocuments = (props: CompanyDocumentsProps): ReactElement => {
+const CompanyAttachments = (props: CompanyDocumentsProps): ReactElement => {
   const { company, refetch } = props;
   const { enqueue } = useUploads(props.refetch);
 
@@ -21,18 +20,18 @@ const CompanyDocuments = (props: CompanyDocumentsProps): ReactElement => {
     <Box sx={{ height: "90%", overflow: "auto" }}>
       <Files
         files={company.files}
-        identifier={company._id}
-        category={SignedUrlCategory.Company}
+        prefix={company._id}
+        storage_category={StorageBucket.Attachments}
+        refetchQueries={[CompanyQuery, "CompanyQuery"]}
       />
       <FileUpload
         fab
-        accept={[FileTypeCategory.Document, FileTypeCategory.PDF]}
         onChange={(files) =>
           enqueue(
             files.map((file) => ({
               file,
-              identifier: company._id,
-              category: SignedUrlCategory.Company,
+              prefix: company._id,
+              storage_category: StorageBucket.Attachments,
             }))
           )
         }
@@ -41,4 +40,4 @@ const CompanyDocuments = (props: CompanyDocumentsProps): ReactElement => {
   );
 };
 
-export default CompanyDocuments;
+export default CompanyAttachments;

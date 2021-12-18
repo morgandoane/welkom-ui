@@ -6,28 +6,26 @@ import AppNav from "../../../../../../components/AppNav";
 import ColumnBox from "../../../../../../components/Layout/ColumnBox";
 import PageTitle from "../../../../../../components/PageTitle";
 import TabFade from "../../../../../../components/TabFade";
-import { useCompany } from "../../../../../../graphql/queries/companies/useCompany";
-import CompanyDetails from "./components/CompanyDetails";
-import CompanyAttachments from "./components/CompanyAttachments";
-import CompanyLocations from "./components/CompanyLocations";
-import CompanyPeople from "./components/CompanyPeople";
+import { useItem } from "../../../../../../graphql/queries/items/useItem";
+import ItemDetails from "./components/ItemDetails";
+import ItemAttachments from "./components/ItemAttachments";
 
-const CompanyView = (): ReactElement => {
+const ItemView = (): ReactElement => {
   const { id } = useParams();
   const nav = useNavigate();
 
-  const { data, error, loading, refetch } = useCompany({
+  const { data, error, loading, refetch } = useItem({
     variables: { id: id || "" },
     skip: !id || id == "",
     fetchPolicy: "network-only",
   });
 
-  const company = !data ? null : data.company;
+  const item = !data ? null : data.item;
 
   return (
     <AppNav error={error} loading={loading}>
       <Box sx={{ height: "100%" }}>
-        {company && (
+        {item && (
           <ColumnBox>
             {{
               header: (
@@ -37,12 +35,12 @@ const CompanyView = (): ReactElement => {
                     color="inherit"
                     startIcon={<MdChevronLeft />}
                     sx={{ marginBottom: 2 }}
-                    onClick={() => nav("/library/companies")}
+                    onClick={() => nav("/library/items")}
                   >
-                    Companies
+                    Items
                   </Button>
-                  <PageTitle>{company.name}</PageTitle>
-                  {company.deleted && (
+                  <PageTitle>{item.english}</PageTitle>
+                  {item.deleted && (
                     <Typography sx={{ marginTop: -1 }} color="error.main">
                       <em>Deleted!</em>
                     </Typography>
@@ -60,12 +58,12 @@ const CompanyView = (): ReactElement => {
                 >
                   <TabFade>
                     {{
-                      Details: <CompanyDetails company={company} />,
-                      Locations: <CompanyLocations company={company} />,
-                      People: <CompanyPeople company={company} />,
+                      Details: (
+                        <ItemDetails item={item} refetch={() => refetch()} />
+                      ),
                       Attachmnets: (
-                        <CompanyAttachments
-                          company={company}
+                        <ItemAttachments
+                          item={item}
                           refetch={() => refetch()}
                         />
                       ),
@@ -81,4 +79,4 @@ const CompanyView = (): ReactElement => {
   );
 };
 
-export default CompanyView;
+export default ItemView;

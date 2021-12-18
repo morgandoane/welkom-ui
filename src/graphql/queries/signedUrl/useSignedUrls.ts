@@ -1,54 +1,37 @@
-import {
-  SignedUrl,
-  SignedUrlCategory,
-  SignedUrlType,
-} from "./../../schema/SignedUrl/SignedUrl";
-import {
-  gql,
-  LazyQueryHookOptions,
-  QueryHookOptions,
-  QueryResult,
-  QueryTuple,
-  useLazyQuery,
-  useQuery,
-} from "@apollo/client";
+import { SignedUrl } from "./../../schema/SignedUrl/SignedUrl";
+import { gql, QueryHookOptions, QueryResult, useQuery } from "@apollo/client";
+import { StorageBucket } from "../../schema/SignedUrl/SignedUrl";
 
 export const SignedUrls = gql`
-  query SignedUrls(
-    $identifier: String!
-    $category: SignedUrlCategory!
-    $type: SignedUrlType!
-    $filenames: [String!]!
-  ) {
-    signedUrls(
-      identifier: $identifier
-      category: $category
-      type: $type
-      filenames: $filenames
-    ) {
+  query SignedUrls($configs: [SignedUrlConfig!]!) {
+    signedUrls(configs: $configs) {
       url
-      expires
-      type
-      filename
     }
   }
 `;
 
-export interface SignedUrlRes {
+export enum SignedUrlAction {
+  write = "write",
+  read = "read",
+  delete = "delete",
+  resumable = "resumable",
+}
+
+export interface SignedUrlConfig {
+  category: StorageBucket;
+  prefix: string;
+  name: string;
+  action: SignedUrlAction;
+}
+
+export interface SignedUrlsArgs {
+  configs: SignedUrlConfig[];
+}
+
+export interface SignedUrlsRes {
   signedUrls: SignedUrl[];
 }
 
-export interface SignedUrlArgs {
-  identifier: string;
-  category: SignedUrlCategory;
-  type: SignedUrlType;
-  filenames: string[];
-}
-
 export const useSignedUrls = (
-  options?: QueryHookOptions<SignedUrlRes, SignedUrlArgs>
-): QueryResult<SignedUrlRes, SignedUrlArgs> => useQuery(SignedUrls, options);
-
-export const useLazySignedUrls = (
-  options?: LazyQueryHookOptions<SignedUrlRes, SignedUrlArgs>
-): QueryTuple<SignedUrlRes, SignedUrlArgs> => useLazyQuery(SignedUrls, options);
+  options?: QueryHookOptions<SignedUrlsRes, SignedUrlsArgs>
+): QueryResult<SignedUrlsRes, SignedUrlsArgs> => useQuery(SignedUrls, options);

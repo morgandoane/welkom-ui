@@ -1,83 +1,61 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 import { Box } from "@mui/system";
-import { DataGrid, GridValueFormatterParams } from "@mui/x-data-grid";
-import format from "date-fns/format";
 import React, { ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLazySignedUrls } from "../../graphql/queries/signedUrl/useSignedUrls";
 import { AppFile } from "../../graphql/schema/AppFile/AppFile";
-import { Profile } from "../../graphql/schema/Profile/Profile";
-import {
-  SignedUrlCategory,
-  SignedUrlType,
-} from "../../graphql/schema/SignedUrl/SignedUrl";
-import { dateFormats } from "../../utils/dateFormats";
-import { getFileTypeCategory, iconMap } from "../FileUpload";
+import { Dialog, LinearProgress } from "@mui/material";
+import FilePreview from "./components/FilePreview";
+import { useFileDeletion } from "../../graphql/mutations/file/useFileDeletion";
+import { StorageBucket } from "../../graphql/schema/SignedUrl/SignedUrl";
+import { CompanyQuery } from "../../graphql/queries/companies/useCompany";
 
 export interface FilesProps {
   files: AppFile[];
-  category: SignedUrlCategory;
-  identifier: string;
+  prefix: string;
+  storage_category: StorageBucket;
+  refetchQueries?: any[];
 }
 
 const Files = (props: FilesProps): ReactElement => {
-  const { files, category, identifier } = props;
+  const { files, storage_category, prefix, refetchQueries } = props;
 
   const [view, setView] = React.useState<"grid" | "table">("table");
+  const [pdf, setPdf] = React.useState<any>(null);
 
-  const [getUrl] = useLazySignedUrls({
-    onCompleted: (data) => {
-      const url = data.signedUrls[0].url;
-      window.open(url, "_blank");
-    },
+  const [remove, { loading }] = useFileDeletion({
+    refetchQueries,
   });
 
   if (view == "table")
     return (
-      <DataGrid
-        rows={files}
-        columns={[
-          { field: "name", headerName: "Name", width: 400 },
-          {
-            field: "date_created",
-            headerName: "Date",
-            width: 300,
-            type: "data",
-            valueFormatter: (params: GridValueFormatterParams) => {
-              return format(
-                new Date(params.value as string | number),
-                dateFormats.condensedDate
-              );
-            },
-          },
-          {
-            field: "created_by",
-            headerName: "Created by",
-            width: 300,
-            valueFormatter: (params: GridValueFormatterParams) => {
-              return (params.value as Profile).name;
-            },
-          },
-        ]}
-        pagination={true}
-        paginationMode="client"
-        onRowClick={(params) => {
-          getUrl({
-            variables: {
-              category,
-              identifier,
-              filenames: [params.row.name],
-              type: SignedUrlType.Read,
-            },
-          });
-        }}
-      />
+      <React.Fragment>
+        {loading && <LinearProgress />}
+        <Box>
+          {files.map((file, index) => (
+            <FilePreview
+              deleteLoading={false}
+              handleDelete={() => {
+                remove({
+                  variables: {
+                    folder: prefix,
+                    category: storage_category,
+                    name: file.name,
+                  },
+                });
+              }}
+              setPdf={(d) => setPdf(d)}
+              file={file}
+              key={"filePreview_" + index}
+            />
+          ))}
+        </Box>
+        <Dialog
+          fullWidth={true}
+          maxWidth="xl"
+          open={Boolean(pdf)}
+          onClose={() => setPdf(null)}
+        >
+          <iframe style={{ height: "85vh" }} src={pdf} />
+        </Dialog>
+      </React.Fragment>
     );
   else return <Box></Box>;
 };

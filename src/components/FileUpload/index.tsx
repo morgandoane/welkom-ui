@@ -18,10 +18,12 @@ import {
 } from "react-icons/hi";
 import { MdClose, MdUploadFile } from "react-icons/md";
 import { AiOutlineFilePdf } from "react-icons/ai";
+import { IoMdCube } from "react-icons/io";
 
 export enum FileTypeCategory {
   Audio = "Audio",
   Document = "Document",
+  Model = "Model",
   Image = "Image",
   Other = "Other",
   PDF = "PDF",
@@ -48,6 +50,7 @@ export const iconMap: Record<FileTypeCategory, ReactNode> = {
   Audio: <HiOutlineVolumeUp />,
   Document: <HiOutlineDocument />,
   Image: <HiPhotograph />,
+  Model: <IoMdCube />,
   Other: <HiOutlineDocument />,
   PDF: <AiOutlineFilePdf />,
   Spreadsheet: <HiOutlineTable />,
@@ -59,6 +62,7 @@ const pluralName: Record<FileTypeCategory, string> = {
   Audio: "audio files",
   Document: "documents",
   Image: "images",
+  Model: "models",
   Other: "files",
   PDF: "pdfs",
   Spreadsheet: "spreadsheets",
@@ -80,6 +84,7 @@ const FileUpload = (props: FileUploadProps): ReactElement => {
       "Audio",
       "Document",
       "Image",
+      "Model",
       "Other",
       "PDF",
       "Spreadsheet",
@@ -147,7 +152,7 @@ const FileUpload = (props: FileUploadProps): ReactElement => {
             {<MdUploadFile />}
           </Box>
           Upload
-          <input {...getInputProps()} />
+          {/* <input {...getInputProps()} /> */}
         </Fab>
       </Box>
     );

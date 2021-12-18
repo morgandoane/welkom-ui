@@ -436,4 +436,22 @@ export const fileFormats = [
     Name: "7-zip archive",
     Description: "application/x-7z-compressed",
   },
+  {
+    Category: "Model",
+    Type: ".stl",
+    Name: "STL",
+    Description: "application/x-7z-compressed",
+  },
+  {
+    Category: "Model",
+    Type: ".SLDPRT",
+    Name: "SLDPRT",
+    Description: "Solidworks Part",
+  },
+  {
+    Category: "Model",
+    Type: ".SLDRW",
+    Name: "SLDRW",
+    Description: "Solidworks Drawing",
+  },
 ];

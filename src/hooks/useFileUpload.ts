@@ -26,16 +26,12 @@ export const useFileUpload = <Res = unknown>(
   const [state, setState] = React.useState<OperationResult<Res>>();
 
   const upload = (file: File, endpoint: string) => {
-    const formData = new FormData();
-    formData.append("Content-Type", file.type);
-    formData.append("file", file);
-
     axios({
       method: "PUT",
       url: endpoint,
-      data: formData,
+      data: file,
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": file.type,
         "x-goog-meta-created_by": user ? user.sub || "" : "",
       },
       onUploadProgress: (progressEvent) => {

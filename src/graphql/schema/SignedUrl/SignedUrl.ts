@@ -1,14 +1,10 @@
-export enum SignedUrlType {
-  Read = "Read",
-  Write = "Write",
-}
-
-export enum SignedUrlCategory {
-  Company = "Company",
+export enum StorageBucket {
+  Attachments = "ldbbakery_attachments",
+  Documents = "ldbbakery_documents",
+  Images = "ldbbakery_images",
+  Profiles = "ldbbakery_profiles",
 }
 
 export interface SignedUrl {
-  expires: Date;
   url: string;
-  type: SignedUrlType;
 }

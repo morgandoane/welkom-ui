@@ -1,3 +1,4 @@
+import { AppFileFragment } from "./../../schema/AppFile/AppFile";
 import { AddressFragment } from "./../../fragments/AddressFragment";
 import { BaseFragment } from "./../../fragments/BaseFragment";
 import { gql, QueryHookOptions, QueryResult, useQuery } from "@apollo/client";
@@ -6,6 +7,7 @@ import { Company } from "../../schema/Company/Company";
 export const CompanyQuery = gql`
   ${BaseFragment}
   ${AddressFragment}
+  ${AppFileFragment}
   query CompanyQuery($id: ObjectId!) {
     company(id: $id) {
       ...BaseFragment
@@ -27,14 +29,7 @@ export const CompanyQuery = gql`
         phone
       }
       files {
-        id
-        name
-        date_created
-        created_by {
-          user_id
-          email
-          name
-        }
+        ...AppFileFragment
       }
     }
   }

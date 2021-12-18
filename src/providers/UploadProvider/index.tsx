@@ -1,19 +1,14 @@
 import React, { ReactElement, useContext } from "react";
-import {
-  SignedUrlRes,
-  useSignedUrls,
-} from "../../graphql/queries/signedUrl/useSignedUrls";
-import {
-  SignedUrlCategory,
-  SignedUrlType,
-} from "../../graphql/schema/SignedUrl/SignedUrl";
+import { useSignedUrl } from "../../graphql/queries/signedUrl/useSignedUrl";
+import { SignedUrlAction } from "../../graphql/queries/signedUrl/useSignedUrls";
+import { StorageBucket } from "../../graphql/schema/SignedUrl/SignedUrl";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import UploadBox from "./components/UploadBox";
 
 export interface UploadItem {
   file: File;
-  identifier: string;
-  category: SignedUrlCategory;
+  prefix: string;
+  storage_category: StorageBucket;
 }
 
 export interface UploadItemError extends UploadItem {
@@ -62,18 +57,20 @@ export const UploadProvider = (props: { children: ReactElement }) => {
     },
   });
 
-  const {} = useSignedUrls({
+  const {} = useSignedUrl({
     variables: !active
       ? undefined
       : {
-          identifier: active.identifier,
-          type: SignedUrlType.Write,
-          filenames: [active.file.name],
-          category: SignedUrlCategory.Company,
+          config: {
+            prefix: active.prefix,
+            category: active.storage_category,
+            name: active.file.name,
+            action: SignedUrlAction.write,
+          },
         },
     skip: !active,
     onCompleted: (data) => {
-      if (active) upload(active.file, data.signedUrls[0].url);
+      if (active) upload(active.file, data.signedUrl.url);
     },
     onError: (error) => {
       if (active) {

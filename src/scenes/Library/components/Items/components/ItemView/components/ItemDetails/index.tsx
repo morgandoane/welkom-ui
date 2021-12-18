@@ -11,39 +11,38 @@ import TextFormField from "../../../../../../../../components/Forms/components/T
 import PanelHeader from "../../../../../../../../components/PanelComponents/PanelHeader";
 import SideDrawer from "../../../../../../../../components/SideDrawer";
 import {
-  UpdateCompanyArgs,
-  UpdateCompanyRes,
-  useCompanyUpdate,
-} from "../../../../../../../../graphql/mutations/company/useCompanyUpdate";
-import { Company } from "../../../../../../../../graphql/schema/Company/Company";
+  UpdateItemArgs,
+  UpdateItemRes,
+  useItemUpdate,
+} from "../../../../../../../../graphql/mutations/item/useItemUpdate";
+import { Item } from "../../../../../../../../graphql/schema/Item/Item";
 import { OperationResult } from "../../../../../../../../graphql/types";
 import { dateFormats } from "../../../../../../../../utils/dateFormats";
 import { MdRefresh } from "react-icons/md";
-import { TinyCompanies } from "../../../../../../../../graphql/queries/companies/useTinyCompanies";
-import { CompanyQuery } from "../../../../../../../../graphql/queries/companies/useCompany";
+import { TinyItems } from "../../../../../../../../graphql/queries/items/useTinyItems";
+import { ItemQuery } from "../../../../../../../../graphql/queries/items/useItem";
+import { InternalRefetchQueriesInclude } from "@apollo/client";
 
-export interface CompanyDetailsProps {
-  company: Company;
+export interface ItemDetailsProps {
+  item: Item;
+  refetch: () => void;
 }
 
-const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
+const ItemDetails = (props: ItemDetailsProps): ReactElement => {
   const theme = useTheme();
-  const { company } = props;
+  const { item, refetch } = props;
 
-  const [state, setState] = React.useState<UpdateCompanyArgs | null>(null);
+  const [state, setState] = React.useState<UpdateItemArgs | null>(null);
 
   const [result, setResult] =
-    React.useState<OperationResult<UpdateCompanyRes> | null>(null);
+    React.useState<OperationResult<UpdateItemRes> | null>(null);
 
-  const [update, { loading }] = useCompanyUpdate({
-    onCompleted: (data) => setResult({ success: true, data }),
+  const [update, { loading }] = useItemUpdate({
+    onCompleted: (data) => {
+      setResult({ success: true, data });
+      refetch();
+    },
     onError: (error) => setResult({ success: false, error }),
-    refetchQueries: [
-      TinyCompanies,
-      "TinyCompanies",
-      CompanyQuery,
-      "CompanyQuery",
-    ],
   });
 
   const onClose = () => {
@@ -55,32 +54,29 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
     <Box sx={{ paddingTop: 4 }}>
       <Details gap={4}>
         {[
-          { key: "Name", value: company.name },
-          { key: "Created by", value: company.created_by.name },
+          { key: "Name", value: item.english },
+          { key: "Created by", value: item.created_by.name },
           {
             key: "Date created",
             value: format(
-              new Date(company.date_created),
+              new Date(item.date_created),
               dateFormats.condensedDate
             ),
           },
           {
             key: "Last modified by",
-            value: !company.modified_by ? "-" : company.modified_by.name,
+            value: !item.modified_by ? "-" : item.modified_by.name,
           },
           {
             key: "Date modified",
-            value: !company.date_modified
+            value: !item.date_modified
               ? "Never"
-              : format(
-                  new Date(company.date_modified),
-                  dateFormats.condensedDate
-                ),
+              : format(new Date(item.date_modified), dateFormats.condensedDate),
           },
         ]}
       </Details>
 
-      {company.deleted ? (
+      {item.deleted ? (
         <AppFab
           disabled={loading}
           sx={{
@@ -93,9 +89,10 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
           onClick={() => {
             update({
               variables: {
-                id: company._id,
+                id: item._id,
                 data: {
-                  name: company.name,
+                  english: item.english,
+                  spanish: item.spanish,
                   deleted: false,
                 },
               },
@@ -109,9 +106,11 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
           icon={<MdEdit />}
           onClick={() => {
             setState({
-              id: company._id,
+              id: item._id,
               data: {
-                name: company.name,
+                english: item.english,
+                spanish: item.spanish,
+                deleted: false,
               },
             });
           }}
@@ -124,20 +123,20 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
         open={Boolean(state)}
         onClose={onClose}
         error={result && result.success == false ? result.error : undefined}
-        success={result && result.success == true ? "Company saved" : undefined}
+        success={result && result.success == true ? "Item saved" : undefined}
       >
-        <PanelHeader onClose={onClose}>{`Update ${company.name}`}</PanelHeader>
+        <PanelHeader onClose={onClose}>{`Update ${item.english}`}</PanelHeader>
         <Box p={1} />
         <FormRow>
           <TextFormField
             disabled={loading}
             label="Name"
-            value={state ? state.data.name : ""}
+            value={state ? state.data.english || "" : ""}
             onChange={(val) => {
               if (state)
                 setState({
                   ...state,
-                  data: { ...state.data, name: val || "" },
+                  data: { ...state.data, english: val || "" },
                 });
             }}
           />
@@ -161,6 +160,7 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
           <Box sx={{ flex: 1 }} />
           <LoadingButton
             onClick={() => {
+              console.log(state);
               if (state) update({ variables: state });
             }}
             variant="contained"
@@ -174,4 +174,4 @@ const CompanyDetails = (props: CompanyDetailsProps): ReactElement => {
   );
 };
 
-export default CompanyDetails;
+export default ItemDetails;
