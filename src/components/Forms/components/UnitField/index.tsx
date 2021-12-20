@@ -11,15 +11,25 @@ export interface UnitFieldProps {
 const UnitField = (props: UnitFieldProps): ReactElement => {
   const { label = "Unit", value, onChange } = props;
 
-  const { data, error, loading } = useTinyUnits();
+  const { data, error, loading } = useTinyUnits({
+    variables: {
+      filter: {
+        skip: 0,
+        take: 100,
+      },
+    },
+  });
 
   const units = data
     ? data.units.items.map((i) => ({ ...i, label: i.english, id: i._id }))
     : [];
 
+  const match = units.find((u) => u._id === value);
+
   return (
     <Autocomplete
-      value={units.find((u) => u._id === value) || undefined}
+      fullWidth
+      value={match || null}
       onChange={(e, val) => {
         onChange(val ? val._id : null);
       }}

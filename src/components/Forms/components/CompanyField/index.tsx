@@ -11,15 +11,25 @@ export interface CompanyFieldProps {
 const CompanyField = (props: CompanyFieldProps): ReactElement => {
   const { label = "Company", value, onChange } = props;
 
-  const { data, error, loading } = useTinyCompanies();
+  const { data, error, loading } = useTinyCompanies({
+    variables: {
+      filter: {
+        skip: 0,
+        take: 100,
+      },
+    },
+  });
 
   const companies = data
     ? data.companies.items.map((i) => ({ ...i, label: i.name, id: i._id }))
     : [];
 
+  const match = companies.find((u) => u._id === value);
+
   return (
     <Autocomplete
-      value={companies.find((u) => u._id === value) || undefined}
+      fullWidth
+      value={match || null}
       onChange={(e, val) => {
         onChange(val ? val._id : null);
       }}
@@ -32,7 +42,9 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
           </li>
         );
       }}
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => (
+        <TextField {...params} label={label} fullWidth />
+      )}
     />
   );
 };

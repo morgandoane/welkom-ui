@@ -1,23 +1,24 @@
-import { Location } from "../Location/Location";
-import { Unit } from "../Unit/Unit";
-import { Item } from "../Item/Item";
+import { TinyUnit } from "./../Unit/Unit";
+import { TinyItem } from "./../Item/Item";
 import { Lot } from "../Lot/Lot";
+import { TinyLocation } from "../../queries/locations/useTinyLocations";
 
 export interface Content {
   quantity: number;
-  unit: Unit;
+  unit: TinyUnit;
 }
 
 export interface ItemContent extends Content {
-  item: Item;
+  item: TinyItem;
 }
 
 export interface ItemPluralContent extends Content {
-  items: Item[];
+  items: TinyItem[];
 }
 
 export interface OrderContent extends ItemContent {
-  location: Location;
+  location: TinyLocation;
+  due: Date;
 }
 
 export interface LotContent extends Content {

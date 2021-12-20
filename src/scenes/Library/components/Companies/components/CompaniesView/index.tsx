@@ -17,7 +17,10 @@ import {
   CreateCompanyRes,
   useCompanyCreation,
 } from "../../../../../../graphql/mutations/company/useCompanyCreation";
-import { useTinyCompanies } from "../../../../../../graphql/queries/companies/useTinyCompanies";
+import {
+  TinyCompanies,
+  useTinyCompanies,
+} from "../../../../../../graphql/queries/companies/useTinyCompanies";
 import { CompanyFilter } from "../../../../../../graphql/schema/Company/CompanyFilter";
 import { OperationResult } from "../../../../../../graphql/types";
 
@@ -44,6 +47,7 @@ const CompaniesView = (): ReactElement => {
   const [create, { loading: createLoading }] = useCompanyCreation({
     onCompleted: (data) => setResult({ success: true, data }),
     onError: (error) => setResult({ success: false, error }),
+    refetchQueries: [TinyCompanies],
   });
 
   const onClose = () => {

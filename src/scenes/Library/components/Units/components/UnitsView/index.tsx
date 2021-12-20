@@ -18,10 +18,15 @@ import {
   CreateUnitRes,
   useUnitCreation,
 } from "../../../../../../graphql/mutations/unit/useUnitCreation";
-import { useTinyUnits } from "../../../../../../graphql/queries/units/useTinyUnits";
+import {
+  TinyUnits,
+  useTinyUnits,
+} from "../../../../../../graphql/queries/units/useTinyUnits";
 import { UnitFilter } from "../../../../../../graphql/schema/Unit/UnitFilter";
 import { UnitClass } from "../../../../../../graphql/schema/Unit/Unit";
 import { OperationResult } from "../../../../../../graphql/types";
+import NumberField from "../../../../../../components/Forms/components/NumberField";
+import { BaseUnits } from "../UnitView/components/UnitDetails";
 
 const UnitsView = (): ReactElement => {
   const nav = useNavigate();
@@ -44,6 +49,7 @@ const UnitsView = (): ReactElement => {
   const [create, { loading: createLoading }] = useUnitCreation({
     onCompleted: (data) => setResult({ success: true, data }),
     onError: (error) => setResult({ success: false, error }),
+    refetchQueries: [TinyUnits],
   });
 
   const onClose = () => {
@@ -134,29 +140,84 @@ const UnitsView = (): ReactElement => {
       >
         <PanelHeader onClose={onClose}>Create unit</PanelHeader>
         <FormRow>
-          <TextFormField
-            label="English"
-            value={edits ? edits.english : ""}
-            onChange={(val) => {
-              if (edits) setEdits({ ...edits, english: val || "" });
+          <UnitClassField
+            label="Unit type"
+            value={edits ? edits.class : UnitClass.Weight}
+            onChange={(unit_class) => {
+              if (edits) {
+                setEdits({ ...edits, class: unit_class });
+              }
             }}
           />
         </FormRow>
         <FormRow>
           <TextFormField
+            disabled={loading}
+            label="English"
+            value={edits ? edits.english || "" : ""}
+            onChange={(val) => {
+              if (edits)
+                setEdits({
+                  ...edits,
+                  english: val || "",
+                });
+            }}
+          />
+          <TextFormField
+            disabled={loading}
+            label="English plural"
+            value={edits ? edits.english_plural || "" : ""}
+            onChange={(val) => {
+              if (edits)
+                setEdits({
+                  ...edits,
+                  english_plural: val || "",
+                });
+            }}
+          />
+        </FormRow>
+        <FormRow>
+          <TextFormField
+            disabled={loading}
             label="Spanish"
             value={edits ? edits.spanish || "" : ""}
             onChange={(val) => {
-              if (edits) setEdits({ ...edits, spanish: val || "" });
+              if (edits)
+                setEdits({
+                  ...edits,
+                  spanish: val || "",
+                });
+            }}
+          />
+          <TextFormField
+            disabled={loading}
+            label="Spanish plural"
+            value={edits ? edits.spanish_plural || "" : ""}
+            onChange={(val) => {
+              if (edits)
+                setEdits({
+                  ...edits,
+                  spanish_plural: val || "",
+                });
             }}
           />
         </FormRow>
         <FormRow>
-          <UnitClassField
-            label="Measured in"
-            value={edits ? edits.class : UnitClass.Weight}
-            onChange={(unit_class) => {
-              if (edits) setEdits({ ...edits, class: unit_class });
+          <NumberField
+            label={
+              edits ? `${BaseUnits[edits.class][1]} per ${edits.english}` : ""
+            }
+            value={
+              edits && edits.base_per_unit !== undefined
+                ? edits.base_per_unit
+                : null
+            }
+            onChange={(val) => {
+              if (edits)
+                setEdits({
+                  ...edits,
+                  base_per_unit: val || 0,
+                });
             }}
           />
         </FormRow>

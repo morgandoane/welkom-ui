@@ -1,3 +1,4 @@
+import { Conversion } from "./../Conversion/Conversion";
 import { AppFile } from "../AppFile/AppFile";
 import { Base } from "../Base/Base";
 import { UnitClass } from "../Unit/Unit";
@@ -7,6 +8,7 @@ export interface Item extends Base {
   english: string;
   spanish: string;
   files: AppFile[];
+  conversions: Conversion[];
 }
 
 export interface TinyItem {

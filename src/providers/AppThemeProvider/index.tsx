@@ -8,6 +8,8 @@ import {
 } from "@mui/material/styles";
 
 import type {} from "@mui/x-data-grid/themeAugmentation";
+import { useAuth0 } from "@auth0/auth0-react";
+import { UserMetaData } from "../../graphql/schema/Profile/Profile";
 
 declare module "@mui/material/styles" {
   interface TypographyVariants {
@@ -169,13 +171,31 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
   });
 };
 
+export interface AppThemeContext {
+  mode: "dark" | "light";
+  setMode: (mode: "dark" | "light") => void;
+}
+
+export const Context = React.createContext<AppThemeContext>({
+  mode: "light",
+  setMode: (val) => null,
+});
+
 const AppThemeProvider = (props: { children: ReactElement }): ReactElement => {
-  const theme = getTheme("dark");
+  const { user } = useAuth0<UserMetaData>();
+  const [mode, setMode] = React.useState<"dark" | "light">(
+    user && user.prefers_dark_mode !== false ? "dark" : "light"
+  );
+  const theme = getTheme(mode);
   return (
-    <ThemeProvider theme={responsiveFontSizes(theme)}>
-      {props.children}
-    </ThemeProvider>
+    <Context.Provider value={{ mode, setMode: (val) => setMode(val) }}>
+      <ThemeProvider theme={responsiveFontSizes(theme)}>
+        {props.children}
+      </ThemeProvider>
+    </Context.Provider>
   );
 };
 
 export default AppThemeProvider;
+
+export const useThemeContext = (): AppThemeContext => React.useContext(Context);

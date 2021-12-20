@@ -24,6 +24,7 @@ import {
 } from "../../../../../../../../graphql/mutations/unit/useUnitUpdate";
 import NumberField from "../../../../../../../../components/Forms/components/NumberField";
 import { fraction } from "../../../../../../../../utils/fraction";
+import UnitClassField from "../../../../../../../../components/Forms/components/UnitClassField";
 
 export const BaseUnits: Record<UnitClass, [string, string]> = {
   [UnitClass.Count]: ["Count", "Counts"],

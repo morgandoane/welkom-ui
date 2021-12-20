@@ -13,12 +13,17 @@ const NumberField = (props: NumberFieldProps): ReactElement => {
   return (
     <TextField
       fullWidth
-      value={value == null ? "" : value}
+      value={
+        value == null
+          ? ""
+          : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      }
       onChange={(e) =>
-        onChange(e.target.value ? parseFloat(e.target.value) : null)
+        onChange(
+          e.target.value ? parseFloat(e.target.value.replace(",", "")) : null
+        )
       }
       label={label}
-      type="number"
     />
   );
 };

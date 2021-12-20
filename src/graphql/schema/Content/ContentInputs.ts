@@ -13,6 +13,7 @@ export interface ItemPluralContentInput extends ContentInput {
 
 export interface OrderContentInput extends ItemContentInput {
   location: string;
+  due: Date;
 }
 
 export interface LotContentInput extends ContentInput {

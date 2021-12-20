@@ -9,6 +9,7 @@ import TabFade from "../../../../../../components/TabFade";
 import { useItem } from "../../../../../../graphql/queries/items/useItem";
 import ItemDetails from "./components/ItemDetails";
 import ItemAttachments from "./components/ItemAttachments";
+import ItemConversions from "./components/ItemConversions";
 
 const ItemView = (): ReactElement => {
   const { id } = useParams();
@@ -67,6 +68,7 @@ const ItemView = (): ReactElement => {
                           refetch={() => refetch()}
                         />
                       ),
+                      ["Unit Conversions"]: <ItemConversions item={item} />,
                     }}
                   </TabFade>
                 </Box>

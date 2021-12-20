@@ -9,7 +9,7 @@ const UnauthenticatedRoute = (props: {
   const { isAuthenticated } = useAuth0();
 
   React.useEffect(() => {
-    if (isAuthenticated) navigate("/home");
+    if (isAuthenticated) navigate("/");
   }, [isAuthenticated, navigate]);
 
   return <React.Fragment>{props.children}</React.Fragment>;

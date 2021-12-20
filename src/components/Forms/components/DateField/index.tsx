@@ -25,7 +25,7 @@ const DateField = (props: DateFieldProps): ReactElement => {
       minDate={min}
       maxDate={max}
       onChange={(val) => onChange(val)}
-      renderInput={(params) => <TextField {...params} />}
+      renderInput={(params) => <TextField {...params} fullWidth />}
     />
   );
 };

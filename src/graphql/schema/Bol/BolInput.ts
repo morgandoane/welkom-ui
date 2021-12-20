@@ -11,12 +11,14 @@ export interface BolAppointmentInput {
 }
 
 export interface CreateBolInput {
+  code: string;
   from?: BolAppointmentInput;
   to?: BolAppointmentInput;
   contents?: ItemContentInput[];
 }
 
 export interface UpdateBolInput {
+  code?: string;
   from?: BolAppointmentInput;
   to?: BolAppointmentInput;
   contents?: ItemContentInput[];

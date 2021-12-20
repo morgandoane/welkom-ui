@@ -1,7 +1,8 @@
 import React, { ReactElement } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Library from "../scenes/Library";
 import Login from "../scenes/Login";
+import Logistics from "../scenes/Logistics";
 import Logout from "../scenes/Logout";
 import NotFound from "../scenes/NotFound";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
@@ -10,6 +11,7 @@ import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 export const Router = (): ReactElement => (
   <BrowserRouter>
     <Routes>
+      <Route path="/" element={<Navigate to="/logistics" />} />
       <Route
         path="/login"
         element={
@@ -26,7 +28,14 @@ export const Router = (): ReactElement => (
           </AuthenticatedRoute>
         }
       />
-
+      <Route
+        path="/logistics/*"
+        element={
+          <AuthenticatedRoute>
+            <Logistics />
+          </AuthenticatedRoute>
+        }
+      />
       <Route
         path="/logout"
         element={

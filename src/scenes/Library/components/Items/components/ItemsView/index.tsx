@@ -18,7 +18,10 @@ import {
   CreateItemRes,
   useItemCreation,
 } from "../../../../../../graphql/mutations/item/useItemCreation";
-import { useTinyItems } from "../../../../../../graphql/queries/items/useTinyItems";
+import {
+  TinyItems,
+  useTinyItems,
+} from "../../../../../../graphql/queries/items/useTinyItems";
 import { ItemFilter } from "../../../../../../graphql/schema/Item/ItemFilter";
 import { UnitClass } from "../../../../../../graphql/schema/Unit/Unit";
 import { OperationResult } from "../../../../../../graphql/types";
@@ -44,6 +47,7 @@ const ItemsView = (): ReactElement => {
   const [create, { loading: createLoading }] = useItemCreation({
     onCompleted: (data) => setResult({ success: true, data }),
     onError: (error) => setResult({ success: false, error }),
+    refetchQueries: [TinyItems],
   });
 
   const onClose = () => {

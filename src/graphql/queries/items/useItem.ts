@@ -15,6 +15,12 @@ export const ItemQuery = gql`
       files {
         ...AppFileFragment
       }
+      conversions {
+        ...BaseFragment
+        from
+        to
+        from_per_to
+      }
     }
   }
 `;

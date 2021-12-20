@@ -21,6 +21,7 @@ export interface BolAppointment_Location extends BolAppointmentBase {
 export type BolAppointment = BolAppointment_Company | BolAppointment_Location;
 
 export interface Bol extends Base {
+  code: string;
   from?: BolAppointment;
   to?: BolAppointment;
   contents: ItemContent[];

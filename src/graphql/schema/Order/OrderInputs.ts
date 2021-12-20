@@ -1,16 +1,16 @@
-import { ItemContentInput } from "../Content/ContentInputs";
+import { OrderContentInput } from "./../Content/ContentInputs";
 
 export interface CreateOrderInput {
+  code: string;
   customer?: string;
   vendor?: string;
-  contents: ItemContentInput[];
-  due?: Date;
+  contents: OrderContentInput[];
 }
 
 export interface UpdateOrderInput {
+  code?: string;
   customer?: string;
   vendor?: string;
-  contents?: ItemContentInput[];
-  due?: Date;
+  contents?: OrderContentInput[];
   deleted?: boolean;
 }

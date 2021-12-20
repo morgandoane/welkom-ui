@@ -1,23 +1,32 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  useTheme,
+  Button,
+  capitalize,
+  Tooltip,
+} from "@mui/material";
 import React, { ReactElement } from "react";
 import { AiFillBuild, AiOutlineNodeIndex } from "react-icons/ai";
 import { FaHandsHelping, FaTruckLoading } from "react-icons/fa";
 import {
   MdAccountCircle,
   MdChevronRight,
+  MdDarkMode,
   MdDescription,
   MdDocumentScanner,
   MdFolderOpen,
+  MdLightMode,
 } from "react-icons/md";
-import { RiHomeLine } from "react-icons/ri";
 import { VscGraphLeft } from "react-icons/vsc";
 import { useNavigate } from "react-router";
-import { StringMappingType } from "typescript";
+import { useThemeContext } from "../../../../providers/AppThemeProvider";
 import Anima from "../../../Anima";
 import NavGroup, { NavGroupProps } from "./components/NavGroup";
 
 const duration = 200;
 const Sidebar = (): ReactElement => {
+  const { mode, setMode } = useThemeContext();
   const theme = useTheme();
   const nav = useNavigate();
   const fromStorage = localStorage.getItem("sidebar_expanded");
@@ -83,7 +92,6 @@ const Sidebar = (): ReactElement => {
       label: "Library",
       items: [
         { label: "Companies", url: "/library/companies" },
-        { label: "Conversions", url: "/library/conversions" },
         { label: "Items", url: "/library/items" },
         { label: "Units", url: "/library/units" },
       ],
@@ -183,6 +191,11 @@ const Sidebar = (): ReactElement => {
           <NavGroup {...group} key={"group_" + index} />
         ))}
       </Box>
+      <Tooltip title="Color theme" placement="right" arrow>
+        <IconButton onClick={() => setMode(mode == "dark" ? "light" : "dark")}>
+          {mode == "dark" ? <MdDarkMode /> : <MdLightMode />}
+        </IconButton>
+      </Tooltip>
       <Anima in={expanded} type="rotate">
         <IconButton onClick={() => setExpanded(!expanded)}>
           <MdChevronRight />

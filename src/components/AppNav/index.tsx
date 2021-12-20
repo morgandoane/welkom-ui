@@ -22,10 +22,11 @@ export interface AppNavProps {
   children?: ReactElement | ReactNode | (ReactElement | ReactNode)[];
   loading?: boolean;
   error?: Error;
+  includeError?: boolean;
 }
 
 const AppNav = (props: AppNavProps): ReactElement => {
-  const { children, loading, error } = props;
+  const { children, loading, error, includeError } = props;
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("sm"));
   const medium = useMediaQuery(theme.breakpoints.down("md"));
@@ -50,7 +51,15 @@ const AppNav = (props: AppNavProps): ReactElement => {
       )}
       <Sidebar />
       <Box sx={{ flex: 1, padding: small ? 0 : medium ? 2 : 4 }}>
-        {error ? <Message type="Warning" message={error.message} /> : children}
+        {error ? (
+          <Message
+            type="Warning"
+            message={error.message}
+            error={includeError ? error : undefined}
+          />
+        ) : (
+          children
+        )}
       </Box>
     </Box>
   );

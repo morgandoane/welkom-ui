@@ -15,6 +15,7 @@ export const BaseUnionFields = [
   "Bol",
   "Company",
   "Contact",
+  "Conversion",
   "Expense",
   "Folder",
   "RecipeFolder",

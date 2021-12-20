@@ -13,21 +13,24 @@ import "@fontsource/roboto";
 import "@fontsource/artifika";
 import "@fontsource/jost";
 import { UploadProvider } from "./providers/UploadProvider";
+import ErrorProvider from "./providers/ErrorProvider";
 
 ReactDOM.render(
   <React.StrictMode>
     <AppThemeProvider>
-      <LocalizationProvider dateAdapter={DateAdapter}>
-        <SnackbarProvider>
-          <AuthProvider>
-            <ApolloProvider>
-              <UploadProvider>
-                <Router />
-              </UploadProvider>
-            </ApolloProvider>
-          </AuthProvider>
-        </SnackbarProvider>
-      </LocalizationProvider>
+      <ErrorProvider>
+        <LocalizationProvider dateAdapter={DateAdapter}>
+          <SnackbarProvider>
+            <AuthProvider>
+              <ApolloProvider>
+                <UploadProvider>
+                  <Router />
+                </UploadProvider>
+              </ApolloProvider>
+            </AuthProvider>
+          </SnackbarProvider>
+        </LocalizationProvider>
+      </ErrorProvider>
     </AppThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
