@@ -1,26 +1,67 @@
-import { OrderFragment } from "./OrderFragment";
+import { TinyCompany } from "./../../schema/Company/Company";
 import { getQueryHook } from "./../../types";
-import { BaseFragment } from "./../../fragments/BaseFragment";
 import { OrderFilter } from "../../schema/Order/OrderFilter";
 import { gql } from "@apollo/client";
 import { Pagination } from "../../schema/Pagination/Pagination";
-import { Order } from "../../schema/Order/Order";
+
+export interface TinyOrder {
+  _id: string;
+  code: string;
+  vendor?: TinyCompany | null;
+  customer?: TinyCompany | null;
+  contents: {
+    item: {
+      _id: string;
+      english: string;
+    };
+    quantity: number;
+    unit: {
+      _id: string;
+      english: string;
+    };
+  }[];
+}
+
+export const TinyOrderFragment = gql`
+  fragment TinyOrderFragment on Order {
+    _id
+    code
+    vendor {
+      _id
+      name
+    }
+    customer {
+      _id
+      name
+    }
+    contents {
+      item {
+        _id
+        english
+      }
+      quantity
+      unit {
+        _id
+        english
+      }
+    }
+  }
+`;
 
 export const TinyOrders = gql`
-  ${BaseFragment}
-  ${OrderFragment}
+  ${TinyOrderFragment}
   query TinyOrders($filter: OrderFilter!) {
     orders(filter: $filter) {
       count
       items {
-        ...OrderFragment
+        ...TinyOrderFragment
       }
     }
   }
 `;
 
 export interface OrdersRes {
-  orders: Pagination<Order>;
+  orders: Pagination<TinyOrder>;
 }
 
 export interface OrdersArgs {

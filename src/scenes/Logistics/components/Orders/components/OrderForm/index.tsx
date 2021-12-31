@@ -161,13 +161,13 @@ const OrderForm = (): ReactElement => {
       const { vendor, customer, contents, deleted, code } = data.order;
       setEdits({
         _type: "update",
+        code,
         vendor: vendor ? vendor._id : "",
         customer: customer ? customer._id : "",
         deleted,
         contents: contents.map((content) => {
           const { item, unit, quantity, location, due } = content;
           return {
-            code,
             item: item ? item._id : "",
             unit: unit ? unit._id : "",
             location: location ? location._id : "",
@@ -266,11 +266,15 @@ const OrderForm = (): ReactElement => {
               />
             ) : (
               <Box sx={{ paddingTop: 2 }}>
-                <CodeField
-                  type={CodeType.PO}
-                  value={edits.code || ""}
-                  onChange={(code) => setEdits({ ...edits, code })}
-                />
+                <Box sx={{ maxWidth: 240 }}>
+                  <CodeField
+                    type={CodeType.PO}
+                    value={
+                      edits.code ? edits.code : data ? data.order.code : ""
+                    }
+                    onChange={(code) => setEdits({ ...edits, code })}
+                  />
+                </Box>
                 <Box p={2} />
                 <Typography color="textSecondary" variant="body2">
                   Companies
@@ -357,7 +361,7 @@ const OrderForm = (): ReactElement => {
                                     ? location.address.city
                                     : "Unknown location"
                                 }) by ${format(
-                                  content.due,
+                                  new Date(content.due),
                                   dateFormats.condensedDate
                                 )}`}
                               </Typography>
@@ -389,7 +393,8 @@ const OrderForm = (): ReactElement => {
               <Box>
                 <CarefulButton
                   onClick={() => {
-                    nav("/logistics/orders");
+                    if (id && id.length > 0) nav(`/logistics/orders/${id}`);
+                    else nav("/");
                   }}
                   size="large"
                   endIcon={<MdClear />}

@@ -1,9 +1,8 @@
+import { TinyLocation } from "./../../queries/locations/useTinyLocations";
+import { TinyCompany } from "./../Company/Company";
+import { TinyItem } from "./../Item/Item";
 import { Base } from "../Base/Base";
-import { Bol } from "../Bol/Bol";
-import { Company } from "../Company/Company";
-import { Location } from "../Location/Location";
 import { Lot } from "../Lot/Lot";
-import { Item } from "../Item/Item";
 
 export enum FulfillmentType {
   Shipment = "Shipment",
@@ -11,10 +10,17 @@ export enum FulfillmentType {
 }
 
 export interface Fulfillment extends Base {
-  bol: Bol;
   type: FulfillmentType;
   lots: Lot[];
-  items: Item[];
-  company: Company;
-  location: Location;
+  items: TinyItem[];
+  company: TinyCompany;
+  location: TinyLocation;
+}
+
+export interface TinyFulfillment {
+  _id: string;
+  deleted: boolean;
+  type: FulfillmentType;
+  items: TinyItem[];
+  location: TinyLocation;
 }

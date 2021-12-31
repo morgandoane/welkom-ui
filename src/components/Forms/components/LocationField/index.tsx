@@ -4,16 +4,18 @@ import {
   TinyLocation,
   useTinyLocations,
 } from "../../../../graphql/queries/locations/useTinyLocations";
+import AutoCompleteTextField from "../AutoCompleteTextField";
 
 export interface LocationFieldProps {
   label?: string;
   value: string | null;
   onChange: (value: string | null) => void;
   company?: string;
+  naked?: boolean;
 }
 
 const LocationField = (props: LocationFieldProps): ReactElement => {
-  const { label = "Location", value, company, onChange } = props;
+  const { label = "Location", value, company, onChange, naked = false } = props;
 
   const { data, error, loading } = useTinyLocations({
     variables: {
@@ -57,7 +59,9 @@ const LocationField = (props: LocationFieldProps): ReactElement => {
           </li>
         );
       }}
-      renderInput={(params) => <TextField {...params} label={label} />}
+      renderInput={(params) => (
+        <AutoCompleteTextField {...params} label={label} naked={naked} />
+      )}
     />
   );
 };

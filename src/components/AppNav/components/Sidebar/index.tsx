@@ -174,6 +174,7 @@ const Sidebar = (): ReactElement => {
         display: "flex",
         flexFlow: "column",
         alignItems: "flex-start",
+        borderRight: `1px solid ${theme.palette.divider}`,
       }}
     >
       <Box

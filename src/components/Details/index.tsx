@@ -10,10 +10,11 @@ export interface DetailsProps {
     value: number | string | ReactNode | ReactElement;
   }[];
   gap?: number;
+  bold?: boolean;
 }
 
 const Details = (props: DetailsProps): ReactElement => {
-  const { children, gap = 2 } = props;
+  const { children, gap = 2, bold = true } = props;
 
   const grouped = chunkify(children, children.length > 3 ? 2 : 1);
 
@@ -29,7 +30,11 @@ const Details = (props: DetailsProps): ReactElement => {
               <Typography variant="caption" color="textSecondary">
                 {key}
               </Typography>
-              <Typography variant="body1" color="textPrimary">
+              <Typography
+                fontWeight={bold ? 500 : undefined}
+                variant="body1"
+                color="textPrimary"
+              >
                 {value}
               </Typography>
             </Box>

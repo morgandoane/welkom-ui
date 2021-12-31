@@ -10,6 +10,7 @@ import {
 import type {} from "@mui/x-data-grid/themeAugmentation";
 import { useAuth0 } from "@auth0/auth0-react";
 import { UserMetaData } from "../../graphql/schema/Profile/Profile";
+import { useUserPreferenceUpdate } from "../../graphql/mutations/userPreferences/UpdateUserPreferences";
 
 declare module "@mui/material/styles" {
   interface TypographyVariants {
@@ -35,8 +36,10 @@ declare module "@mui/material/Typography" {
 export const getTheme = (mode: "light" | "dark"): Theme => {
   const background: Record<"light" | "dark", PaletteOptions["background"]> = {
     light: {
-      default: "#FEFDFD",
+      default: "#FFFFFF",
       paper: "#FFFFFF",
+      // default: "#FEFDFD",
+      // paper: "#FFFFFF",
     },
     dark: {
       default: "#141414",
@@ -183,12 +186,31 @@ export const Context = React.createContext<AppThemeContext>({
 
 const AppThemeProvider = (props: { children: ReactElement }): ReactElement => {
   const { user } = useAuth0<UserMetaData>();
+  const fromStorage = localStorage.getItem("theme");
   const [mode, setMode] = React.useState<"dark" | "light">(
-    user && user.prefers_dark_mode !== false ? "dark" : "light"
+    fromStorage == "light" ? "light" : "dark"
   );
   const theme = getTheme(mode);
+
+  const [update] = useUserPreferenceUpdate();
+
   return (
-    <Context.Provider value={{ mode, setMode: (val) => setMode(val) }}>
+    <Context.Provider
+      value={{
+        mode,
+        setMode: (val) => {
+          localStorage.setItem("theme", val);
+          setMode(val);
+          update({
+            variables: {
+              data: {
+                prefers_dark_mode: val == "dark",
+              },
+            },
+          });
+        },
+      }}
+    >
       <ThemeProvider theme={responsiveFontSizes(theme)}>
         {props.children}
       </ThemeProvider>

@@ -35,7 +35,6 @@ export const useFileUpload = <Res = unknown>(
         "x-goog-meta-created_by": user ? user.sub || "" : "",
       },
       onUploadProgress: (progressEvent) => {
-        console.log(progressEvent);
         const percentCompleted = Math.floor(
           (progressEvent.loaded * 100) / progressEvent.total
         );

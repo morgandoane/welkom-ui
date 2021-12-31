@@ -1,6 +1,7 @@
 export enum CodeType {
   BOL = "BOL",
   PO = "PO",
+  ITIN = "ITIN",
 }
 
 export interface Code {

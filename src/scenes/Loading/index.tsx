@@ -1,5 +1,6 @@
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
 import React, { ReactElement } from "react";
+import { getTheme } from "../../providers/AppThemeProvider";
 import { fullScreen } from "../../styles/fullScreen";
 
 export interface LoadingProps {
@@ -7,8 +8,8 @@ export interface LoadingProps {
 }
 
 const Loading = (props: LoadingProps): ReactElement => {
-  const theme = useTheme();
-  const {} = props;
+  const fromStorage = localStorage.getItem("theme");
+  const theme = getTheme(fromStorage == "light" ? "light" : "dark");
 
   return (
     <Box
@@ -17,6 +18,7 @@ const Loading = (props: LoadingProps): ReactElement => {
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "flex-start",
+        background: theme.palette.background.default,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", gap: 2, padding: 8 }}>

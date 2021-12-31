@@ -12,6 +12,10 @@ export interface ItemContent extends Content {
   item: TinyItem;
 }
 
+export interface BolItemContent extends ItemContent {
+  fulfillment_percentage: number;
+}
+
 export interface ItemPluralContent extends Content {
   items: TinyItem[];
 }

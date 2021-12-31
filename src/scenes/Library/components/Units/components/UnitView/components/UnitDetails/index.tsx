@@ -246,7 +246,6 @@ const UnitDetails = (props: UnitDetailsProps): ReactElement => {
           <Box sx={{ flex: 1 }} />
           <LoadingButton
             onClick={() => {
-              console.log(state);
               if (state) update({ variables: state });
             }}
             variant="contained"

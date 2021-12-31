@@ -27,10 +27,12 @@ const CodeField = (props: CodeFieldProps): ReactElement => {
   const lables: Record<CodeType, string> = {
     PO: "PO number",
     BOL: "BOL number",
+    ITIN: "Itinerary number",
   };
 
   return (
     <TextField
+      fullWidth
       label={lables[type]}
       disabled
       value={value}

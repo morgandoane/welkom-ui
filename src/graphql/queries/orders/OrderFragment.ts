@@ -1,9 +1,13 @@
+import { ItineraryFragment } from "./../../schema/Itinerary/Itinerary";
 import { gql } from "@apollo/client";
 
 export const OrderFragment = gql`
   fragment OrderFragment on Order {
     ...BaseFragment
     code
+    files {
+      ...AppFileFragment
+    }
     customer {
       _id
       name
@@ -11,6 +15,9 @@ export const OrderFragment = gql`
     vendor {
       _id
       name
+    }
+    itineraries {
+      ...ItineraryFragment
     }
     contents {
       item {

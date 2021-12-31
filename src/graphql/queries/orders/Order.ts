@@ -1,3 +1,6 @@
+import { BolFragment } from "./../../schema/Bol/Bol";
+import { ItineraryFragment } from "./../../schema/Itinerary/Itinerary";
+import { AppFileFragment } from "./../../schema/AppFile/AppFile";
 import { OrderFragment } from "./OrderFragment";
 import { getQueryHook } from "./../../types";
 import { Order } from "./../../schema/Order/Order";
@@ -7,6 +10,9 @@ import { gql } from "@apollo/client";
 export const OrderQuery = gql`
   ${BaseFragment}
   ${OrderFragment}
+  ${BolFragment}
+  ${AppFileFragment}
+  ${ItineraryFragment}
   query OrderQuery($id: ObjectId!) {
     order(id: $id) {
       ...OrderFragment

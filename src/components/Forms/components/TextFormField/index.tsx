@@ -6,10 +6,11 @@ export interface TextFormFieldProps {
   onChange: (val: string | null) => void;
   label: string;
   disabled?: boolean;
+  naked?: boolean;
 }
 
 const TextFormField = (props: TextFormFieldProps): ReactElement => {
-  const { value, onChange, label, disabled } = props;
+  const { value, onChange, label, disabled, naked = false } = props;
 
   return (
     <TextField
@@ -17,7 +18,10 @@ const TextFormField = (props: TextFormFieldProps): ReactElement => {
       fullWidth
       value={value || ""}
       onChange={(e) => onChange(e.target.value)}
-      label={label}
+      label={naked ? undefined : label}
+      placeholder={!naked ? undefined : label}
+      variant={naked ? "standard" : undefined}
+      InputProps={naked ? { disableUnderline: true } : undefined}
     />
   );
 };

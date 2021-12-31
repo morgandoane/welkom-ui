@@ -17,21 +17,21 @@ import ErrorProvider from "./providers/ErrorProvider";
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppThemeProvider>
-      <ErrorProvider>
-        <LocalizationProvider dateAdapter={DateAdapter}>
-          <SnackbarProvider>
-            <AuthProvider>
-              <ApolloProvider>
+    <AuthProvider>
+      <ApolloProvider>
+        <AppThemeProvider>
+          <ErrorProvider>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <SnackbarProvider>
                 <UploadProvider>
                   <Router />
                 </UploadProvider>
-              </ApolloProvider>
-            </AuthProvider>
-          </SnackbarProvider>
-        </LocalizationProvider>
-      </ErrorProvider>
-    </AppThemeProvider>
+              </SnackbarProvider>
+            </LocalizationProvider>
+          </ErrorProvider>
+        </AppThemeProvider>
+      </ApolloProvider>
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
