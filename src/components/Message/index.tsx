@@ -17,10 +17,11 @@ export interface MessageProps {
   action?: ReactElement;
   onComplete?: () => void;
   error?: Error;
+  size?: number;
 }
 
 const Message = (props: MessageProps): ReactElement => {
-  const { type, message, action, error, onComplete } = props;
+  const { type, message, action, error, onComplete, size = 100 } = props;
 
   const [done, setDone] = React.useState(false);
   const [showDetail, setShowDetail] = React.useState(false);
@@ -39,7 +40,7 @@ const Message = (props: MessageProps): ReactElement => {
   const iconMap: Record<MessageProps["type"], ReactElement> = {
     Error: (
       <Animation
-        style={{ height: 100, width: 100 }}
+        style={{ height: size, width: size }}
         loop={false}
         type="warning"
         onComplete={() => setDone(true)}
@@ -47,7 +48,7 @@ const Message = (props: MessageProps): ReactElement => {
     ),
     Warning: (
       <Animation
-        style={{ height: 100, width: 100 }}
+        style={{ height: size, width: size }}
         loop={false}
         type="warning"
         onComplete={() => setDone(true)}
@@ -55,17 +56,17 @@ const Message = (props: MessageProps): ReactElement => {
     ),
     Success: (
       <Animation
-        style={{ height: 100, width: 100 }}
+        style={{ height: size, width: size }}
         loop={false}
         type="success"
         onComplete={() => setDone(true)}
       />
     ),
-    Loading: <CircularProgress />,
+    Loading: <CircularProgress sx={{ maxHeight: size, maxWidth: size }} />,
     Info: (
       <Animation
         onComplete={() => setDone(true)}
-        style={{ height: 100, width: 100 }}
+        style={{ height: size, width: size }}
         loop={false}
         type="info"
       />

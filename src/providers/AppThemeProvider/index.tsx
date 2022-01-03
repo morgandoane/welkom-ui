@@ -102,6 +102,9 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
           root: {
             textTransform: "none",
           },
+          sizeLarge: {
+            height: 56,
+          },
         },
       },
 

@@ -57,7 +57,6 @@ const BolForm = (): ReactElement => {
 
   const baseState: CreateBolInput = {
     itinerary: itinerary_id || "",
-    order: order_id || "",
     code: "",
     from: {
       company: "",
@@ -107,11 +106,11 @@ const BolForm = (): ReactElement => {
           data: state,
         },
       });
-    } else if ("order" in state) {
+    } else {
       // create
       handleCreate({
         variables: {
-          data: state,
+          data: { ...state, itinerary: itinerary_id || "" },
         },
       });
     }

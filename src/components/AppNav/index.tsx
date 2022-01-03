@@ -23,10 +23,11 @@ export interface AppNavProps {
   loading?: boolean;
   error?: Error;
   includeError?: boolean;
+  discrete?: boolean;
 }
 
 const AppNav = (props: AppNavProps): ReactElement => {
-  const { children, loading, error, includeError } = props;
+  const { children, loading, error, includeError, discrete = true } = props;
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("sm"));
   const medium = useMediaQuery(theme.breakpoints.down("md"));
@@ -42,7 +43,7 @@ const AppNav = (props: AppNavProps): ReactElement => {
         color: theme.palette.text.primary,
       }}
     >
-      {loading && (
+      {loading && discrete && (
         <Box
           sx={{ position: "absolute", top: 0, left: 0, right: 0, height: 8 }}
         >
@@ -57,6 +58,8 @@ const AppNav = (props: AppNavProps): ReactElement => {
             message={error.message}
             error={includeError ? error : undefined}
           />
+        ) : loading && !discrete ? (
+          <Message type="Loading" />
         ) : (
           children
         )}

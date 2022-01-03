@@ -22,7 +22,7 @@ export type OperationResult<T> =
     };
 
 export const getQueryHook =
-  <Res, Args>(doc: DocumentNode) =>
+  <Res = any, Args = any>(doc: DocumentNode) =>
   (options?: QueryHookOptions<Res, Args>): QueryResult<Res, Args> =>
     useQuery(doc, options);
 
@@ -32,6 +32,6 @@ export const getLazyQueryHook =
     useLazyQuery(doc, options);
 
 export const getMutationHook =
-  <Res, Args>(doc: DocumentNode) =>
+  <Res = any, Args = any>(doc: DocumentNode) =>
   (options?: MutationHookOptions<Res, Args>): MutationTuple<Res, Args> =>
     useMutation(doc, options);

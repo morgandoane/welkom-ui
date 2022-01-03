@@ -37,7 +37,6 @@ export interface BolItinerary {
 export interface Bol extends Base {
   itinerary: BolItinerary;
   code: string;
-  order: BolOrder;
   status: BolStatus;
   from: BolAppointment;
   to: BolAppointment;
@@ -66,16 +65,6 @@ export const BolFragment = gql`
       carrier {
         _id
         name
-      }
-    }
-    order {
-      _id
-      code
-      created_by {
-        email
-        name
-        user_id
-        picture
       }
     }
     date_created

@@ -9,7 +9,6 @@ export interface BolAppointmentInput {
 export interface CreateBolInput {
   itinerary: string;
   code: string;
-  order: string;
   from: BolAppointmentInput;
   to: BolAppointmentInput;
   contents: ItemContentInput[];

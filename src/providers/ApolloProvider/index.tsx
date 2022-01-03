@@ -28,6 +28,7 @@ export const BaseUnionFields = [
   "ProceduralLot",
   "Order",
   "Recipe",
+  "Team",
   "Unit",
 ];
 

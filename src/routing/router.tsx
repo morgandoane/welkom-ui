@@ -5,7 +5,9 @@ import Login from "../scenes/Login";
 import Logistics from "../scenes/Logistics";
 import Logout from "../scenes/Logout";
 import NotFound from "../scenes/NotFound";
+import People from "../scenes/People";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
+import ManagerRoute from "./components/ManagerRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 
 export const Router = (): ReactElement => (
@@ -34,6 +36,14 @@ export const Router = (): ReactElement => (
           <AuthenticatedRoute>
             <Logistics />
           </AuthenticatedRoute>
+        }
+      />
+      <Route
+        path="/people/*"
+        element={
+          <ManagerRoute>
+            <People />
+          </ManagerRoute>
         }
       />
       <Route
