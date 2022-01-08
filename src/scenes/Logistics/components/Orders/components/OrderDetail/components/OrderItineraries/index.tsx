@@ -90,7 +90,7 @@ const OrderItineraries = (props: OrderBolsProps): ReactElement => {
                       }}
                       sx={{ paddingTop: 0.5, paddingBottom: 0.5 }}
                     >
-                      {bol.code}
+                      {bol.code || "Pending BOL"}
                     </ButtonBase>
                     <Popover
                       id={id}

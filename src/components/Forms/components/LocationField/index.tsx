@@ -12,10 +12,18 @@ export interface LocationFieldProps {
   onChange: (value: string | null) => void;
   company?: string;
   naked?: boolean;
+  mine?: boolean;
 }
 
 const LocationField = (props: LocationFieldProps): ReactElement => {
-  const { label = "Location", value, company, onChange, naked = false } = props;
+  const {
+    label = "Location",
+    value,
+    company,
+    onChange,
+    naked = false,
+    mine,
+  } = props;
 
   const { data, error, loading } = useTinyLocations({
     variables: {
@@ -23,6 +31,7 @@ const LocationField = (props: LocationFieldProps): ReactElement => {
         skip: 0,
         take: 100,
         company,
+        mine,
       },
     },
   });

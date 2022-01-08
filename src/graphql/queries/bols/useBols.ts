@@ -1,73 +1,29 @@
+import { VerificationFragment } from "./../../schema/Verification/Verification";
+import { AppFileFragment } from "./../../schema/AppFile/AppFile";
+import { BaseFragment } from "./../../fragments/BaseFragment";
+import { BolFragment } from "./../../schema/Bol/Bol";
 import { getQueryHook } from "./../../types";
 import { Pagination } from "./../../schema/Pagination/Pagination";
-import { BaseFilter } from "./../../schema/Base/BaseFilter";
 import { gql } from "@apollo/client";
 import { Bol } from "../../schema/Bol/Bol";
+import { BolFilter } from "../../schema/Bol/BolFilter";
+import { FulfillmentFragment } from "../../schema/Fulfillment/Fulfillment";
 
 export const BolsQuery = gql`
+  ${BolFragment}
+  ${BaseFragment}
+  ${FulfillmentFragment}
+  ${AppFileFragment}
+  ${VerificationFragment}
   query Bols($filter: BolFilter!) {
     bols(filter: $filter) {
       count
       items {
-        _id
-        date_created
-        deleted
-        status
-        from {
-          date
-          company {
-            _id
-            name
-          }
-          location {
-            _id
-            label
-            address {
-              city
-            }
-          }
-        }
-        to {
-          date
-          company {
-            _id
-            name
-          }
-          location {
-            _id
-            label
-            address {
-              city
-            }
-          }
-        }
-        contents {
-          fulfillment_percentage
-          quantity
-          item {
-            _id
-            unit_class
-            english
-            spanish
-          }
-          unit {
-            _id
-            class
-            english
-            spanish
-            english_plural
-            spanish_plural
-            base_per_unit
-          }
-        }
+        ...BolFragment
       }
     }
   }
 `;
-
-export interface BolFilter extends BaseFilter {
-  order?: string;
-}
 
 export interface BolsArgs {
   filter: BolFilter;

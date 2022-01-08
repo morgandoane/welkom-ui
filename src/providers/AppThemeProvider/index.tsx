@@ -112,7 +112,6 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
         styleOverrides: {
           root: {
             textTransform: "none",
-            fontWeight: 700,
             fontSize: "1rem",
             padding: 0,
             paddingRight: 24,

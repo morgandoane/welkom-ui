@@ -14,12 +14,12 @@ import PanelHeader from "../../../../../../components/PanelComponents/PanelHeade
 import SideDrawer from "../../../../../../components/SideDrawer";
 import { useTinyItems } from "../../../../../../graphql/queries/items/useTinyItems";
 import { TinyItem } from "../../../../../../graphql/schema/Item/Item";
-import { OrderQueueContentInputState } from "../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
+import { OrderQueueContentInput } from "../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
 
 export interface ItemDrawerProps {
   open: boolean;
   onClose: () => void;
-  contents: OrderQueueContentInputState[];
+  contents: OrderQueueContentInput[];
   addItem: (item: TinyItem) => void;
 }
 

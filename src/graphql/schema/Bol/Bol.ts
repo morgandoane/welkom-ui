@@ -1,3 +1,5 @@
+import { FulfillmentFragment } from "./../Fulfillment/Fulfillment";
+import { BaseFragment } from "./../../fragments/BaseFragment";
 import { gql } from "@apollo/client";
 import { TinyLocation } from "./../../queries/locations/useTinyLocations";
 import { TinyCompany } from "./../Company/Company";
@@ -6,12 +8,13 @@ import { Fulfillment } from "../Fulfillment/Fulfillment";
 import { BolItemContent } from "../Content/Content";
 
 export enum BolStatus {
-  Pending,
-  Partial,
-  Complete,
+  Pending = "Pending",
+  Partial = "Partial",
+  Complete = "Complete",
 }
 
 export interface BolAppointment {
+  _id: string;
   location?: TinyLocation | null;
   company: TinyCompany;
   date: Date;
@@ -20,29 +23,25 @@ export interface BolAppointment {
 export interface BolOrder {
   _id: string;
   code: string;
-  created_by: {
-    email?: string | null;
-    name?: string | null;
-    user_id: string;
-    picture?: string | null;
-  };
 }
 
 export interface BolItinerary {
   _id: string;
   code: string;
   carrier?: TinyCompany | null;
+  orders: BolOrder[];
 }
 
 export interface Bol extends Base {
   itinerary: BolItinerary;
-  code: string;
+  code?: string | null;
   status: BolStatus;
   from: BolAppointment;
   to: BolAppointment;
   contents: BolItemContent[];
-  shipments?: Fulfillment[];
-  receipts?: Fulfillment[];
+  shipments: Fulfillment[];
+  receipts: Fulfillment[];
+  orders: BolOrder[];
 }
 
 export interface TinyBol {
@@ -66,12 +65,21 @@ export const BolFragment = gql`
         _id
         name
       }
+      orders {
+        _id
+        code
+      }
+    }
+    orders {
+      _id
+      code
     }
     date_created
     deleted
     status
     code
     from {
+      _id
       date
       company {
         _id
@@ -86,6 +94,7 @@ export const BolFragment = gql`
       }
     }
     to {
+      _id
       date
       company {
         _id
@@ -117,6 +126,12 @@ export const BolFragment = gql`
         spanish_plural
         base_per_unit
       }
+    }
+    shipments {
+      ...FulfillmentFragment
+    }
+    receipts {
+      ...FulfillmentFragment
     }
   }
 `;

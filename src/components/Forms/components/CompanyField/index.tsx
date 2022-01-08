@@ -10,6 +10,7 @@ export interface CompanyFieldProps {
   onChange: (value: string | null) => void;
   naked?: boolean;
   allow_unassigned?: boolean;
+  mine?: boolean;
 }
 
 const CompanyField = (props: CompanyFieldProps): ReactElement => {
@@ -19,6 +20,7 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
     onChange,
     naked = false,
     allow_unassigned = false,
+    mine,
   } = props;
 
   const { data, error, loading } = useTinyCompanies({
@@ -26,6 +28,7 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
       filter: {
         skip: 0,
         take: 100,
+        mine: mine,
       },
     },
   });

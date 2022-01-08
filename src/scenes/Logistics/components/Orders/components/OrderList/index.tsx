@@ -1,8 +1,8 @@
-import { Box, Button, Chip, Typography } from "@mui/material";
+import { Box, Button, Chip, Fab, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { addDays, endOfDay, format, startOfDay } from "date-fns";
 import React, { ReactElement } from "react";
-import { MdCheck, MdFilter } from "react-icons/md";
+import { MdAdd, MdCheck, MdFilter } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import AppFab from "../../../../../../components/AppFab";
 import AppNav from "../../../../../../components/AppNav";
@@ -11,6 +11,7 @@ import CompanyField from "../../../../../../components/Forms/components/CompanyF
 import DateRangeField from "../../../../../../components/Forms/components/DateRangeField";
 import ItemField from "../../../../../../components/Forms/components/ItemField";
 import SearchField from "../../../../../../components/Forms/components/SearchField";
+import ColumnBox from "../../../../../../components/Layout/ColumnBox";
 import PageTitle from "../../../../../../components/PageTitle";
 import PanelHeader from "../../../../../../components/PanelComponents/PanelHeader";
 import SideDrawer from "../../../../../../components/SideDrawer";
@@ -122,91 +123,120 @@ const OrderList = (): ReactElement => {
 
   return (
     <AppNav loading={loading || setupLoading} error={error}>
-      <PageTitle>Orders</PageTitle>
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        sx={{ marginBottom: 2, maxWidth: 400 }}
-      >
-        This table shows all orders, whether they were created automatically in
-        the queue, or manually in a form.
-      </Typography>
-      <Box
-        sx={{
-          paddingBottom: 1,
-          display: "flex",
-          flexFlow: "row",
-        }}
-      >
-        <Box sx={{ display: "flex", flex: 1 }}>
-          {showChips() ? (
-            <Box
-              sx={{
-                flex: 1,
-                display: "flex",
-                gap: 1,
-                flexWrap: "wrap",
-              }}
-            >
-              {Object.keys(filterChips).map((key) => {
-                return filterChips[key as keyof typeof filterChips];
-              })}
-            </Box>
-          ) : (
+      <ColumnBox>
+        {{
+          header: (
             <Box>
-              <SearchField
-                label={"Search by PO"}
-                value={filter.code || ""}
-                onChange={(val) => {
-                  setFilter({ ...filter, code: val || undefined });
-                }}
-              />
+              <PageTitle>Orders</PageTitle>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                sx={{ marginBottom: 2, maxWidth: 400 }}
+              >
+                This table shows all orders, whether they were created
+                automatically in the queue, or manually in a form.
+              </Typography>
             </Box>
-          )}
-        </Box>
-        <Button
-          variant="outlined"
-          startIcon={<MdFilter />}
-          onClick={() => setFilterEdits(filter)}
-        >
-          Filters
-        </Button>
-      </Box>
-      <DataGrid
-        pagination
-        paginationMode="server"
-        rowsPerPageOptions={[25]}
-        rowCount={count}
-        error={error}
-        loading={loading}
-        rows={orders.map((o) => ({ ...o, id: o._id }))}
-        onRowClick={(params) => nav(params.row._id)}
-        columns={[
-          { field: "code", headerName: "PO number", width: 200 },
-          {
-            field: "vendor",
-            headerName: "Vendor",
-            valueGetter: (params) => params.row.vendor.name,
-            width: 200,
-          },
-          {
-            field: "customer",
-            headerName: "Customer",
-            valueGetter: (params) => params.row.customer.name,
-            width: 200,
-          },
-          {
-            field: "contents",
-            headerName: "Items",
-            valueGetter: (params) =>
-              (params.row.contents as OrderContent[])
-                .map((content) => content.item.english)
-                .join(", "),
-            width: 200,
-          },
-        ]}
-      />
-      <AppFab onClick={() => nav("new")}>New order</AppFab>
+          ),
+          content: (
+            <ColumnBox>
+              {{
+                header: (
+                  <Box
+                    sx={{
+                      paddingBottom: 1,
+                      display: "flex",
+                      flexFlow: "row",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", flex: 1 }}>
+                      {showChips() ? (
+                        <Box
+                          sx={{
+                            flex: 1,
+                            display: "flex",
+                            gap: 1,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {Object.keys(filterChips).map((key) => {
+                            return filterChips[key as keyof typeof filterChips];
+                          })}
+                        </Box>
+                      ) : (
+                        <Box>
+                          <SearchField
+                            label={"Search by PO"}
+                            value={filter.code || ""}
+                            onChange={(val) => {
+                              setFilter({ ...filter, code: val || undefined });
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Box>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Button
+                        variant="outlined"
+                        startIcon={<MdFilter />}
+                        onClick={() => setFilterEdits(filter)}
+                      >
+                        Filters
+                      </Button>
+                      <Button endIcon={<MdAdd />} onClick={() => nav("new")}>
+                        New order
+                      </Button>
+                    </Box>
+                  </Box>
+                ),
+                content: (
+                  <DataGrid
+                    pagination
+                    paginationMode="server"
+                    rowsPerPageOptions={[25]}
+                    rowCount={count}
+                    error={error}
+                    loading={loading}
+                    rows={orders.map((o) => ({ ...o, id: o._id }))}
+                    onRowClick={(params) => nav(params.row._id)}
+                    columns={[
+                      { field: "code", headerName: "PO number", width: 200 },
+                      {
+                        field: "vendor",
+                        headerName: "Vendor",
+                        valueGetter: (params) =>
+                          params.row.vendor
+                            ? params.row.vendor.name
+                            : "Unassgined",
+                        width: 200,
+                      },
+                      {
+                        field: "customer",
+                        headerName: "Customer",
+                        valueGetter: (params) =>
+                          params.row.customer
+                            ? params.row.customer.name
+                            : "Unassgined",
+                        width: 200,
+                      },
+                      {
+                        field: "contents",
+                        headerName: "Items",
+                        valueGetter: (params) =>
+                          (params.row.contents as OrderContent[])
+                            .map((content) => content.item.english)
+                            .join(", "),
+                        width: 200,
+                      },
+                    ]}
+                  />
+                ),
+              }}
+            </ColumnBox>
+          ),
+        }}
+      </ColumnBox>
+
       <SideDrawer
         open={Boolean(filterEdits)}
         onClose={() => setFilterEdits(null)}

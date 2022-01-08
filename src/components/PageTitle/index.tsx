@@ -1,17 +1,29 @@
 import { Box, Typography } from "@mui/material";
-import React, { ReactElement } from "react";
+import React, { ReactElement, ReactNode } from "react";
 
 export interface PageTitleProps {
+  avatar?: ReactElement | ReactNode | ReactElement[];
   children: string | [string, string];
 }
 
 const PageTitle = (props: PageTitleProps): ReactElement => {
-  const { children } = props;
+  const { children, avatar } = props;
 
   if (children instanceof Array)
     return (
       <Box>
-        <Typography variant="h3">{children[0]}</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            flexFlow: "row",
+            paddingBottom: 2,
+            gap: 2,
+          }}
+        >
+          {avatar && <Box sx={{ display: "flex" }}>{avatar}</Box>}
+          <Typography variant="h3">{children[0]}</Typography>
+        </Box>
         <Typography
           sx={{ paddingBottom: 2 }}
           variant="body1"
@@ -23,10 +35,17 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
     );
   else
     return (
-      <Box>
-        <Typography sx={{ paddingBottom: 2 }} variant="h3">
-          {children}
-        </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexFlow: "row",
+          paddingBottom: 2,
+          gap: 2,
+        }}
+      >
+        {avatar && <Box sx={{ display: "flex" }}>{avatar}</Box>}
+        <Typography variant="h3">{children}</Typography>
       </Box>
     );
 };

@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 import { getQueryHook } from "../../types";
 import { OrderQueue } from "../../schema/OrderQueue/OrderQueue";
 
-const OrderQueueQuery = gql`
+export const OrderQueueQuery = gql`
   ${OrderQueueContentFragment}
   query OrderQueueQuery {
     orderQueue {
@@ -16,7 +16,7 @@ const OrderQueueQuery = gql`
 `;
 
 export interface OrderQueueRes {
-  orderQueue: OrderQueue;
+  orderQueue: OrderQueue | null;
 }
 
 export const useOrderQueue = getQueryHook<OrderQueueRes>(OrderQueueQuery);

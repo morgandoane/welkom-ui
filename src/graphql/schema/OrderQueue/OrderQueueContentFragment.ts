@@ -3,9 +3,20 @@ import { gql } from "@apollo/client";
 export const OrderQueueContentFragment = gql`
   fragment OrderQueueContentFragment on OrderQueueContent {
     order_code
-    company {
+    vendor {
       _id
       name
+    }
+    vendor_location {
+      _id
+      label
+      address {
+        city
+      }
+      company {
+        _id
+        name
+      }
     }
     item {
       _id

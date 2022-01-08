@@ -150,7 +150,7 @@ const BolForm = (): ReactElement => {
     skip: !id || id == "",
     onCompleted: ({ bol: { code, from, to, contents } }) => {
       setState({
-        code,
+        code: code || "",
         from: {
           location: from.location ? from.location._id : undefined,
           company: from.company._id,

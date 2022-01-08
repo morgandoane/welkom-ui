@@ -30,6 +30,8 @@ export const BaseUnionFields = [
   "Recipe",
   "Team",
   "Unit",
+  "QualityCheck",
+  "Verification",
 ];
 
 const ApolloProvider = (props: { children: ReactElement }): ReactElement => {

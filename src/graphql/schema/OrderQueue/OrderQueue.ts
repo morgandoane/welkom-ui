@@ -5,7 +5,8 @@ import { TinyCompany } from "./../Company/Company";
 
 export interface OrderQueueContent {
   order_code?: string | null;
-  company?: TinyCompany | null;
+  vendor?: TinyCompany | null;
+  vendor_location?: TinyLocation | null;
   item?: TinyItem | null;
   unit?: TinyUnit | null;
   quantity?: number | null;

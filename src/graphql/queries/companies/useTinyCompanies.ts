@@ -15,6 +15,15 @@ export const TinyCompanies = gql`
   }
 `;
 
+export const MyTinyCompanies = gql`
+  query MyTinyCompanies {
+    myCompanies {
+      _id
+      name
+    }
+  }
+`;
+
 export const useTinyCompanies = (
   options?: QueryHookOptions<
     { companies: Pagination<TinyCompany> },
@@ -24,3 +33,11 @@ export const useTinyCompanies = (
   { companies: Pagination<TinyCompany> },
   { filter: CompanyFilter }
 > => useQuery(TinyCompanies, options);
+
+export const useMyCompanies = (
+  options?: QueryHookOptions<{
+    myCompanies: TinyCompany[];
+  }>
+): QueryResult<{
+  myCompanies: TinyCompany[];
+}> => useQuery(TinyCompanies);

@@ -7,26 +7,17 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { ReactElement } from "react";
-import {
-  OrderQueueContentInput,
-  OrderQueueContentInputState,
-} from "../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
+import { OrderQueueContentInput } from "../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
 import QueueLine from "./components/QueueLine";
 
 import {
-  Announcements,
   closestCenter,
-  CollisionDetection,
-  DragOverlay,
   DndContext,
-  DropAnimation,
-  defaultDropAnimation,
   KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
+  PointerSensor,
 } from "@dnd-kit/core";
 import {
   sortableKeyboardCoordinates,
@@ -40,8 +31,8 @@ import {
 import { relocate } from "../../../../../../utils/relocate";
 
 export interface OrderQueueTableProps {
-  contents: OrderQueueContentInputState[];
-  setContents: (contents: OrderQueueContentInputState[]) => void;
+  contents: OrderQueueContentInput[];
+  setContents: (contents: OrderQueueContentInput[]) => void;
   disabled?: boolean;
 }
 
@@ -50,8 +41,7 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
   const { palette } = useTheme();
 
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
+    useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -62,8 +52,8 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
       const { id: activeId } = active;
       const { id: overId } = over;
 
-      const oldIndex = contents.map((c) => c.id).indexOf(activeId);
-      const newIndex = contents.map((c) => c.id).indexOf(overId);
+      const oldIndex = parseInt(activeId.split("_")[1]);
+      const newIndex = parseInt(overId.split("_")[1]);
 
       const newContents = relocate([...contents], oldIndex, newIndex);
       setContents(newContents);
@@ -79,6 +69,12 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
             PO
           </TableCell>
           <TableCell sx={{ background: palette.background.paper }}>
+            Vendor
+          </TableCell>
+          <TableCell sx={{ background: palette.background.paper }}>
+            Vendor location
+          </TableCell>
+          <TableCell sx={{ background: palette.background.paper }}>
             Item
           </TableCell>
           <TableCell sx={{ background: palette.background.paper }}>
@@ -88,7 +84,7 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
             Unit
           </TableCell>
           <TableCell sx={{ background: palette.background.paper }}>
-            Location
+            Destination
           </TableCell>
           <TableCell sx={{ background: palette.background.paper }}>
             Date
@@ -107,11 +103,12 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
           ]}
         >
           <SortableContext
-            items={contents}
+            items={contents.map((c, i) => ({ ...c, id: "content_" + i }))}
             strategy={verticalListSortingStrategy}
           >
             {contents.map((content, i) => (
               <QueueLine
+                index={i}
                 disabled={disabled}
                 key={"content_" + i}
                 content={content}

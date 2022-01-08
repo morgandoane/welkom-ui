@@ -1,6 +1,6 @@
 import { IconButton, TableCell, TableRow } from "@mui/material";
 import React, { ReactElement } from "react";
-import { OrderQueueContentInputState } from "../../../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
+import { OrderQueueContentInput } from "../../../../../../../../graphql/schema/OrderQueue/OrderQueueInput";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Box } from "@mui/system";
@@ -12,19 +12,21 @@ import UnitField from "../../../../../../../../components/Forms/components/UnitF
 import NumberField from "../../../../../../../../components/Forms/components/NumberField";
 import LocationField from "../../../../../../../../components/Forms/components/LocationField";
 import DateField from "../../../../../../../../components/Forms/components/DateField";
+import CompanyField from "../../../../../../../../components/Forms/components/CompanyField";
 
 export interface QueueLineProps {
-  content: OrderQueueContentInputState;
-  setContent: (contents: OrderQueueContentInputState) => void;
+  content: OrderQueueContentInput;
+  index: number;
+  setContent: (contents: OrderQueueContentInput) => void;
   disabled?: boolean;
   drop: () => void;
 }
 
 const QueueLine = (props: QueueLineProps): ReactElement => {
-  const { content, setContent, drop } = props;
+  const { content, index, setContent, drop } = props;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: content.id });
+    useSortable({ id: "content_" + index });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -44,13 +46,36 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
           <MdDragHandle />
         </Box>
       </TableCell>
-      <TableCell sx={{ width: 140 }}>
+      <TableCell sx={{ width: 130 }}>
         <CodeField
           naked
           type={CodeType.PO}
           value={content.order_code || ""}
           onChange={(val) => {
             setContent({ ...content, order_code: val });
+          }}
+        />
+      </TableCell>
+      <TableCell sx={{ width: 180 }}>
+        <CompanyField
+          naked
+          value={content.vendor || ""}
+          onChange={(val) => {
+            setContent({
+              ...content,
+              vendor: val || undefined,
+              vendor_location: undefined,
+            });
+          }}
+        />
+      </TableCell>
+      <TableCell sx={{ width: 150 }}>
+        <LocationField
+          naked
+          company={content.vendor || ""}
+          value={content.vendor_location || ""}
+          onChange={(val) => {
+            setContent({ ...content, vendor_location: val || undefined });
           }}
         />
       </TableCell>
@@ -85,6 +110,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
       <TableCell>
         <LocationField
           naked
+          mine
           value={content.location || ""}
           onChange={(val) => {
             setContent({ ...content, location: val || undefined });

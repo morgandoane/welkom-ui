@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { ReactElement } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Message from "../../components/Message";
@@ -9,11 +9,21 @@ const ErrorFallback = (props: {
   resetErrorBoundary: () => void;
 }): ReactElement => {
   const {
-    palette: { text },
+    palette: { text, background },
   } = useTheme();
   return (
-    <Box sx={{ height: "100vh", color: text.primary }}>
-      <Message type="Warning" message={props.error.message} />
+    <Box
+      sx={{
+        height: "100vh",
+        color: text.primary,
+        background: background.default,
+      }}
+    >
+      <Message
+        type="Warning"
+        message={props.error.message || "An error occured"}
+        action={<Button onClick={props.resetErrorBoundary}>Reset</Button>}
+      />
     </Box>
   );
 };

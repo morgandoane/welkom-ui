@@ -1,10 +1,13 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Box,
   IconButton,
   useTheme,
-  Button,
-  capitalize,
+  ButtonBase,
   Tooltip,
+  Avatar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import React, { ReactElement } from "react";
 import { AiFillBuild, AiOutlineNodeIndex } from "react-icons/ai";
@@ -26,6 +29,7 @@ import NavGroup, { NavGroupProps } from "./components/NavGroup";
 
 const duration = 200;
 const Sidebar = (): ReactElement => {
+  const { user } = useAuth0();
   const { mode, setMode } = useThemeContext();
   const theme = useTheme();
   const nav = useNavigate();
@@ -33,6 +37,19 @@ const Sidebar = (): ReactElement => {
   const [expanded, setExpanded] = React.useState(
     fromStorage == "false" ? false : true
   );
+
+  const [anchorEl, setAnchorEl] = React.useState<
+    null | (EventTarget & HTMLButtonElement)
+  >(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   React.useEffect(() => {
     localStorage.setItem("sidebar_expanded", expanded ? "true" : "false");
@@ -93,16 +110,16 @@ const Sidebar = (): ReactElement => {
       items: [
         { label: "Companies", url: "/library/companies" },
         { label: "Items", url: "/library/items" },
+        { label: "Quality Checks", url: "/library/qualitychecks" },
         { label: "Units", url: "/library/units" },
       ],
     },
     {
       icon: <FaTruckLoading style={iconStyle} />,
-      label: "Logistics",
+      label: "Supply chain",
       items: [
         { label: "Order Queue", url: "/logistics/orderqueue" },
         { label: "Orders", url: "/logistics/orders" },
-        { label: "BOLs", url: "/logistics/bols" },
       ],
     },
 
@@ -111,8 +128,7 @@ const Sidebar = (): ReactElement => {
       label: "People",
       items: [
         { label: "Teams", url: "/people/teams" },
-        { label: "Users", url: "/people/users" },
-        { label: "Policies", url: "/people/policies" },
+        { label: "Profiles", url: "/people/profiles" },
       ],
     },
     {
@@ -192,16 +208,50 @@ const Sidebar = (): ReactElement => {
           <NavGroup {...group} key={"group_" + index} />
         ))}
       </Box>
-      <Tooltip title="Color theme" placement="right" arrow>
-        <IconButton onClick={() => setMode(mode == "dark" ? "light" : "dark")}>
-          {mode == "dark" ? <MdDarkMode /> : <MdLightMode />}
-        </IconButton>
-      </Tooltip>
-      <Anima in={expanded} type="rotate">
-        <IconButton onClick={() => setExpanded(!expanded)}>
-          <MdChevronRight />
-        </IconButton>
-      </Anima>
+      <Box
+        sx={{
+          display: "flex",
+          flexFlow: "column",
+          alignItems: "center",
+          gap: 1,
+        }}
+      >
+        <Tooltip title="Color theme" placement="right" arrow>
+          <IconButton
+            onClick={() => setMode(mode == "dark" ? "light" : "dark")}
+          >
+            {mode == "dark" ? <MdDarkMode /> : <MdLightMode />}
+          </IconButton>
+        </Tooltip>
+        <Anima in={expanded} type="rotate">
+          <IconButton onClick={() => setExpanded(!expanded)}>
+            <MdChevronRight />
+          </IconButton>
+        </Anima>
+        <ButtonBase sx={{ borderRadius: 20 }} onClick={(e) => handleClick(e)}>
+          <Avatar
+            sx={{ height: 40, width: 40 }}
+            src={user ? user.picture : undefined}
+            alt={user?.name}
+          />
+        </ButtonBase>
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+        >
+          <MenuItem onClick={handleClose}>My account</MenuItem>
+          <MenuItem onClick={() => nav("/logout")}>Logout</MenuItem>
+        </Menu>
+      </Box>
     </Box>
   );
 };
