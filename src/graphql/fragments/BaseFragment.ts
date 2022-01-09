@@ -1,11 +1,11 @@
-import { BaseUnionFields } from "./../../providers/ApolloProvider/index";
-import { gql } from "@apollo/client";
+import { BaseUnionFields } from './../../providers/ApolloProvider/index';
+import { gql } from '@apollo/client';
 
 const createBaseFragment = () => {
-  let res = ``;
+    let res = ``;
 
-  for (const type of BaseUnionFields) {
-    res += `
+    for (const type of BaseUnionFields) {
+        res += `
     ... on ${type} {
         _id
         deleted
@@ -23,9 +23,9 @@ const createBaseFragment = () => {
         }
       }
     `;
-  }
+    }
 
-  return res;
+    return res;
 };
 
 export const BaseFragment = gql(String.raw`

@@ -1,7 +1,7 @@
-import { PaginateArg } from "../Pagination/Pagination";
+import { PaginateArg } from '../Pagination/Pagination';
 
 export interface LocationFIlter extends PaginateArg {
-  company?: string;
-  label?: string;
-  mine?: boolean;
+    company?: string;
+    label?: string;
+    mine?: boolean;
 }

@@ -1,12 +1,12 @@
-import { FolderClass } from "./Folder";
+import { FolderClass } from './Folder';
 
 export interface FolderInput {
-  class: FolderClass;
-  name: string;
-  parent?: string;
+    class: FolderClass;
+    name: string;
+    parent?: string;
 }
 
 export interface UpdateFolderInput {
-  deleted?: boolean;
-  name?: string;
+    deleted?: boolean;
+    name?: string;
 }

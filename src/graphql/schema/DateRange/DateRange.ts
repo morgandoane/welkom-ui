@@ -1,4 +1,4 @@
 export interface DateRangeInput {
-  start: Date;
-  end: Date;
+    start: Date;
+    end: Date;
 }

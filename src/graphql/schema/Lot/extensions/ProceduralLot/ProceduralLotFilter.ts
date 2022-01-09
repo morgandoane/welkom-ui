@@ -1,5 +1,5 @@
-import { BaseFilter } from "../../../Base/BaseFilter";
+import { BaseFilter } from '../../../Base/BaseFilter';
 
 export interface ProceduralLotFilter extends BaseFilter {
-  code?: string;
+    code?: string;
 }

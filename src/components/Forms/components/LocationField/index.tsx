@@ -1,78 +1,82 @@
-import { Autocomplete, TextField } from "@mui/material";
-import React, { ReactElement } from "react";
+import { Autocomplete, TextField } from '@mui/material';
+import React, { ReactElement } from 'react';
 import {
-  TinyLocation,
-  useTinyLocations,
-} from "../../../../graphql/queries/locations/useTinyLocations";
-import AutoCompleteTextField from "../AutoCompleteTextField";
+    TinyLocation,
+    useTinyLocations,
+} from '../../../../graphql/queries/locations/useTinyLocations';
+import AutoCompleteTextField from '../AutoCompleteTextField';
 
 export interface LocationFieldProps {
-  label?: string;
-  value: string | null;
-  onChange: (value: string | null) => void;
-  company?: string;
-  naked?: boolean;
-  mine?: boolean;
+    label?: string;
+    value: string | null;
+    onChange: (value: string | null) => void;
+    company?: string;
+    naked?: boolean;
+    mine?: boolean;
 }
 
 const LocationField = (props: LocationFieldProps): ReactElement => {
-  const {
-    label = "Location",
-    value,
-    company,
-    onChange,
-    naked = false,
-    mine,
-  } = props;
-
-  const { data, error, loading } = useTinyLocations({
-    variables: {
-      filter: {
-        skip: 0,
-        take: 100,
+    const {
+        label = 'Location',
+        value,
         company,
+        onChange,
+        naked = false,
         mine,
-      },
-    },
-  });
+    } = props;
 
-  const getLabel = ({ label, address }: TinyLocation): string => {
-    if (label) return label;
-    if (address) return address.city;
-    return "Unknown location";
-  };
+    const { data, error, loading } = useTinyLocations({
+        variables: {
+            filter: {
+                skip: 0,
+                take: 100,
+                company,
+                mine,
+            },
+        },
+    });
 
-  const locations = data
-    ? data.locations.items.map((i) => ({
-        ...i,
-        label: getLabel(i),
-        id: i._id,
-      }))
-    : [];
+    const getLabel = ({ label, address }: TinyLocation): string => {
+        if (label) return label;
+        if (address) return address.city;
+        return 'Unknown location';
+    };
 
-  const match = locations.find((location) => location._id === value);
+    const locations = data
+        ? data.locations.items.map((i) => ({
+              ...i,
+              label: getLabel(i),
+              id: i._id,
+          }))
+        : [];
 
-  return (
-    <Autocomplete
-      fullWidth
-      value={match || null}
-      onChange={(e, val) => {
-        onChange(val ? val._id : null);
-      }}
-      options={locations}
-      getOptionLabel={(d) => getLabel(d)}
-      renderOption={(props, option) => {
-        return (
-          <li {...props} key={option.id}>
-            {getLabel(option)}
-          </li>
-        );
-      }}
-      renderInput={(params) => (
-        <AutoCompleteTextField {...params} label={label} naked={naked} />
-      )}
-    />
-  );
+    const match = locations.find((location) => location._id === value);
+
+    return (
+        <Autocomplete
+            fullWidth
+            value={match || null}
+            onChange={(e, val) => {
+                onChange(val ? val._id : null);
+            }}
+            options={locations}
+            getOptionLabel={(d) => getLabel(d)}
+            renderOption={(props, option) => {
+                return (
+                    <li {...props} key={option.id}>
+                        {getLabel(option)}
+                    </li>
+                );
+            }}
+            renderInput={(params) => (
+                <AutoCompleteTextField
+                    {...params}
+                    label={label}
+                    naked={naked}
+                />
+            )}
+        />
+    );
 };
 
 export default LocationField;

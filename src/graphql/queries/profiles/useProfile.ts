@@ -1,23 +1,23 @@
-import { getQueryHook } from "./../../types";
-import { Pagination } from "./../../schema/Pagination/Pagination";
-import { AppProfile, ProfileFragment } from "./AppProfile";
-import { gql } from "@apollo/client";
+import { getQueryHook } from './../../types';
+import { Pagination } from './../../schema/Pagination/Pagination';
+import { AppProfile, ProfileFragment } from './AppProfile';
+import { gql } from '@apollo/client';
 
 export const ProfileQuery = gql`
-  ${ProfileFragment}
-  query ProfileQuery($id: String!) {
-    profile(id: $id) {
-      ...ProfileFragment
+    ${ProfileFragment}
+    query ProfileQuery($id: String!) {
+        profile(id: $id) {
+            ...ProfileFragment
+        }
     }
-  }
 `;
 
 export interface ProfileRes {
-  profile: AppProfile;
+    profile: AppProfile;
 }
 
 export interface ProfileArgs {
-  id: string;
+    id: string;
 }
 
 export const useProfile = getQueryHook<ProfileRes, ProfileArgs>(ProfileQuery);

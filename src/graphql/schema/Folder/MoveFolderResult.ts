@@ -1,6 +1,6 @@
-import { Folder } from "./Folder";
+import { Folder } from './Folder';
 
 export interface MoveFolderResult<T extends Folder> {
-  origin?: T | null;
-  destination?: T | null;
+    origin?: T | null;
+    destination?: T | null;
 }

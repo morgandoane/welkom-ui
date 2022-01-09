@@ -1,9 +1,9 @@
-import { BaseFilter } from "../Base/BaseFilter";
-import { FulfillmentType } from "./Fulfillment";
+import { BaseFilter } from '../Base/BaseFilter';
+import { FulfillmentType } from './Fulfillment';
 
 export interface FulfillmentFilter extends BaseFilter {
-  type?: FulfillmentType;
-  location?: string;
-  company?: string;
-  item?: string;
+    type?: FulfillmentType;
+    location?: string;
+    company?: string;
+    item?: string;
 }

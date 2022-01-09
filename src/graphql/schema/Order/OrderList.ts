@@ -1,4 +1,4 @@
-import { Order } from "./Order";
-import { Pagination } from "../Pagination/Pagination";
+import { Order } from './Order';
+import { Pagination } from '../Pagination/Pagination';
 
 export type OrderList = Pagination<Order>;

@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement } from 'react';
 
 const PublicRoute = (props: {
-  children: ReactElement | ReactElement[];
+    children: ReactElement | ReactElement[];
 }): ReactElement => {
-  return <React.Fragment>{props.children}</React.Fragment>;
+    return <React.Fragment>{props.children}</React.Fragment>;
 };
 
 export default PublicRoute;

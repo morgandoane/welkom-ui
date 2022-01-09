@@ -1,4 +1,4 @@
 export interface QualityCheckResponseInput {
-  qualityCheck: string;
-  response: string;
+    qualityCheck: string;
+    response: string;
 }

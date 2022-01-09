@@ -1,176 +1,185 @@
-import { LoadingButton } from "@mui/lab";
-import { Box, Button, useTheme } from "@mui/material";
-import { format } from "date-fns";
-import React, { ReactElement } from "react";
-import { MdEdit } from "react-icons/md";
-import AppFab from "../../../../../../../../components/AppFab";
-import Details from "../../../../../../../../components/Details";
-import CarefulButton from "../../../../../../../../components/Forms/CarefulButton";
-import FormRow from "../../../../../../../../components/Forms/components/FormRow";
-import TextFormField from "../../../../../../../../components/Forms/components/TextFormField";
-import PanelHeader from "../../../../../../../../components/PanelComponents/PanelHeader";
-import SideDrawer from "../../../../../../../../components/SideDrawer";
+import { LoadingButton } from '@mui/lab';
+import { Box, Button, useTheme } from '@mui/material';
+import { format } from 'date-fns';
+import React, { ReactElement } from 'react';
+import { MdEdit } from 'react-icons/md';
+import AppFab from '../../../../../../../../components/AppFab';
+import Details from '../../../../../../../../components/Details';
+import CarefulButton from '../../../../../../../../components/Forms/CarefulButton';
+import FormRow from '../../../../../../../../components/Forms/components/FormRow';
+import TextFormField from '../../../../../../../../components/Forms/components/TextFormField';
+import PanelHeader from '../../../../../../../../components/PanelComponents/PanelHeader';
+import SideDrawer from '../../../../../../../../components/SideDrawer';
 import {
-  UpdateItemArgs,
-  UpdateItemRes,
-  useItemUpdate,
-} from "../../../../../../../../graphql/mutations/item/useItemUpdate";
-import { Item } from "../../../../../../../../graphql/schema/Item/Item";
-import { OperationResult } from "../../../../../../../../graphql/types";
-import { dateFormats } from "../../../../../../../../utils/dateFormats";
-import { MdRefresh } from "react-icons/md";
-import { TinyItems } from "../../../../../../../../graphql/queries/items/useTinyItems";
-import { ItemQuery } from "../../../../../../../../graphql/queries/items/useItem";
-import { InternalRefetchQueriesInclude } from "@apollo/client";
+    UpdateItemArgs,
+    UpdateItemRes,
+    useItemUpdate,
+} from '../../../../../../../../graphql/mutations/item/useItemUpdate';
+import { Item } from '../../../../../../../../graphql/schema/Item/Item';
+import { OperationResult } from '../../../../../../../../graphql/types';
+import { dateFormats } from '../../../../../../../../utils/dateFormats';
+import { MdRefresh } from 'react-icons/md';
+import { TinyItems } from '../../../../../../../../graphql/queries/items/useTinyItems';
+import { ItemQuery } from '../../../../../../../../graphql/queries/items/useItem';
+import { InternalRefetchQueriesInclude } from '@apollo/client';
 
 export interface ItemDetailsProps {
-  item: Item;
-  refetch: () => void;
+    item: Item;
+    refetch: () => void;
 }
 
 const ItemDetails = (props: ItemDetailsProps): ReactElement => {
-  const theme = useTheme();
-  const { item, refetch } = props;
+    const theme = useTheme();
+    const { item, refetch } = props;
 
-  const [state, setState] = React.useState<UpdateItemArgs | null>(null);
+    const [state, setState] = React.useState<UpdateItemArgs | null>(null);
 
-  const [result, setResult] =
-    React.useState<OperationResult<UpdateItemRes> | null>(null);
+    const [result, setResult] =
+        React.useState<OperationResult<UpdateItemRes> | null>(null);
 
-  const [update, { loading }] = useItemUpdate({
-    onCompleted: (data) => {
-      setResult({ success: true, data });
-      refetch();
-    },
-    onError: (error) => setResult({ success: false, error }),
-  });
+    const [update, { loading }] = useItemUpdate({
+        onCompleted: (data) => {
+            setResult({ success: true, data });
+            refetch();
+        },
+        onError: (error) => setResult({ success: false, error }),
+    });
 
-  const onClose = () => {
-    setResult(null);
-    setState(null);
-  };
+    const onClose = () => {
+        setResult(null);
+        setState(null);
+    };
 
-  return (
-    <Box sx={{ paddingTop: 4 }}>
-      <Details gap={4}>
-        {[
-          { key: "Name", value: item.english },
-          { key: "Created by", value: item.created_by.name },
-          {
-            key: "Date created",
-            value: format(
-              new Date(item.date_created),
-              dateFormats.condensedDate
-            ),
-          },
-          {
-            key: "Last modified by",
-            value: !item.modified_by ? "-" : item.modified_by.name,
-          },
-          {
-            key: "Date modified",
-            value: !item.date_modified
-              ? "Never"
-              : format(new Date(item.date_modified), dateFormats.condensedDate),
-          },
-        ]}
-      </Details>
+    return (
+        <Box sx={{ paddingTop: 4 }}>
+            <Details gap={4}>
+                {[
+                    { key: 'Name', value: item.english },
+                    { key: 'Created by', value: item.created_by.name },
+                    {
+                        key: 'Date created',
+                        value: format(
+                            new Date(item.date_created),
+                            dateFormats.condensedDate
+                        ),
+                    },
+                    {
+                        key: 'Last modified by',
+                        value: !item.modified_by ? '-' : item.modified_by.name,
+                    },
+                    {
+                        key: 'Date modified',
+                        value: !item.date_modified
+                            ? 'Never'
+                            : format(
+                                  new Date(item.date_modified),
+                                  dateFormats.condensedDate
+                              ),
+                    },
+                ]}
+            </Details>
 
-      {item.deleted ? (
-        <AppFab
-          disabled={loading}
-          sx={{
-            backgroundColor: theme.palette.error.main,
-            "&:hover": {
-              backgroundColor: theme.palette.error.dark,
-            },
-          }}
-          icon={<MdRefresh />}
-          onClick={() => {
-            update({
-              variables: {
-                id: item._id,
-                data: {
-                  english: item.english,
-                  spanish: item.spanish,
-                  deleted: false,
-                },
-              },
-            });
-          }}
-        >
-          Reinstate
-        </AppFab>
-      ) : (
-        <AppFab
-          icon={<MdEdit />}
-          onClick={() => {
-            setState({
-              id: item._id,
-              data: {
-                english: item.english,
-                spanish: item.spanish,
-                deleted: false,
-              },
-            });
-          }}
-        >
-          Edit
-        </AppFab>
-      )}
-      <SideDrawer
-        loading={loading}
-        open={Boolean(state)}
-        onClose={onClose}
-        error={result && result.success == false ? result.error : undefined}
-        success={result && result.success == true ? "Item saved" : undefined}
-      >
-        <PanelHeader onClose={onClose}>{`Update ${item.english}`}</PanelHeader>
-        <Box p={1} />
-        <FormRow>
-          <TextFormField
-            disabled={loading}
-            label="Name"
-            value={state ? state.data.english || "" : ""}
-            onChange={(val) => {
-              if (state)
-                setState({
-                  ...state,
-                  data: { ...state.data, english: val || "" },
-                });
-            }}
-          />
-        </FormRow>
-        <Box sx={{ display: "flex" }}>
-          <Box>
-            <CarefulButton
-              disabled={loading}
-              onClick={() => {
-                if (state) {
-                  const variables = { ...state };
-                  variables.data.deleted = true;
-                  setState(variables);
-                  update({ variables });
+            {item.deleted ? (
+                <AppFab
+                    disabled={loading}
+                    sx={{
+                        backgroundColor: theme.palette.error.main,
+                        '&:hover': {
+                            backgroundColor: theme.palette.error.dark,
+                        },
+                    }}
+                    icon={<MdRefresh />}
+                    onClick={() => {
+                        update({
+                            variables: {
+                                id: item._id,
+                                data: {
+                                    english: item.english,
+                                    spanish: item.spanish,
+                                    deleted: false,
+                                },
+                            },
+                        });
+                    }}
+                >
+                    Reinstate
+                </AppFab>
+            ) : (
+                <AppFab
+                    icon={<MdEdit />}
+                    onClick={() => {
+                        setState({
+                            id: item._id,
+                            data: {
+                                english: item.english,
+                                spanish: item.spanish,
+                                deleted: false,
+                            },
+                        });
+                    }}
+                >
+                    Edit
+                </AppFab>
+            )}
+            <SideDrawer
+                loading={loading}
+                open={Boolean(state)}
+                onClose={onClose}
+                error={
+                    result && result.success == false ? result.error : undefined
                 }
-              }}
+                success={
+                    result && result.success == true ? 'Item saved' : undefined
+                }
             >
-              Delete
-            </CarefulButton>
-          </Box>
-          <Box sx={{ flex: 1 }} />
-          <LoadingButton
-            onClick={() => {
-              if (state) update({ variables: state });
-            }}
-            variant="contained"
-            loading={loading}
-          >
-            Save
-          </LoadingButton>
+                <PanelHeader
+                    onClose={onClose}
+                >{`Update ${item.english}`}</PanelHeader>
+                <Box p={1} />
+                <FormRow>
+                    <TextFormField
+                        disabled={loading}
+                        label="Name"
+                        value={state ? state.data.english || '' : ''}
+                        onChange={(val) => {
+                            if (state)
+                                setState({
+                                    ...state,
+                                    data: { ...state.data, english: val || '' },
+                                });
+                        }}
+                    />
+                </FormRow>
+                <Box sx={{ display: 'flex' }}>
+                    <Box>
+                        <CarefulButton
+                            disabled={loading}
+                            onClick={() => {
+                                if (state) {
+                                    const variables = { ...state };
+                                    variables.data.deleted = true;
+                                    setState(variables);
+                                    update({ variables });
+                                }
+                            }}
+                        >
+                            Delete
+                        </CarefulButton>
+                    </Box>
+                    <Box sx={{ flex: 1 }} />
+                    <LoadingButton
+                        onClick={() => {
+                            if (state) update({ variables: state });
+                        }}
+                        variant="contained"
+                        loading={loading}
+                    >
+                        Save
+                    </LoadingButton>
+                </Box>
+            </SideDrawer>
         </Box>
-      </SideDrawer>
-    </Box>
-  );
+    );
 };
 
 export default ItemDetails;

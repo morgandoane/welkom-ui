@@ -1,45 +1,45 @@
-import { AppFileFragment } from "./../../schema/AppFile/AppFile";
-import { BaseFragment } from "../../fragments/BaseFragment";
+import { AppFileFragment } from './../../schema/AppFile/AppFile';
+import { BaseFragment } from '../../fragments/BaseFragment';
 import {
-  gql,
-  MutationHookOptions,
-  MutationTuple,
-  useMutation,
-} from "@apollo/client";
-import { Item } from "../../schema/Item/Item";
-import { CreateItemInput } from "../../schema/Item/ItemInput";
+    gql,
+    MutationHookOptions,
+    MutationTuple,
+    useMutation,
+} from '@apollo/client';
+import { Item } from '../../schema/Item/Item';
+import { CreateItemInput } from '../../schema/Item/ItemInput';
 
 const CreateItemMutation = gql`
-  ${BaseFragment}
-  ${AppFileFragment}
-  mutation CreateItemMutation($data: CreateItemInput!) {
-    createItem(data: $data) {
-      ...BaseFragment
-      english
-      spanish
-      unit_class
-      files {
-        ...AppFileFragment
-      }
-      conversions {
-        ...BaseFragment
-        from
-        to
-        from_per_to
-      }
+    ${BaseFragment}
+    ${AppFileFragment}
+    mutation CreateItemMutation($data: CreateItemInput!) {
+        createItem(data: $data) {
+            ...BaseFragment
+            english
+            spanish
+            unit_class
+            files {
+                ...AppFileFragment
+            }
+            conversions {
+                ...BaseFragment
+                from
+                to
+                from_per_to
+            }
+        }
     }
-  }
 `;
 
 export interface CreateItemArgs {
-  data: CreateItemInput;
+    data: CreateItemInput;
 }
 
 export interface CreateItemRes {
-  createItem: Item;
+    createItem: Item;
 }
 
 export const useItemCreation = (
-  options?: MutationHookOptions<CreateItemRes, CreateItemArgs>
+    options?: MutationHookOptions<CreateItemRes, CreateItemArgs>
 ): MutationTuple<CreateItemRes, CreateItemArgs> =>
-  useMutation(CreateItemMutation, options);
+    useMutation(CreateItemMutation, options);

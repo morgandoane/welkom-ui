@@ -1,12 +1,12 @@
-import { VerificationStatus } from "./Verification";
+import { VerificationStatus } from './Verification';
 
 export interface CreateVerificationInput {
-  status: VerificationStatus;
-  notes?: string;
+    status: VerificationStatus;
+    notes?: string;
 }
 
 export interface UpdateVerificationInput {
-  status: VerificationStatus;
-  notes?: string;
-  deleted?: boolean;
+    status: VerificationStatus;
+    notes?: string;
+    deleted?: boolean;
 }

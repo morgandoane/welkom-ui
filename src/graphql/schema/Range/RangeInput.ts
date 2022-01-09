@@ -1,4 +1,4 @@
 export interface RangeInput {
-  min: number;
-  max: number;
+    min: number;
+    max: number;
 }

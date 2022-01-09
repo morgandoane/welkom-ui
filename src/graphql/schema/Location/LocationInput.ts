@@ -1,13 +1,13 @@
-import { Address } from "../Address/Address";
+import { Address } from '../Address/Address';
 
 export interface CreateLocationInput {
-  company: string;
-  address?: Address | null;
-  label?: string;
+    company: string;
+    address?: Address | null;
+    label?: string;
 }
 
 export interface UpdateLocationInput {
-  address?: Address | null;
-  label?: string;
-  deleted?: boolean;
+    address?: Address | null;
+    label?: string;
+    deleted?: boolean;
 }

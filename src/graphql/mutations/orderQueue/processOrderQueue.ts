@@ -1,29 +1,29 @@
-import { getMutationHook } from "../../types";
-import { OrderQueueContentFragment } from "../../schema/OrderQueue/OrderQueueContentFragment";
-import { gql } from "@apollo/client";
-import { OrderQueue } from "../../schema/OrderQueue/OrderQueue";
-import { OrderQueueContentInput } from "../../schema/OrderQueue/OrderQueueInput";
+import { getMutationHook } from '../../types';
+import { OrderQueueContentFragment } from '../../schema/OrderQueue/OrderQueueContentFragment';
+import { gql } from '@apollo/client';
+import { OrderQueue } from '../../schema/OrderQueue/OrderQueue';
+import { OrderQueueContentInput } from '../../schema/OrderQueue/OrderQueueInput';
 
 export const ProcessOrderQueue = gql`
-  ${OrderQueueContentFragment}
-  mutation ProcessOrderQueue($contents: [OrderQueueContentInput!]!) {
-    processOrderQueue(contents: $contents) {
-      contents {
-        ...OrderQueueContentFragment
-      }
+    ${OrderQueueContentFragment}
+    mutation ProcessOrderQueue($contents: [OrderQueueContentInput!]!) {
+        processOrderQueue(contents: $contents) {
+            contents {
+                ...OrderQueueContentFragment
+            }
+        }
     }
-  }
 `;
 
 export interface ProcessOrderQueueArgs {
-  contents: OrderQueueContentInput[];
+    contents: OrderQueueContentInput[];
 }
 
 export interface ProcessOrderQueueRes {
-  processOrderQueue: OrderQueue;
+    processOrderQueue: OrderQueue;
 }
 
 export const useOrderQueueProcess = getMutationHook<
-  ProcessOrderQueueRes,
-  ProcessOrderQueueArgs
+    ProcessOrderQueueRes,
+    ProcessOrderQueueArgs
 >(ProcessOrderQueue);

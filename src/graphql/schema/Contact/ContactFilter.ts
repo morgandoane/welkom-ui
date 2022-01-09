@@ -1,6 +1,6 @@
-import { BaseFilter } from "./../Base/BaseFilter";
+import { BaseFilter } from './../Base/BaseFilter';
 
 export interface ContactFilter extends BaseFilter {
-  name?: string;
-  company?: string;
+    name?: string;
+    company?: string;
 }

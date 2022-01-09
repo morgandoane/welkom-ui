@@ -1,6 +1,6 @@
-import { Base } from "./../Base/Base";
-import { Verification } from "../Verification/Verification";
+import { Base } from './../Base/Base';
+import { Verification } from '../Verification/Verification';
 
 export interface Verified extends Base {
-  verification?: Verification | null;
+    verification?: Verification | null;
 }

@@ -1,4 +1,4 @@
-import { FolderInput, UpdateFolderInput } from "../../FolderInput";
+import { FolderInput, UpdateFolderInput } from '../../FolderInput';
 
 export type RecipeFolderInput = FolderInput;
 

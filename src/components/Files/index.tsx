@@ -1,63 +1,63 @@
-import { Box } from "@mui/system";
-import React, { ReactElement } from "react";
-import { AppFile } from "../../graphql/schema/AppFile/AppFile";
-import { Dialog, LinearProgress } from "@mui/material";
-import FilePreview from "./components/FilePreview";
-import { useFileDeletion } from "../../graphql/mutations/file/useFileDeletion";
-import { StorageBucket } from "../../graphql/schema/SignedUrl/SignedUrl";
-import { CompanyQuery } from "../../graphql/queries/companies/useCompany";
+import { Box } from '@mui/system';
+import React, { ReactElement } from 'react';
+import { AppFile } from '../../graphql/schema/AppFile/AppFile';
+import { Dialog, LinearProgress } from '@mui/material';
+import FilePreview from './components/FilePreview';
+import { useFileDeletion } from '../../graphql/mutations/file/useFileDeletion';
+import { StorageBucket } from '../../graphql/schema/SignedUrl/SignedUrl';
+import { CompanyQuery } from '../../graphql/queries/companies/useCompany';
 
 export interface FilesProps {
-  files: AppFile[];
-  prefix: string;
-  storage_category: StorageBucket;
-  refetchQueries?: any[];
+    files: AppFile[];
+    prefix: string;
+    storage_category: StorageBucket;
+    refetchQueries?: any[];
 }
 
 const Files = (props: FilesProps): ReactElement => {
-  const { files, storage_category, prefix, refetchQueries } = props;
+    const { files, storage_category, prefix, refetchQueries } = props;
 
-  const [view, setView] = React.useState<"grid" | "table">("table");
-  const [pdf, setPdf] = React.useState<any>(null);
+    const [view, setView] = React.useState<'grid' | 'table'>('table');
+    const [pdf, setPdf] = React.useState<any>(null);
 
-  const [remove, { loading }] = useFileDeletion({
-    refetchQueries,
-  });
+    const [remove, { loading }] = useFileDeletion({
+        refetchQueries,
+    });
 
-  if (view == "table")
-    return (
-      <React.Fragment>
-        {loading && <LinearProgress />}
-        <Box>
-          {files.map((file, index) => (
-            <FilePreview
-              deleteLoading={false}
-              handleDelete={() => {
-                remove({
-                  variables: {
-                    folder: prefix,
-                    category: storage_category,
-                    name: file.name,
-                  },
-                });
-              }}
-              setPdf={(d) => setPdf(d)}
-              file={file}
-              key={"filePreview_" + index}
-            />
-          ))}
-        </Box>
-        <Dialog
-          fullWidth={true}
-          maxWidth="xl"
-          open={Boolean(pdf)}
-          onClose={() => setPdf(null)}
-        >
-          <iframe style={{ height: "85vh" }} src={pdf} />
-        </Dialog>
-      </React.Fragment>
-    );
-  else return <Box></Box>;
+    if (view == 'table')
+        return (
+            <React.Fragment>
+                {loading && <LinearProgress />}
+                <Box>
+                    {files.map((file, index) => (
+                        <FilePreview
+                            deleteLoading={false}
+                            handleDelete={() => {
+                                remove({
+                                    variables: {
+                                        folder: prefix,
+                                        category: storage_category,
+                                        name: file.name,
+                                    },
+                                });
+                            }}
+                            setPdf={(d) => setPdf(d)}
+                            file={file}
+                            key={'filePreview_' + index}
+                        />
+                    ))}
+                </Box>
+                <Dialog
+                    fullWidth={true}
+                    maxWidth="xl"
+                    open={Boolean(pdf)}
+                    onClose={() => setPdf(null)}
+                >
+                    <iframe style={{ height: '85vh' }} src={pdf} />
+                </Dialog>
+            </React.Fragment>
+        );
+    else return <Box></Box>;
 };
 
 export default Files;

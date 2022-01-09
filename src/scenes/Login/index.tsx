@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
-import LoginLogic from "./containers/LoginLogic";
-import LoginRender from "./containers/LoginRender";
+import React, { ReactElement } from 'react';
+import LoginLogic from './containers/LoginLogic';
+import LoginRender from './containers/LoginRender';
 
 const Login = (): ReactElement => (
-  <LoginLogic>{(logicProps) => <LoginRender {...logicProps} />}</LoginLogic>
+    <LoginLogic>{(logicProps) => <LoginRender {...logicProps} />}</LoginLogic>
 );
 
 export default Login;

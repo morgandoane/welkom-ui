@@ -1,8 +1,8 @@
 export interface CreateCompanyInput {
-  name: string;
+    name: string;
 }
 
 export interface UpdateCompanyInput {
-  name: string;
-  deleted?: boolean;
+    name: string;
+    deleted?: boolean;
 }

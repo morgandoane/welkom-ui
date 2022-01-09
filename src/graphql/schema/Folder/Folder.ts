@@ -1,12 +1,12 @@
-import { Base } from "../Base/Base";
+import { Base } from '../Base/Base';
 
 export enum FolderClass {
-  Recipe = "Recipe",
+    Recipe = 'Recipe',
 }
 
 export interface Folder extends Base {
-  class: FolderClass;
-  name: string;
-  parent?: Folder;
-  folders?: Folder[];
+    class: FolderClass;
+    name: string;
+    parent?: Folder;
+    folders?: Folder[];
 }
