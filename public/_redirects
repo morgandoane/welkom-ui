@@ -1,3 +1,4 @@
-http://ldbbakery.com https://ldbbakery.com force
-ldbbakery.com https://ldbbakery.com force
-www.ldbbakery.com https://ldbbakery.com force
+/* /index.html 200
+https://ldbbakery.com/* https://www.ldbbakery.com/:splat 301!
+http://ldbbakery.com/* http://www.ldbbakery.com/:splat 301!
+http://www.ldbbakery.com/* https://www.ldbbakery.com/:splat 301!
