@@ -11,13 +11,13 @@ import Calendar, {
     EventGroupProps,
 } from '../../../../../../components/Calendar';
 import LocationField from '../../../../../../components/Forms/components/LocationField';
-import { useBols } from '../../../../../../graphql/queries/bols/useBols';
 import {
-    Bol,
-    BolAppointment,
-    BolStatus,
-} from '../../../../../../graphql/schema/Bol/Bol';
+    TinyBol,
+    useTinyBols,
+} from '../../../../../../graphql/queries/bols/useTinyBols';
+import { BolStatus } from '../../../../../../graphql/schema/Bol/Bol';
 import { BolFilter } from '../../../../../../graphql/schema/Bol/BolFilter';
+import { getCalendarRange } from '../../../../../../hooks/useCalendarRange';
 import { useMemory } from '../../../../../../hooks/useMemory';
 import { dateFormats } from '../../../../../../utils/dateFormats';
 import BolPopover from './components/BolPopover';
@@ -32,7 +32,7 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
 
     const [focused, setFocused] = React.useState<null | {
         target: EventTarget & HTMLButtonElement;
-        bol: Bol;
+        bol: TinyBol;
     }>(null);
 
     const bolIcons: Record<BolStatus, ReactElement> = {
@@ -71,52 +71,48 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
         ),
     };
 
-    const [{ index, location }, setIndex] = useMemory('warehouse_calendar', {
-        index: 0,
-        location: '',
-    });
+    const [
+        { location: locationFormStorage, index: indexFromStorage },
+        setMemory,
+    ] = useMemory('warehouse_calendar', { location: '', index: 0 });
+
+    const [index, setIndex] = React.useState(indexFromStorage);
+
+    const [location, setLocation] = React.useState(locationFormStorage);
+
+    React.useEffect(() => {
+        setMemory({ location, index });
+    }, [location, index]);
 
     const [filter, setFilter] = React.useState<BolFilter>({
         skip: 0,
-        take: 250,
+        take: 200,
         [view == 'receiving' ? 'to_location' : 'from_location']:
             location || undefined,
     });
 
-    React.useEffect(() => {
-        setFilter({
-            skip: 0,
-            take: 250,
-            [view == 'receiving' ? 'to_location' : 'from_location']:
-                location || undefined,
-        });
-    }, [view, location]);
-
-    React.useEffect(() => {
-        if (location)
-            if (
-                filter[
-                    view == 'receiving' ? 'to_location' : 'from_location'
-                ] !== location
-            ) {
-                setFilter((f) => ({
-                    ...f,
-                    [view == 'receiving' ? 'to_location' : 'from_location']:
-                        location,
-                }));
-            }
-    }, [location, filter, view]);
-
-    const { data, error, loading } = useBols({
-        variables: { filter },
-        // fetchPolicy: "network-only",
+    const { data, error, loading } = useTinyBols({
+        variables: {
+            filter: {
+                ...filter,
+                skip: parseInt(filter.skip + ''),
+                take: parseInt(filter.take + ''),
+                [view == 'receiving'
+                    ? 'scheduled_dropoff_date'
+                    : 'scheduled_pickup_date']: getCalendarRange(
+                    new Date(),
+                    index
+                ),
+            },
+        },
+        skip: !filter[view == 'receiving' ? 'to_location' : 'from_location'],
     });
 
     const bols = data ? data.bols.items : [];
     const itineraries = bols.map((bol) => bol.itinerary);
 
-    const getBolGroups = (): EventGroupProps<Bol>[] => {
-        const groupedByDate: Record<string, Bol[]> = {};
+    const getBolGroups = (): EventGroupProps<TinyBol>[] => {
+        const groupedByDate: Record<string, TinyBol[]> = {};
 
         // group the bols by date
         for (const bol of bols) {
@@ -130,13 +126,13 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
         }
 
         // for each date group, group the bols by itinerary
-        const eventGroups: EventGroupProps<Bol>[] = [];
+        const eventGroups: EventGroupProps<TinyBol>[] = [];
 
         for (const dateKey of Object.keys(groupedByDate)) {
             const date = new Date(dateKey);
             const events = groupedByDate[dateKey];
 
-            const groupedByItinerary: Record<string, Bol[]> = {};
+            const groupedByItinerary: Record<string, TinyBol[]> = {};
 
             for (const event of events) {
                 if (groupedByItinerary[event.itinerary._id])
@@ -184,13 +180,23 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                 error={error}
                 index={index}
                 onIndex={(d, range) => {
-                    if (view == 'receiving') {
-                        setIndex({ location, index: d });
-                        setFilter({ ...filter, scheduled_dropoff_date: range });
-                    } else {
-                        setIndex({ location, index: d });
-                        setFilter({ ...filter, scheduled_pickup_date: range });
-                    }
+                    setIndex(d);
+                    setFilter({
+                        skip: filter.skip,
+                        take: filter.take,
+                        [view == 'receiving'
+                            ? 'scheduled_dropoff_date'
+                            : 'scheduled_pickup_date']: getCalendarRange(
+                            new Date(),
+                            index
+                        ),
+                        [view == 'receiving' ? 'to_location' : 'from_location']:
+                            filter[
+                                view == 'receiving'
+                                    ? 'to_location'
+                                    : 'from_location'
+                            ],
+                    });
                 }}
                 eventGroups={getBolGroups()}
                 getEventProps={(bol, index) => ({
@@ -228,7 +234,13 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                                         : filter.from_location || ''
                                 }
                                 onChange={(val) => {
-                                    setIndex({ index, location: val || '' });
+                                    setFilter({
+                                        ...filter,
+                                        [view == 'receiving'
+                                            ? 'to_location'
+                                            : 'from_location']: val || '',
+                                    });
+                                    // setIndex({ index, location: val || '' });
                                 }}
                             />
                         </Box>

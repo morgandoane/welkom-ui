@@ -9,6 +9,12 @@ import {
 import React, { ReactElement } from 'react';
 import { MdExpandMore } from 'react-icons/md';
 import { matchRoutes, RouteObject, useNavigate } from 'react-router';
+import {
+    UiPermission,
+    UiPermissions,
+} from '../../../../../../auth/UiPermission';
+import usePermissions from '../../../../../../auth/usePermissions';
+import { UserRole } from '../../../../../../auth/UserRole';
 import Anima from '../../../../../Anima';
 
 export interface NavGroupProps {
@@ -19,12 +25,17 @@ export interface NavGroupProps {
     items: { label: string; url: string; active?: boolean }[];
     onClick: (props: NavGroupProps) => void;
     navTo: string | null;
+    auth:
+        | { _type: 'permission'; permission: UiPermission }
+        | { _type: 'role'; role: UserRole };
 }
 
-const NavGroup = (props: NavGroupProps): ReactElement => {
+const NavGroup = (props: NavGroupProps): ReactElement | null => {
     const theme = useTheme();
     const nav = useNavigate();
-    const { icon, label, expanded, items, open, onClick, navTo } = props;
+    const { auth, icon, label, expanded, items, open, onClick, navTo } = props;
+
+    const { roles, permissions } = usePermissions();
 
     const data = matchRoutes(
         items.map(({ url: path }) => ({
@@ -35,6 +46,25 @@ const NavGroup = (props: NavGroupProps): ReactElement => {
     );
 
     const isActive = data !== null;
+
+    if (auth._type == 'permission') {
+        const match = UiPermissions.find((p) => p.name === auth.permission);
+
+        if (
+            !roles.includes(UserRole.Admin) &&
+            !roles.includes(UserRole.Manager)
+        )
+            if (
+                !match ||
+                !match.permissions.every((p) => permissions.includes(p))
+            )
+                return null;
+    }
+
+    if (auth._type == 'role') {
+        if (!roles.includes(auth.role) && !roles.includes(UserRole.Admin))
+            return null;
+    }
 
     return (
         <React.Fragment>

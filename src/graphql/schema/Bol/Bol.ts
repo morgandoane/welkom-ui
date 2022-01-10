@@ -44,17 +44,6 @@ export interface Bol extends Base {
     orders: BolOrder[];
 }
 
-export interface TinyBol {
-    _id: string;
-    code: string;
-    date_created: Date;
-    deleted: boolean;
-    status: BolStatus;
-    from: BolAppointment;
-    to: BolAppointment;
-    contents: BolItemContent[];
-}
-
 export const BolFragment = gql`
     fragment BolFragment on Bol {
         _id
@@ -109,7 +98,6 @@ export const BolFragment = gql`
             }
         }
         contents {
-            fulfillment_percentage
             quantity
             item {
                 _id

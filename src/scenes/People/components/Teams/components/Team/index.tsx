@@ -5,7 +5,7 @@ import { MdChevronLeft, MdEdit } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     getUiPermissions,
-    UiPermission,
+    UiPermissionData,
 } from '../../../../../../auth/UiPermission';
 import AppFab from '../../../../../../components/AppFab';
 import AppNav from '../../../../../../components/AppNav';
@@ -29,7 +29,7 @@ const Team = (): ReactElement => {
 
     const team = data ? data.team : null;
 
-    const uiPermissions: UiPermission[] = data
+    const uiPermissions: UiPermissionData[] = data
         ? getUiPermissions(data.team.permissions)
         : [];
 

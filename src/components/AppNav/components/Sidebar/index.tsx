@@ -23,6 +23,9 @@ import {
 } from 'react-icons/md';
 import { VscGraphLeft } from 'react-icons/vsc';
 import { useNavigate } from 'react-router';
+import { UiPermission } from '../../../../auth/UiPermission';
+import usePermissions from '../../../../auth/usePermissions';
+import { UserRole } from '../../../../auth/UserRole';
 import { useThemeContext } from '../../../../providers/AppThemeProvider';
 import Anima from '../../../Anima';
 import NavGroup, { NavGroupProps } from './components/NavGroup';
@@ -31,6 +34,7 @@ const duration = 200;
 const Sidebar = (): ReactElement => {
     const { user } = useAuth0();
     const { mode, setMode } = useThemeContext();
+    const { roles, permissions } = usePermissions();
     const theme = useTheme();
     const nav = useNavigate();
     const fromStorage = localStorage.getItem('sidebar_expanded');
@@ -93,17 +97,10 @@ const Sidebar = (): ReactElement => {
         items: NavGroupProps['items'];
         label: string;
         icon: ReactElement;
+        auth:
+            | { _type: 'permission'; permission: UiPermission }
+            | { _type: 'role'; role: UserRole };
     }[] = [
-        {
-            icon: <MdDocumentScanner style={iconStyle} />,
-            label: 'Configuration',
-            items: [{ label: 'Configuration', url: '/configuration' }],
-        },
-        {
-            icon: <FaHandsHelping style={iconStyle} />,
-            label: 'Contracts',
-            items: [{ label: 'Contracts', url: '/contracts' }],
-        },
         {
             icon: <MdFolderOpen style={iconStyle} />,
             label: 'Library',
@@ -113,6 +110,7 @@ const Sidebar = (): ReactElement => {
                 { label: 'Quality Checks', url: '/library/qualitychecks' },
                 { label: 'Units', url: '/library/units' },
             ],
+            auth: { _type: 'permission', permission: UiPermission.Library },
         },
         {
             icon: <FaTruckLoading style={iconStyle} />,
@@ -121,6 +119,7 @@ const Sidebar = (): ReactElement => {
                 { label: 'Order Queue', url: '/logistics/orderqueue' },
                 { label: 'Orders', url: '/logistics/orders' },
             ],
+            auth: { _type: 'permission', permission: UiPermission.Logistics },
         },
 
         {
@@ -130,39 +129,7 @@ const Sidebar = (): ReactElement => {
                 { label: 'Teams', url: '/people/teams' },
                 { label: 'Profiles', url: '/people/profiles' },
             ],
-        },
-        {
-            icon: <AiFillBuild style={iconStyle} />,
-            label: 'Production',
-            items: [
-                { label: 'Mixing', url: '/production/mixing' },
-                { label: 'Packing', url: '/production/packing' },
-                { label: 'Scheduling', url: '/production/scheduling' },
-            ],
-        },
-        {
-            icon: <MdDescription style={iconStyle} />,
-            label: 'Recipes',
-            items: [{ label: 'Recipes', url: '/recipes' }],
-        },
-        {
-            icon: <VscGraphLeft style={iconStyle} />,
-            label: 'Reporting',
-            items: [
-                { label: 'App Usage', url: '/reporting/appusage' },
-                { label: 'Pricing', url: '/reporting/pricing' },
-                { label: 'Production', url: '/reporting/production' },
-                { label: 'Supply Chain', url: '/reporting/supplychain' },
-            ],
-        },
-        {
-            icon: <AiOutlineNodeIndex style={iconStyle} />,
-            label: 'Traceabaility',
-            items: [
-                { label: 'Lots', url: '/traceability/lots' },
-                { label: 'Holds', url: '/traceability/holds' },
-                { label: 'Recalls', url: '/traceability/recalls' },
-            ],
+            auth: { _type: 'role', role: UserRole.Manager },
         },
         {
             icon: <FaTruckLoading style={iconStyle} />,
@@ -171,6 +138,10 @@ const Sidebar = (): ReactElement => {
                 { label: 'Shipping', url: '/warehouse/shipping' },
                 { label: 'Receiving', url: '/warehouse/receiving' },
             ],
+            auth: {
+                _type: 'permission',
+                permission: UiPermission.WarehouseOperator,
+            },
         },
     ];
 
@@ -206,9 +177,9 @@ const Sidebar = (): ReactElement => {
                     gap: 0.5,
                 }}
             >
-                {navGroups.map((group, index) => (
-                    <NavGroup {...group} key={'group_' + index} />
-                ))}
+                {navGroups.map((group, index) => {
+                    return <NavGroup {...group} key={'group_' + index} />;
+                })}
             </Box>
             <Box
                 sx={{

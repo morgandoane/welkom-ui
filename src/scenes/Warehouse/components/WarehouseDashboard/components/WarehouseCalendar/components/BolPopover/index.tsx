@@ -11,6 +11,8 @@ import React, { ReactElement } from 'react';
 import { MdAdd, MdChevronRight } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import FormRow from '../../../../../../../../components/Forms/components/FormRow';
+import { useBol } from '../../../../../../../../graphql/queries/bols/useBol';
+import { TinyBol } from '../../../../../../../../graphql/queries/bols/useTinyBols';
 import { Bol } from '../../../../../../../../graphql/schema/Bol/Bol';
 import { Fulfillment } from '../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import { dateFormats } from '../../../../../../../../utils/dateFormats';
@@ -20,7 +22,7 @@ export interface AppointmentPopoverProps {
     view: 'shipping' | 'receiving';
     focus: {
         target: EventTarget & Element;
-        bol: Bol;
+        bol: TinyBol | Bol;
     } | null;
     onClose: () => void;
 }
@@ -30,7 +32,14 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
 
     const nav = useNavigate();
 
-    const bol = focus ? focus.bol : null;
+    const { data } = useBol({
+        variables: {
+            id: focus ? focus.bol._id : '',
+        },
+        skip: !focus,
+    });
+
+    const bol = data ? data.bol : null;
 
     const fulfillments: Fulfillment[] = bol
         ? view == 'receiving'

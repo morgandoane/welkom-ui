@@ -16,8 +16,7 @@ import SideDrawer from '../../../../../../components/SideDrawer';
 import { useBols } from '../../../../../../graphql/queries/bols/useBols';
 import { Bol } from '../../../../../../graphql/schema/Bol/Bol';
 import { BolFilter } from '../../../../../../graphql/schema/Bol/BolFilter';
-import { useClickState } from '../../../../../../hooks/useClickState';
-import { useMemory } from '../../../../../../hooks/useMemory';
+
 import { dateFormats } from '../../../../../../utils/dateFormats';
 import BolPopover from '../WarehouseCalendar/components/BolPopover';
 

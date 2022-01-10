@@ -39,6 +39,7 @@ const CalendarEvent = <T,>(props: CalendarEventProps<T>): ReactElement => {
                     display: 'flex',
                     flexFlow: 'column',
                     alignItems: 'flex-start',
+                    textAlign: 'left',
                 }}
             >
                 <Typography variant="body2">{primary}</Typography>
