@@ -5,7 +5,7 @@ import Loading from '../Loading';
 const Logout = (): ReactElement => {
     const { logout } = useAuth0();
 
-    logout();
+    logout({ returnTo: 'www.ldbbakery.com/login' });
 
     return <Loading message="Logging out" />;
 };
