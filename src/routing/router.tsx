@@ -19,6 +19,7 @@ import Logistics from '../scenes/Logistics';
 import Logout from '../scenes/Logout';
 import NotFound from '../scenes/NotFound';
 import People from '../scenes/People';
+import ResetPassword from '../scenes/ResetPassword';
 import Warehouse from '../scenes/Warehouse';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import ManagerRoute from './components/ManagerRoute';
@@ -128,6 +129,22 @@ export const Router = (): ReactElement => {
                 {routes.map(({ props: rProps, auth }) => (
                     <Route {...rProps} key={'route' + rProps.path} />
                 ))}
+                <Route
+                    path="/resetpassword"
+                    element={
+                        <AuthenticatedRoute>
+                            <ResetPassword />
+                        </AuthenticatedRoute>
+                    }
+                />
+                <Route
+                    path="/passwordsuccess"
+                    element={
+                        <AuthenticatedRoute>
+                            <ResetPassword success={true} />
+                        </AuthenticatedRoute>
+                    }
+                />
                 <Route
                     path="/logout"
                     element={

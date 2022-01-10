@@ -60,6 +60,12 @@ const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
                             break;
                         }
                     }
+                switch (extensions.code) {
+                    case 'PASSWORD': {
+                        window.location.replace('/resetpassword');
+                        break;
+                    }
+                }
             });
         if (networkError) console.log(`[Network error]: ${networkError}`);
     });
