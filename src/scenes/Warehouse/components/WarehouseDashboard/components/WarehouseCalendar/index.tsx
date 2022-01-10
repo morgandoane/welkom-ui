@@ -71,14 +71,26 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
         ),
     };
 
-    const [
-        { location: locationFormStorage, index: indexFromStorage },
-        setMemory,
-    ] = useMemory('warehouse_calendar', { location: '', index: 0 });
+    const indexFromStorage = localStorage.getItem('warehouse_index');
+    const locationFromStorage = localStorage.getItem('warehouse_location');
 
-    const [index, setIndex] = React.useState(indexFromStorage);
+    const [index, setIndex] = React.useState(
+        indexFromStorage && !isNaN(parseInt(indexFromStorage))
+            ? parseInt(indexFromStorage)
+            : 0
+    );
 
-    const [location, setLocation] = React.useState(locationFormStorage);
+    React.useEffect(() => {
+        localStorage.setItem('warehouse_index', index + '');
+    }, [index]);
+
+    const [location, setLocation] = React.useState(
+        locationFromStorage ? locationFromStorage : ''
+    );
+
+    React.useEffect(() => {
+        localStorage.setItem('warehouse_location', location + '');
+    }, [location]);
 
     const [filter, setFilter] = React.useState<BolFilter>({
         skip: 0,
@@ -87,21 +99,14 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
             location || undefined,
     });
 
-    React.useEffect(() => {
-        setMemory({
-            location:
-                filter[view == 'receiving' ? 'to_location' : 'from_location'] ||
-                '',
-            index,
-        });
-    }, [filter, index, view]);
-
     const { data, error, loading } = useTinyBols({
         variables: {
             filter: {
                 ...filter,
                 skip: parseInt(filter.skip + ''),
                 take: parseInt(filter.take + ''),
+                [view == 'receiving' ? 'to_location' : 'from_location']:
+                    location,
                 [view == 'receiving'
                     ? 'scheduled_dropoff_date'
                     : 'scheduled_pickup_date']: getCalendarRange(
@@ -110,7 +115,7 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                 ),
             },
         },
-        skip: !filter[view == 'receiving' ? 'to_location' : 'from_location'],
+        skip: !location,
     });
 
     const bols = data ? data.bols.items : [];
@@ -233,20 +238,9 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                             <LocationField
                                 mine
                                 naked
-                                value={
-                                    view == 'receiving'
-                                        ? filter.to_location || ''
-                                        : filter.from_location || ''
-                                }
+                                value={location}
                                 onChange={(val) => {
-                                    setFilter({
-                                        ...filter,
-                                        [view == 'receiving'
-                                            ? 'to_location'
-                                            : 'from_location']: val || '',
-                                    });
                                     setLocation(val || '');
-                                    // setIndex({ index, location: val || '' });
                                 }}
                             />
                         </Box>
