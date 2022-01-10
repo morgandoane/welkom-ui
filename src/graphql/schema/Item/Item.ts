@@ -22,4 +22,5 @@ export interface TinyItem {
     spanish: string;
     default_vendor?: TinyCompany | null;
     default_unit?: TinyUnit | null;
+    order_queue_qty?: number | null;
 }

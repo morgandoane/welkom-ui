@@ -19,6 +19,7 @@ import {
     useOrderQueueProcess,
 } from '../../../../graphql/mutations/orderQueue/processOrderQueue';
 import { OperationResult } from '../../../../graphql/types';
+import { addDays, setHours, setMinutes } from 'date-fns';
 
 const threshold = 1500;
 
@@ -233,12 +234,17 @@ const OrderQueue = (): ReactElement => {
                         ...contents,
                         {
                             item: item._id,
+                            quantity: item.order_queue_qty || 0,
                             unit: item.default_unit
                                 ? item.default_unit._id
                                 : '',
                             vendor: item.default_vendor
                                 ? item.default_vendor._id
                                 : '',
+                            date: setMinutes(
+                                setHours(addDays(new Date(), 1), 12),
+                                0
+                            ),
                         },
                     ]);
                 }}

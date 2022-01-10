@@ -12,6 +12,7 @@ export const ItemQuery = gql`
             english
             spanish
             unit_class
+            order_queue_qty
             files {
                 ...AppFileFragment
             }

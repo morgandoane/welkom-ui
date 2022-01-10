@@ -209,7 +209,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                             </Typography>
                         </Box>
                     ) : (
-                        'Select a vendor'
+                        'Select a destination'
                     )}
                 </Button>
             </TableCell>

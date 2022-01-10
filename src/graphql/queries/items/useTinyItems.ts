@@ -12,6 +12,7 @@ export const TinyItems = gql`
                 english
                 spanish
                 unit_class
+                order_queue_qty
                 default_unit {
                     _id
                     class
