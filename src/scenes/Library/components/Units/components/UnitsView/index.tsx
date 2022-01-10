@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Box, Fab } from '@mui/material';
+import { Box, Button, Fab } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
@@ -64,7 +64,13 @@ const UnitsView = (): ReactElement => {
             <ColumnBox>
                 {{
                     header: (
-                        <Box sx={{ display: 'flex', paddingBottom: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                paddingBottom: 2,
+                                alignItems: 'flex-end',
+                            }}
+                        >
                             <Box>
                                 <PageTitle>Units</PageTitle>
                                 <SearchField
@@ -80,7 +86,7 @@ const UnitsView = (): ReactElement => {
                             </Box>
                             <Box sx={{ flex: 1 }} />
                             <Box>
-                                <Fab
+                                <Button
                                     onClick={() =>
                                         setEdits({
                                             english: '',
@@ -89,20 +95,10 @@ const UnitsView = (): ReactElement => {
                                             base_per_unit: 0,
                                         })
                                     }
-                                    color="primary"
-                                    variant="extended"
+                                    startIcon={<MdAdd />}
                                 >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            fontSize: '1.375rem',
-                                            paddingRight: 1,
-                                        }}
-                                    >
-                                        <MdAdd />
-                                    </Box>
                                     Unit
-                                </Fab>
+                                </Button>
                             </Box>
                         </Box>
                     ),

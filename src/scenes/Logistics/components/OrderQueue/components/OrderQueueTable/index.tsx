@@ -74,16 +74,7 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
                         Vendor
                     </TableCell>
                     <TableCell sx={{ background: palette.background.paper }}>
-                        Vendor location
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Item
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Quantity
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Unit
+                        Contents
                     </TableCell>
                     <TableCell sx={{ background: palette.background.paper }}>
                         Destination

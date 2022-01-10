@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { ReactElement } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const AuthenticatedRoute = (props: {
     children: ReactElement | ReactElement[];
@@ -8,10 +8,7 @@ const AuthenticatedRoute = (props: {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth0();
 
-    React.useEffect(() => {
-        if (!isAuthenticated) navigate('/login');
-    }, [isAuthenticated, navigate]);
-
+    if (!isAuthenticated) return <Navigate to={'/login'} />;
     return <React.Fragment>{props.children}</React.Fragment>;
 };
 

@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { ReactElement } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
     UiPermission,
     UiPermissionData,
@@ -20,9 +20,7 @@ const PermissionRoute = (props: {
 
     const { path } = useIndexRoute();
 
-    React.useEffect(() => {
-        if (!isAuthenticated) navigate('/login');
-    }, [isAuthenticated, navigate]);
+    if (!isAuthenticated) return <Navigate to={'/login'} />;
 
     if (!roles.includes(UserRole.Admin) && !roles.includes(UserRole.Manager)) {
         const data = UiPermissions.find((d) => d.name === props.permission);

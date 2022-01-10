@@ -13,10 +13,7 @@ const ManagerRoute = (props: {
     const { roles } = usePermissions();
     const { path } = useIndexRoute();
 
-    React.useEffect(() => {
-        if (!isAuthenticated) navigate('/login');
-    }, [isAuthenticated, navigate]);
-
+    if (!isAuthenticated) return <Navigate to={'/login'} />;
     if (!roles.includes(UserRole.Admin) && !roles.includes(UserRole.Manager))
         return <Navigate to={path} />;
 

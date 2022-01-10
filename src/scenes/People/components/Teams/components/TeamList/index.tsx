@@ -37,7 +37,7 @@ const TeamList = (): ReactElement => {
                                 sx={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    paddingBottom: 1,
+                                    paddingBottom: 2,
                                 }}
                             >
                                 <Box>
@@ -53,22 +53,12 @@ const TeamList = (): ReactElement => {
                                     />
                                 </Box>
                                 <Box sx={{ flex: 1 }} />
-                                <Fab
+                                <Button
                                     onClick={() => nav('/people/teams/new')}
-                                    variant="extended"
-                                    color="primary"
+                                    startIcon={<MdAdd />}
                                 >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            paddingRight: 1,
-                                            fontSize: '1.25rem',
-                                        }}
-                                    >
-                                        <MdAdd />
-                                    </Box>
                                     New team
-                                </Fab>
+                                </Button>
                             </Box>
                         </Box>
                     ),

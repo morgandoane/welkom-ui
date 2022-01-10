@@ -28,6 +28,7 @@ import usePermissions from '../../../../auth/usePermissions';
 import { UserRole } from '../../../../auth/UserRole';
 import { useThemeContext } from '../../../../providers/AppThemeProvider';
 import Anima from '../../../Anima';
+import Logo from '../../../Logo';
 import NavGroup, { NavGroupProps } from './components/NavGroup';
 
 const duration = 200;
@@ -156,7 +157,7 @@ const Sidebar = (): ReactElement => {
     return (
         <Box
             sx={{
-                background: theme.palette.background.paper,
+                background: `linearGradient(${theme.palette.background.paper}, ${theme.palette.background.default})`,
                 padding: 2,
                 display: 'flex',
                 flexFlow: 'column',
@@ -177,6 +178,9 @@ const Sidebar = (): ReactElement => {
                     gap: 0.5,
                 }}
             >
+                <Box sx={{ display: 'flex', paddingBottom: 2, paddingTop: 1 }}>
+                    <Logo width={focused ? 100 : 60} />
+                </Box>
                 {navGroups.map((group, index) => {
                     return <NavGroup {...group} key={'group_' + index} />;
                 })}

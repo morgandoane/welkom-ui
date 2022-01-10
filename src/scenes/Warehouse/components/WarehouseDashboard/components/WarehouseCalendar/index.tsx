@@ -80,16 +80,21 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
 
     const [location, setLocation] = React.useState(locationFormStorage);
 
-    React.useEffect(() => {
-        setMemory({ location, index });
-    }, [location, index]);
-
     const [filter, setFilter] = React.useState<BolFilter>({
         skip: 0,
         take: 200,
         [view == 'receiving' ? 'to_location' : 'from_location']:
             location || undefined,
     });
+
+    React.useEffect(() => {
+        setMemory({
+            location:
+                filter[view == 'receiving' ? 'to_location' : 'from_location'] ||
+                '',
+            index,
+        });
+    }, [filter, index, view]);
 
     const { data, error, loading } = useTinyBols({
         variables: {
@@ -240,6 +245,7 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                                             ? 'to_location'
                                             : 'from_location']: val || '',
                                     });
+                                    setLocation(val || '');
                                     // setIndex({ index, location: val || '' });
                                 }}
                             />

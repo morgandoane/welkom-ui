@@ -27,7 +27,7 @@ const OrderList = (): ReactElement => {
     const nav = useNavigate();
     const [filter, setFilter] = React.useState<OrdersArgs['filter']>({
         skip: 0,
-        take: 25,
+        take: 50,
     });
 
     const [filterEdits, setFilterEdits] = React.useState<
@@ -147,7 +147,7 @@ const OrderList = (): ReactElement => {
                                 header: (
                                     <Box
                                         sx={{
-                                            paddingBottom: 1,
+                                            paddingBottom: 2,
                                             display: 'flex',
                                             flexFlow: 'row',
                                         }}
@@ -212,7 +212,16 @@ const OrderList = (): ReactElement => {
                                     <DataGrid
                                         pagination
                                         paginationMode="server"
-                                        rowsPerPageOptions={[25]}
+                                        rowsPerPageOptions={[50]}
+                                        page={Math.ceil(
+                                            filter.skip / filter.take
+                                        )}
+                                        onPageChange={(page) => {
+                                            setFilter({
+                                                ...filter,
+                                                skip: page * 50,
+                                            });
+                                        }}
                                         rowCount={count}
                                         error={error}
                                         loading={loading}

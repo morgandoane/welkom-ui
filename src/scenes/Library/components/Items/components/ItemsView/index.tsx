@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Box, Fab } from '@mui/material';
+import { Box, Button, Fab } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
@@ -62,7 +62,13 @@ const ItemsView = (): ReactElement => {
             <ColumnBox>
                 {{
                     header: (
-                        <Box sx={{ display: 'flex', paddingBottom: 2 }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                paddingBottom: 2,
+                                alignItems: 'flex-end',
+                            }}
+                        >
                             <Box>
                                 <PageTitle>Items</PageTitle>
                                 <SearchField
@@ -78,28 +84,20 @@ const ItemsView = (): ReactElement => {
                             </Box>
                             <Box sx={{ flex: 1 }} />
                             <Box>
-                                <Fab
-                                    onClick={() =>
-                                        setEdits({
-                                            english: '',
-                                            spanish: '',
-                                            unit_class: UnitClass.Weight,
-                                        })
-                                    }
-                                    color="primary"
-                                    variant="extended"
-                                >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            fontSize: '1.375rem',
-                                            paddingRight: 1,
-                                        }}
+                                <Box>
+                                    <Button
+                                        onClick={() =>
+                                            setEdits({
+                                                english: '',
+                                                spanish: '',
+                                                unit_class: UnitClass.Weight,
+                                            })
+                                        }
+                                        startIcon={<MdAdd />}
                                     >
-                                        <MdAdd />
-                                    </Box>
-                                    Item
-                                </Fab>
+                                        Item
+                                    </Button>
+                                </Box>
                             </Box>
                         </Box>
                     ),

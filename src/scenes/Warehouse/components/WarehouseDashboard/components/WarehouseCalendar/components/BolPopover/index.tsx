@@ -49,7 +49,7 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
 
     return (
         <Popover
-            open={Boolean(focus)}
+            open={Boolean(focus) && bol !== null}
             anchorEl={focus ? focus.target : undefined}
             onClose={onClose}
             anchorOrigin={{

@@ -89,10 +89,12 @@ export const useIndexRoute = (): { path: string } => {
     const match = routes.find((route) => {
         if (roles.includes(UserRole.Admin)) return true;
         else if (roles.includes(UserRole.Manager))
-            !route.auth ||
+            return (
+                !route.auth ||
                 route.auth._type == 'permission' ||
                 route.auth.role == UserRole.Manager ||
-                route.auth.role == UserRole.User;
+                route.auth.role == UserRole.User
+            );
         else {
             return (
                 !route.auth ||
@@ -104,7 +106,7 @@ export const useIndexRoute = (): { path: string } => {
         }
     });
 
-    if (!match) return { path: '/logout' };
+    if (!match) return { path: '/login' };
     else return { path: match.props.path.replace('*', '') };
 };
 
