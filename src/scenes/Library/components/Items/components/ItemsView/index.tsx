@@ -5,10 +5,12 @@ import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import AppNav from '../../../../../../components/AppNav';
+import CompanyField from '../../../../../../components/Forms/components/CompanyField';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
 import SearchField from '../../../../../../components/Forms/components/SearchField';
 import TextFormField from '../../../../../../components/Forms/components/TextFormField';
 import UnitClassField from '../../../../../../components/Forms/components/UnitClassField';
+import UnitField from '../../../../../../components/Forms/components/UnitField';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../../../components/PageTitle';
 import PanelHeader from '../../../../../../components/PanelComponents/PanelHeader';
@@ -178,6 +180,33 @@ const ItemsView = (): ReactElement => {
                         value={edits ? edits.unit_class : UnitClass.Weight}
                         onChange={(unit_class) => {
                             if (edits) setEdits({ ...edits, unit_class });
+                        }}
+                    />
+                </FormRow>
+                <FormRow>
+                    <UnitField
+                        class={edits ? edits.unit_class : undefined}
+                        label="Default unit"
+                        value={edits ? edits.default_unit || '' : ''}
+                        onChange={(val) => {
+                            if (edits)
+                                setEdits({
+                                    ...edits,
+                                    default_unit: val || '',
+                                });
+                        }}
+                    />
+                </FormRow>
+                <FormRow>
+                    <CompanyField
+                        label="Default vendor"
+                        value={edits ? edits.default_vendor || '' : ''}
+                        onChange={(val) => {
+                            if (edits)
+                                setEdits({
+                                    ...edits,
+                                    default_vendor: val || '',
+                                });
                         }}
                     />
                 </FormRow>

@@ -1,6 +1,7 @@
 import { Autocomplete, TextField } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { useTinyUnits } from '../../../../graphql/queries/units/useTinyUnits';
+import { UnitClass } from '../../../../graphql/schema/Unit/Unit';
 import AutoCompleteTextField from '../AutoCompleteTextField';
 
 export interface UnitFieldProps {
@@ -8,10 +9,17 @@ export interface UnitFieldProps {
     value: string | null;
     onChange: (value: string | null) => void;
     naked?: boolean;
+    class?: UnitClass;
 }
 
 const UnitField = (props: UnitFieldProps): ReactElement => {
-    const { label = 'Unit', value, onChange, naked = false } = props;
+    const {
+        label = 'Unit',
+        value,
+        onChange,
+        naked = false,
+        class: unitClass,
+    } = props;
 
     const { data, error, loading } = useTinyUnits({
         variables: {
@@ -28,6 +36,10 @@ const UnitField = (props: UnitFieldProps): ReactElement => {
 
     const match = units.find((u) => u._id === value);
 
+    const filtered = unitClass
+        ? units.filter((u) => u.class === unitClass)
+        : units;
+
     return (
         <Autocomplete
             fullWidth
@@ -35,7 +47,7 @@ const UnitField = (props: UnitFieldProps): ReactElement => {
             onChange={(e, val) => {
                 onChange(val ? val._id : null);
             }}
-            options={units}
+            options={filtered}
             getOptionLabel={(d) => d.english}
             renderOption={(props, option) => {
                 return (

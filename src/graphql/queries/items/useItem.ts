@@ -21,6 +21,19 @@ export const ItemQuery = gql`
                 to
                 from_per_to
             }
+            default_unit {
+                _id
+                class
+                english
+                spanish
+                english_plural
+                spanish_plural
+                base_per_unit
+            }
+            default_vendor {
+                _id
+                name
+            }
         }
     }
 `;

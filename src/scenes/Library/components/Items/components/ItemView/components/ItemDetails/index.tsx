@@ -22,6 +22,8 @@ import { MdRefresh } from 'react-icons/md';
 import { TinyItems } from '../../../../../../../../graphql/queries/items/useTinyItems';
 import { ItemQuery } from '../../../../../../../../graphql/queries/items/useItem';
 import { InternalRefetchQueriesInclude } from '@apollo/client';
+import UnitField from '../../../../../../../../components/Forms/components/UnitField';
+import CompanyField from '../../../../../../../../components/Forms/components/CompanyField';
 
 export interface ItemDetailsProps {
     item: Item;
@@ -97,6 +99,11 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                     english: item.english,
                                     spanish: item.spanish,
                                     deleted: false,
+                                    unit_class: item.unit_class,
+                                    default_vendor:
+                                        item.default_vendor?._id || undefined,
+                                    default_unit:
+                                        item.default_unit?._id || undefined,
                                 },
                             },
                         });
@@ -114,6 +121,11 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                 english: item.english,
                                 spanish: item.spanish,
                                 deleted: false,
+                                unit_class: item.unit_class,
+                                default_vendor:
+                                    item.default_vendor?._id || undefined,
+                                default_unit:
+                                    item.default_unit?._id || undefined,
                             },
                         });
                     }}
@@ -146,6 +158,39 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                 setState({
                                     ...state,
                                     data: { ...state.data, english: val || '' },
+                                });
+                        }}
+                    />
+                </FormRow>
+                <FormRow>
+                    <UnitField
+                        class={state ? state.data.unit_class : undefined}
+                        label="Default unit"
+                        value={state ? state.data.default_unit || '' : ''}
+                        onChange={(val) => {
+                            if (state)
+                                setState({
+                                    ...state,
+                                    data: {
+                                        ...state.data,
+                                        default_unit: val || '',
+                                    },
+                                });
+                        }}
+                    />
+                </FormRow>
+                <FormRow>
+                    <CompanyField
+                        label="Default vendor"
+                        value={state ? state.data.default_vendor || '' : ''}
+                        onChange={(val) => {
+                            if (state)
+                                setState({
+                                    ...state,
+                                    data: {
+                                        ...state.data,
+                                        default_vendor: val || '',
+                                    },
                                 });
                         }}
                     />
