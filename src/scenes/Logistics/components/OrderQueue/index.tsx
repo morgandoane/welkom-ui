@@ -233,6 +233,12 @@ const OrderQueue = (): ReactElement => {
                         ...contents,
                         {
                             item: item._id,
+                            unit: item.default_unit
+                                ? item.default_unit._id
+                                : '',
+                            vendor: item.default_vendor
+                                ? item.default_vendor._id
+                                : '',
                         },
                     ]);
                 }}
