@@ -17,7 +17,7 @@ const ItemField = (props: ItemFieldProps): ReactElement => {
         variables: {
             filter: {
                 skip: 0,
-                take: 100,
+                take: 250,
             },
         },
     });
