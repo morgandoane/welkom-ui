@@ -18,7 +18,10 @@ import {
 } from '../../../../../../graphql/queries/bols/useTinyBols';
 import { BolStatus } from '../../../../../../graphql/schema/Bol/Bol';
 import { BolFilter } from '../../../../../../graphql/schema/Bol/BolFilter';
-import { getCalendarRange } from '../../../../../../hooks/useCalendarRange';
+import {
+    CalendarView,
+    getCalendarRange,
+} from '../../../../../../hooks/useCalendarRange';
 import { useMemory } from '../../../../../../hooks/useMemory';
 import { dateFormats } from '../../../../../../utils/dateFormats';
 import BolPopover from './components/BolPopover';
@@ -37,7 +40,22 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
     }>(null);
 
     const indexFromStorage = localStorage.getItem('warehouse_index');
+    const viewFromStorage = localStorage.getItem('warehouse_calendar_view');
     const locationFromStorage = localStorage.getItem('warehouse_location');
+
+    const [calendarView, setCalendarView] = React.useState<CalendarView>(
+        viewFromStorage == 'day'
+            ? 'day'
+            : viewFromStorage == 'week'
+            ? 'week'
+            : viewFromStorage == 'month'
+            ? 'month'
+            : 'week'
+    );
+
+    React.useEffect(() => {
+        localStorage.setItem('warehouse_calendar_view', calendarView);
+    }, [calendarView]);
 
     const [index, setIndex] = React.useState(
         indexFromStorage && !isNaN(parseInt(indexFromStorage))
@@ -76,7 +94,8 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                     ? 'scheduled_dropoff_date'
                     : 'scheduled_pickup_date']: getCalendarRange(
                     new Date(),
-                    index
+                    index,
+                    calendarView
                 ),
             },
         },
@@ -151,6 +170,8 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
     return (
         <React.Fragment>
             <Calendar
+                view={calendarView}
+                setView={(v) => setCalendarView(v)}
                 loading={loading}
                 error={error}
                 index={index}
@@ -163,7 +184,8 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                             ? 'scheduled_dropoff_date'
                             : 'scheduled_pickup_date']: getCalendarRange(
                             new Date(),
-                            index
+                            index,
+                            calendarView
                         ),
                         [view == 'receiving' ? 'to_location' : 'from_location']:
                             filter[

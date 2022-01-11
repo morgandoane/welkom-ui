@@ -2,7 +2,9 @@ import {
     Fade,
     IconButton,
     LinearProgress,
+    MenuItem,
     Slide,
+    TextField,
     Typography,
     useTheme,
 } from '@mui/material';
@@ -12,14 +14,17 @@ import {
     addMonths,
     addWeeks,
     differenceInDays,
+    endOfWeek,
     format,
     getDate,
     isSameDay,
+    startOfWeek,
 } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { DateRangeInput } from '../../graphql/schema/DateRange/DateRange';
 import {
+    CalendarView,
     getCalendarRange,
     useCalendarRange,
 } from '../../hooks/useCalendarRange';
@@ -52,6 +57,8 @@ export interface EventGroupProps<T> {
 
 export interface CalendarProps<T> {
     index: number;
+    view: CalendarView;
+    setView: (view: CalendarView) => void;
     onIndex: (index: number, range: DateRangeInput) => void;
     eventGroups: EventGroupProps<T>[];
     getEventProps: (d: T, index: number) => EventProps<T>;
@@ -63,17 +70,20 @@ export interface CalendarProps<T> {
 const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
     const {
         index,
+        view,
         eventGroups,
         actions,
         loading,
         error,
+        setView,
         onIndex,
         getEventProps,
     } = props;
     const { palette, shape } = useTheme();
 
-    const [calIndex, setCalIndex, { start, end }, now] =
-        useCalendarRange(index);
+    const calRange = useCalendarRange(view, index);
+
+    const [calIndex, setCalIndex, { start, end }, now] = calRange;
 
     const weekTotal = differenceInDays(end, start) / 7;
 
@@ -132,18 +142,31 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                 }}
             >
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Typography sx={{ width: 160 }} variant="h6">
-                        {format(
-                            addMonths(new Date(), calIndex),
-                            dateFormats.month + ' ' + dateFormats.year
-                        )}
+                    <Typography variant="h6">
+                        {view == 'month'
+                            ? format(
+                                  addMonths(new Date(), calIndex),
+                                  dateFormats.month + ' ' + dateFormats.year
+                              )
+                            : view == 'week'
+                            ? `${format(
+                                  startOfWeek(addWeeks(new Date(), calIndex)),
+                                  'LLL do'
+                              )} - ${format(
+                                  endOfWeek(addWeeks(new Date(), calIndex)),
+                                  'LLL do YYY'
+                              )}`
+                            : format(
+                                  addDays(new Date(), calIndex),
+                                  dateFormats.condensedDate
+                              )}
                     </Typography>
                     <Box />
                     <IconButton
                         onClick={() =>
                             onIndex(
                                 calIndex - 1,
-                                getCalendarRange(now, calIndex - 1)
+                                getCalendarRange(now, calIndex - 1, view)
                             )
                         }
                         sx={{ height: 32, width: 32, fontSize: '2rem' }}
@@ -156,7 +179,7 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                         onClick={() =>
                             onIndex(
                                 calIndex + 1,
-                                getCalendarRange(now, calIndex + 1)
+                                getCalendarRange(now, calIndex + 1, view)
                             )
                         }
                         sx={{ height: 32, width: 32, fontSize: '2rem' }}
@@ -167,7 +190,31 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                     </IconButton>
                 </Box>
                 <Box sx={{ flex: 1 }} />
-                <Box>{actions}</Box>
+                <Box
+                    sx={{
+                        display: 'Flex',
+                        flexFlow: 'row',
+                        gap: 1,
+                        alignItems: 'center',
+                    }}
+                >
+                    <Box sx={{ width: 120 }}>
+                        <TextField
+                            variant="standard"
+                            InputProps={{ disableUnderline: true }}
+                            select
+                            value={view}
+                            onChange={(e) => {
+                                setView(e.target.value as CalendarView);
+                            }}
+                        >
+                            <MenuItem value={'day'}>Day</MenuItem>
+                            <MenuItem value={'week'}>Week</MenuItem>
+                            <MenuItem value={'month'}>Month</MenuItem>
+                        </TextField>
+                    </Box>
+                    <Box>{actions}</Box>
+                </Box>
             </Box>
             {error ? (
                 <Message type="Warning" message={error.message} />
@@ -186,7 +233,15 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                                 overflow: 'hidden',
                             }}
                         >
-                            {[...Array(weekTotal).keys()].map((weekIndex) => (
+                            {[
+                                ...Array(
+                                    view == 'day'
+                                        ? 1
+                                        : view == 'week'
+                                        ? 1
+                                        : weekTotal
+                                ).keys(),
+                            ].map((weekIndex) => (
                                 <Box
                                     key={'week_' + weekIndex}
                                     sx={{
@@ -200,7 +255,9 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                                                 : undefined,
                                     }}
                                 >
-                                    {[...Array(7).keys()].map((dayIndex) => {
+                                    {[
+                                        ...Array(view == 'day' ? 1 : 7).keys(),
+                                    ].map((dayIndex) => {
                                         const thisDate = addWeeks(
                                             addDays(start, dayIndex),
                                             weekIndex
@@ -222,7 +279,10 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                                                     dayIndex
                                                 }
                                                 sx={{
-                                                    width: 'calc(100% / 7)',
+                                                    width:
+                                                        view == 'day'
+                                                            ? '100%'
+                                                            : 'calc(100% / 7)',
                                                     borderRight:
                                                         dayIndex !== 6
                                                             ? `1px solid ${palette.divider}`
@@ -231,50 +291,88 @@ const Calendar = <T,>(props: CalendarProps<T>): ReactElement => {
                                             >
                                                 <ColumnBox>
                                                     {{
-                                                        header: (
-                                                            <Box
-                                                                sx={{
-                                                                    padding: 0.5,
-                                                                }}
-                                                            >
-                                                                <Box
-                                                                    sx={{
-                                                                        background:
-                                                                            isToday
-                                                                                ? palette
-                                                                                      .primary
-                                                                                      .main
-                                                                                : undefined,
-                                                                        width: 24,
-                                                                        height: 24,
-                                                                        borderRadius: 12,
-                                                                        borderTopLeftRadius: 4,
-                                                                        display:
-                                                                            'flex',
-                                                                        justifyContent:
-                                                                            'center',
-                                                                        alignItems:
-                                                                            'center',
-                                                                    }}
-                                                                >
-                                                                    <Typography
+                                                        header:
+                                                            view ==
+                                                            'day' ? undefined : (
+                                                                <Box>
+                                                                    {weekIndex ==
+                                                                        0 && (
+                                                                        <Box
+                                                                            sx={{
+                                                                                borderBottom: `1px solid ${palette.divider}`,
+                                                                                padding: 0.25,
+                                                                                paddingLeft: 1,
+                                                                                paddingTop: 0.5,
+                                                                            }}
+                                                                        >
+                                                                            <Typography
+                                                                                color="textSecondary"
+                                                                                variant="body2"
+                                                                            >
+                                                                                {dayIndex ==
+                                                                                0
+                                                                                    ? 'Sun'
+                                                                                    : dayIndex ==
+                                                                                      1
+                                                                                    ? 'Mon'
+                                                                                    : dayIndex ==
+                                                                                      2
+                                                                                    ? 'Tue'
+                                                                                    : dayIndex ==
+                                                                                      3
+                                                                                    ? 'Wed'
+                                                                                    : dayIndex ==
+                                                                                      4
+                                                                                    ? 'Thu'
+                                                                                    : dayIndex ==
+                                                                                      5
+                                                                                    ? 'Fri'
+                                                                                    : dayIndex ==
+                                                                                      6
+                                                                                    ? 'Sat'
+                                                                                    : ''}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    )}
+                                                                    <Box
                                                                         sx={{
-                                                                            marginTop: 0.25,
-                                                                            color: isToday
-                                                                                ? palette
-                                                                                      .primary
-                                                                                      .contrastText
-                                                                                : undefined,
+                                                                            background:
+                                                                                isToday
+                                                                                    ? palette
+                                                                                          .primary
+                                                                                          .main
+                                                                                    : undefined,
+                                                                            width: 24,
+                                                                            height: 24,
+                                                                            borderRadius: 12,
+                                                                            borderTopLeftRadius: 4,
+                                                                            display:
+                                                                                'flex',
+                                                                            justifyContent:
+                                                                                'center',
+                                                                            alignItems:
+                                                                                'center',
+                                                                            margin: 1,
                                                                         }}
-                                                                        variant="body2"
                                                                     >
-                                                                        {getDate(
-                                                                            thisDate
-                                                                        )}
-                                                                    </Typography>
+                                                                        <Typography
+                                                                            sx={{
+                                                                                marginTop: 0.25,
+                                                                                color: isToday
+                                                                                    ? palette
+                                                                                          .primary
+                                                                                          .contrastText
+                                                                                    : undefined,
+                                                                            }}
+                                                                            variant="body2"
+                                                                        >
+                                                                            {getDate(
+                                                                                thisDate
+                                                                            )}
+                                                                        </Typography>
+                                                                    </Box>
                                                                 </Box>
-                                                            </Box>
-                                                        ),
+                                                            ),
                                                         content: (
                                                             <Box
                                                                 sx={{

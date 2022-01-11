@@ -1,4 +1,14 @@
-import { addMonths, endOfMonth, startOfMonth } from 'date-fns';
+import {
+    addMonths,
+    addWeeks,
+    endOfMonth,
+    endOfWeek,
+    startOfMonth,
+    startOfWeek,
+    addDays,
+    startOfDay,
+    endOfDay,
+} from 'date-fns';
 import React from 'react';
 import { DateRangeInput } from './../graphql/schema/DateRange/DateRange';
 
@@ -11,26 +21,20 @@ export const getMonthRange = (origin: Date, index: number): DateRangeInput => {
     return { start, end };
 };
 
-export const useMonthRange = (
-    initial_index = 0
-): [
-    index: number,
-    setIndex: (value: number) => void,
-    range: DateRangeInput,
-    now: Date
-] => {
-    const [index, setIndex] = React.useState(initial_index);
+export const getWeekRange = (origin: Date, index: number): DateRangeInput => {
+    const indexed = addWeeks(origin, index);
 
-    const [now, setNow] = React.useState<Date>(new Date());
+    const start = startOfWeek(indexed);
+    const end = endOfWeek(indexed);
 
-    const range = getMonthRange(now, index);
+    return { start, end };
+};
 
-    React.useEffect(() => {
-        const interval = setInterval(() => {
-            setNow(new Date());
-        }, 60000);
-        return () => clearInterval(interval);
-    }, []);
+export const getDayRange = (origin: Date, index: number): DateRangeInput => {
+    const indexed = addDays(origin, index);
 
-    return [index, (i) => setIndex(i), range, now];
+    const start = startOfDay(indexed);
+    const end = endOfDay(indexed);
+
+    return { start, end };
 };

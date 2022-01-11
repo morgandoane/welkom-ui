@@ -1,15 +1,24 @@
 import React from 'react';
-import { getMonthRange, useMonthRange } from './useMonthRange';
+import { getMonthRange, getDayRange, getWeekRange } from './useMonthRange';
 import { addDays, getDay } from 'date-fns';
 import { DateRangeInput } from '../graphql/schema/DateRange/DateRange';
 
+export type CalendarView = 'day' | 'week' | 'month';
+
 export const getCalendarRange = (
     origin: Date,
-    index: number
+    index: number,
+    view: CalendarView
 ): DateRangeInput => {
-    const { start: mStart, end: mEnd } = getMonthRange(origin, index);
-    const start = addDays(mStart, 0 - getDay(mStart));
-    const end = addDays(mEnd, 7 - getDay(mEnd));
+    const { start: mStart, end: mEnd } =
+        view == 'day'
+            ? getDayRange(origin, index)
+            : view == 'week'
+            ? getWeekRange(origin, index)
+            : getMonthRange(origin, index);
+    const start =
+        view == 'month' ? addDays(mStart, 0 - getDay(mStart)) : mStart;
+    const end = view == 'month' ? addDays(mEnd, 7 - getDay(mEnd)) : mEnd;
 
     return {
         start,
@@ -18,6 +27,7 @@ export const getCalendarRange = (
 };
 
 export const useCalendarRange = (
+    view: CalendarView,
     initial_index = 0
 ): [
     index: number,
@@ -25,10 +35,8 @@ export const useCalendarRange = (
     range: DateRangeInput,
     now: Date
 ] => {
-    const [index, setIndex, { start: mStart, end: mEnd }, now] =
-        useMonthRange(initial_index);
-
-    const range = getCalendarRange(now, index);
-
+    const [now, setNow] = React.useState<Date>(new Date());
+    const [index, setIndex] = React.useState(initial_index);
+    const range = getCalendarRange(now, index, view);
     return [index, setIndex, range, now];
 };

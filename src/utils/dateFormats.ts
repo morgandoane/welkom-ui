@@ -1,7 +1,7 @@
 const longDate = '';
 const shortDate = 'MM/dd/yy';
 const year = 'yyyy';
-const condensedDate = 'MMM dd, yyy';
+const condensedDate = 'MMM do, yyy';
 const fullDate = 'MMM dd, yyy';
 const time = 'h:mm a';
 const month = 'MMMM';
