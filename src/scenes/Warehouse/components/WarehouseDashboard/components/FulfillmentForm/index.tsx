@@ -26,7 +26,11 @@ import {
     UpdateFulfillmentRes,
     useFulfillmentUpdate,
 } from '../../../../../../graphql/mutations/fulfillment/useFulfillmentUpdate';
-import { useBol } from '../../../../../../graphql/queries/bols/useBol';
+import {
+    BolQuery,
+    useBol,
+} from '../../../../../../graphql/queries/bols/useBol';
+import { TinyBolsQuery } from '../../../../../../graphql/queries/bols/useTinyBols';
 import { useFulfillment } from '../../../../../../graphql/queries/fulfillment/useFulfillment';
 import { FulfillmentType } from '../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import {
@@ -121,6 +125,7 @@ const FulfillmentForm = (props: {
                       })),
                   }
                 : undefined,
+        refetchQueries: [TinyBolsQuery, BolQuery],
     });
     const [update, { loading: updateLoading }] = useFulfillmentUpdate({
         onCompleted: (data) => setResult({ success: true, data }),
@@ -134,6 +139,7 @@ const FulfillmentForm = (props: {
                       },
                   }
                 : undefined,
+        refetchQueries: [TinyBolsQuery, BolQuery],
     });
 
     const submit = () => {
