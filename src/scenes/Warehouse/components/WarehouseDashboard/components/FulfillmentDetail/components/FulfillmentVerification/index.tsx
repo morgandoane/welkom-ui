@@ -3,6 +3,8 @@ import { Button, Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React, { ReactElement } from 'react';
 import { RiShieldCheckFill } from 'react-icons/ri';
+import AuthGuy from '../../../../../../../../auth/components/AuthGuy';
+import { UiPermission } from '../../../../../../../../auth/UiPermission';
 import VerificationForm from '../../../../../../../../components/Forms/VerificationForm';
 import Message from '../../../../../../../../components/Message';
 import VerificationPreview from '../../../../../../../../components/VerificationPreview';
@@ -183,17 +185,19 @@ export const FulfillmentVerification = (
                     }}
                 >
                     <Typography>{`This ${fulfillment.type.toLowerCase()} has not been verified.`}</Typography>
-                    <Button
-                        onClick={() =>
-                            setState({
-                                _type: 'create',
-                                status: VerificationStatus.Verified,
-                            })
-                        }
-                        startIcon={<RiShieldCheckFill />}
-                    >
-                        Verify now
-                    </Button>
+                    <AuthGuy permission={UiPermission.WarehouseVerification}>
+                        <Button
+                            onClick={() =>
+                                setState({
+                                    _type: 'create',
+                                    status: VerificationStatus.Verified,
+                                })
+                            }
+                            startIcon={<RiShieldCheckFill />}
+                        >
+                            Verify now
+                        </Button>
+                    </AuthGuy>
                 </Box>
             )}
         </Box>

@@ -10,9 +10,7 @@ const LoginLogic = (props: {
     const {
         loginWithRedirect,
         isLoading: loading,
-        isAuthenticated,
         error: authError,
-        handleRedirectCallback,
     } = useAuth0();
 
     const [error, setError] = React.useState<Error | null>(null);
@@ -20,7 +18,7 @@ const LoginLogic = (props: {
     return (
         <React.Fragment>
             {children({
-                onClick: () => loginWithRedirect(),
+                onClick: () => loginWithRedirect({ prompt: 'login' }),
                 loading,
                 error,
                 reset: () => setError(null),

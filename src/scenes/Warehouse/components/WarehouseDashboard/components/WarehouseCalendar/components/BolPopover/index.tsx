@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdAdd, MdCancel, MdChevronRight, MdClear } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import AuthGuy from '../../../../../../../../auth/components/AuthGuy';
+import { UiPermission } from '../../../../../../../../auth/UiPermission';
 import CarefulButton from '../../../../../../../../components/Forms/CarefulButton';
 import FormRow from '../../../../../../../../components/Forms/components/FormRow';
 import { useOrderCancelation } from '../../../../../../../../graphql/mutations/order/useOrderCancelation';
@@ -82,31 +84,33 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
                             }`}</Typography>
                         </Box>
                         <Box sx={{ flex: 1 }} />
-                        <Box>
-                            <CarefulButton
-                                size="small"
-                                loading={cancelLoading}
-                                onClick={() => {
-                                    cancel({
-                                        variables: {
-                                            ids: bol.orders.map(
-                                                (order) => order._id
-                                            ),
-                                        },
-                                        refetchQueries: [
-                                            BolsQuery,
-                                            TinyBolsQuery,
-                                        ],
-                                        onCompleted: () => onClose(),
-                                    });
-                                }}
-                                endIcon={<MdClear />}
-                            >
-                                {bol.orders.length == 1
-                                    ? 'Cancel PO'
-                                    : 'Cancel POs'}
-                            </CarefulButton>
-                        </Box>
+                        <AuthGuy permission={UiPermission.Logistics}>
+                            <Box>
+                                <CarefulButton
+                                    size="small"
+                                    loading={cancelLoading}
+                                    onClick={() => {
+                                        cancel({
+                                            variables: {
+                                                ids: bol.orders.map(
+                                                    (order) => order._id
+                                                ),
+                                            },
+                                            refetchQueries: [
+                                                BolsQuery,
+                                                TinyBolsQuery,
+                                            ],
+                                            onCompleted: () => onClose(),
+                                        });
+                                    }}
+                                    endIcon={<MdClear />}
+                                >
+                                    {bol.orders.length == 1
+                                        ? 'Cancel PO'
+                                        : 'Cancel POs'}
+                                </CarefulButton>
+                            </Box>
+                        </AuthGuy>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box>
