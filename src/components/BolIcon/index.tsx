@@ -74,7 +74,7 @@ const BolIcon = (props: BolIconProps): ReactElement => {
         const appointment = view == 'receiving' ? to : from;
         const date = new Date(appointment.date);
         const today = startOfDay(new Date());
-        const late = isBefore(date, today);
+        const late = isBefore(date, today) && bol.status == BolStatus.Pending;
         return late;
     };
 
