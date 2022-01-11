@@ -33,11 +33,12 @@ import { relocate } from '../../../../../../utils/relocate';
 export interface OrderQueueTableProps {
     contents: OrderQueueContentInput[];
     setContents: (contents: OrderQueueContentInput[]) => void;
+    setLocation: (location: string) => void;
     disabled?: boolean;
 }
 
 const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
-    const { contents, setContents, disabled = false } = props;
+    const { contents, setContents, setLocation, disabled = false } = props;
     const { palette } = useTheme();
 
     const sensors = useSensors(
@@ -118,6 +119,9 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
                                 setContent={(data) => {
                                     const copy = [...contents];
                                     copy[i] = data;
+                                    if (data.location) {
+                                        setLocation(data.location);
+                                    }
                                     setContents(copy);
                                 }}
                             />

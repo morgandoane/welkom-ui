@@ -22,7 +22,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                     }}
                 >
                     {avatar && <Box sx={{ display: 'flex' }}>{avatar}</Box>}
-                    <Typography variant="h3">{children[0]}</Typography>
+                    <Typography variant="crisp">{children[0]}</Typography>
                 </Box>
                 <Typography
                     sx={{ paddingBottom: 2 }}
@@ -45,7 +45,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                 }}
             >
                 {avatar && <Box sx={{ display: 'flex' }}>{avatar}</Box>}
-                <Typography variant="h3">{children}</Typography>
+                <Typography variant="crisp">{children}</Typography>
             </Box>
         );
 };

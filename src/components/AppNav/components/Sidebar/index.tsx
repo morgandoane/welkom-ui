@@ -12,6 +12,7 @@ import {
 import React, { ReactElement } from 'react';
 import { AiFillBuild, AiOutlineNodeIndex } from 'react-icons/ai';
 import { FaHandsHelping, FaTruckLoading } from 'react-icons/fa';
+import { IoMdDocument } from 'react-icons/io';
 import {
     MdAccountCircle,
     MdChevronRight,
@@ -122,7 +123,6 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'permission', permission: UiPermission.Logistics },
         },
-
         {
             icon: <MdAccountCircle style={iconStyle} />,
             label: 'People',
@@ -132,6 +132,12 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'role', role: UserRole.Manager },
         },
+        // {
+        //     icon: <IoMdDocument style={iconStyle} />,
+        //     label: 'Recipes',
+        //     items: [{ label: 'Recipes', url: '/recipes' }],
+        //     auth: { _type: 'permission', permission: UiPermission.Recipes },
+        // },
         {
             icon: <FaTruckLoading style={iconStyle} />,
             label: 'Warehouse',
@@ -179,7 +185,7 @@ const Sidebar = (): ReactElement => {
                 }}
             >
                 <Box sx={{ display: 'flex', paddingBottom: 2, paddingTop: 1 }}>
-                    <Logo width={focused ? 100 : 60} />
+                    <Logo width={expanded ? 100 : 60} />
                 </Box>
                 {navGroups.map((group, index) => {
                     return <NavGroup {...group} key={'group_' + index} />;

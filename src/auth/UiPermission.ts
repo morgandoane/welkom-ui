@@ -5,6 +5,7 @@ export enum UiPermission {
     WarehouseVerification = 'Warehouse Verification',
     Logistics = 'Logistics',
     Library = 'Library',
+    Recipes = 'Recipes',
 }
 
 export interface UiPermissionData {
@@ -27,7 +28,6 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.GetFulfillments,
             Permission.CreateFulfillment,
             Permission.UpdateFulfillment,
-            Permission.VerifyFulfillment,
             Permission.GetItems,
             Permission.GetItineraries,
             Permission.GetLocations,
@@ -124,6 +124,23 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.GetCompanies,
             Permission.CreateCompany,
             Permission.UpdateCompany,
+        ],
+    },
+    {
+        name: UiPermission.Recipes,
+        description: 'View, create, and update recipes.',
+        permissions: [
+            Permission.GetConversions,
+            Permission.CreateConversion,
+            Permission.UpdateConversion,
+            Permission.GetRecipeFolders,
+            Permission.CreateRecipeFolder,
+            Permission.UpdateRecipeFolder,
+            Permission.GetItems,
+            Permission.GetRecipes,
+            Permission.CreateRecipe,
+            Permission.UpdateRecipe,
+            Permission.GetUnits,
         ],
     },
 ];

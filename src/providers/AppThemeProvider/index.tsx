@@ -15,13 +15,11 @@ import { useUserPreferenceUpdate } from '../../graphql/mutations/userPreferences
 declare module '@mui/material/styles' {
     interface TypographyVariants {
         crisp: React.CSSProperties;
-        artifika: React.CSSProperties;
     }
 
     // allow configuration using `createTheme`
     interface TypographyVariantsOptions {
         crisp?: React.CSSProperties;
-        artifika?: React.CSSProperties;
     }
 }
 
@@ -29,7 +27,6 @@ declare module '@mui/material/styles' {
 declare module '@mui/material/Typography' {
     interface TypographyPropsVariantOverrides {
         crisp: true;
-        artifika: true;
     }
 }
 
@@ -66,9 +63,10 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
                 fontWeight: 900,
                 fontSize: '4rem',
             },
-            artifika: {
-                fontFamily: 'Artifika',
-                fontSize: '2rem',
+            crisp: {
+                fontFamily: 'rubik',
+                fontSize: '3.5rem',
+                fontWeight: 800,
             },
         },
         components: {

@@ -8,11 +8,17 @@ import {
 } from '@mui/material';
 import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
-import { MdAdd, MdChevronRight } from 'react-icons/md';
+import { MdAdd, MdCancel, MdChevronRight, MdClear } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import CarefulButton from '../../../../../../../../components/Forms/CarefulButton';
 import FormRow from '../../../../../../../../components/Forms/components/FormRow';
+import { useOrderCancelation } from '../../../../../../../../graphql/mutations/order/useOrderCancelation';
 import { useBol } from '../../../../../../../../graphql/queries/bols/useBol';
-import { TinyBol } from '../../../../../../../../graphql/queries/bols/useTinyBols';
+import { BolsQuery } from '../../../../../../../../graphql/queries/bols/useBols';
+import {
+    TinyBol,
+    TinyBolsQuery,
+} from '../../../../../../../../graphql/queries/bols/useTinyBols';
 import { Bol } from '../../../../../../../../graphql/schema/Bol/Bol';
 import { Fulfillment } from '../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import { dateFormats } from '../../../../../../../../utils/dateFormats';
@@ -31,6 +37,8 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
     const { view, focus, onClose } = props;
 
     const nav = useNavigate();
+
+    const [cancel, { loading: cancelLoading }] = useOrderCancelation();
 
     const { data } = useBol({
         variables: {
@@ -59,9 +67,47 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
         >
             {bol && (
                 <Box sx={{ padding: 2 }}>
-                    <Typography variant="h6">
-                        {bol.code ? bol.code : 'Pending BOL'}
-                    </Typography>
+                    <Box sx={{ paddingBottom: 1, display: 'flex' }}>
+                        <Box>
+                            <Typography variant="h6">
+                                {bol.code ? bol.code : 'Pending BOL'}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="textSecondary"
+                            >{`Against ${
+                                bol.orders.length == 1
+                                    ? bol.orders[0].code
+                                    : bol.orders.map((o) => o.code).join(', ')
+                            }`}</Typography>
+                        </Box>
+                        <Box sx={{ flex: 1 }} />
+                        <Box>
+                            <CarefulButton
+                                size="small"
+                                loading={cancelLoading}
+                                onClick={() => {
+                                    cancel({
+                                        variables: {
+                                            ids: bol.orders.map(
+                                                (order) => order._id
+                                            ),
+                                        },
+                                        refetchQueries: [
+                                            BolsQuery,
+                                            TinyBolsQuery,
+                                        ],
+                                        onCompleted: () => onClose(),
+                                    });
+                                }}
+                                endIcon={<MdClear />}
+                            >
+                                {bol.orders.length == 1
+                                    ? 'Cancel PO'
+                                    : 'Cancel POs'}
+                            </CarefulButton>
+                        </Box>
+                    </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box>
                             <Typography variant="caption" color="textSecondary">

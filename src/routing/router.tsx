@@ -19,6 +19,7 @@ import Logistics from '../scenes/Logistics';
 import Logout from '../scenes/Logout';
 import NotFound from '../scenes/NotFound';
 import People from '../scenes/People';
+import Recipes from '../scenes/Recipes';
 import ResetPassword from '../scenes/ResetPassword';
 import Warehouse from '../scenes/Warehouse';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
@@ -51,6 +52,17 @@ const routes: {
             element: (
                 <AuthenticatedRoute>
                     <Logistics />
+                </AuthenticatedRoute>
+            ),
+        },
+    },
+    {
+        auth: { _type: 'permission', permission: UiPermission.Recipes },
+        props: {
+            path: '/recipes/*',
+            element: (
+                <AuthenticatedRoute>
+                    <Recipes />
                 </AuthenticatedRoute>
             ),
         },

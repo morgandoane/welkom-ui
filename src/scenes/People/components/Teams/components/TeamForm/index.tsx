@@ -21,14 +21,21 @@ import {
     CreateTeamRes,
     useTeamCreation,
 } from '../../../../../../graphql/mutations/team/useTeamCreation';
-import { useTinyProfiles } from '../../../../../../graphql/queries/profiles/useTinyProfiles';
-import { useTeam } from '../../../../../../graphql/queries/team/useTeam';
+import {
+    TinyProfiles,
+    useTinyProfiles,
+} from '../../../../../../graphql/queries/profiles/useTinyProfiles';
+import {
+    TeamQuery,
+    useTeam,
+} from '../../../../../../graphql/queries/team/useTeam';
 import {
     CreateTeamInput,
     UpdateTeamInput,
 } from '../../../../../../graphql/schema/Team/TeamInput';
 import { OperationResult } from '../../../../../../graphql/types';
 import Message from '../../../../../../components/Message';
+import { TeamsQuery } from '../../../../../../graphql/queries/team/useTeams';
 
 const TeamForm = (): ReactElement => {
     const nav = useNavigate();
@@ -106,6 +113,7 @@ const TeamForm = (): ReactElement => {
                       },
                   }
                 : undefined,
+        refetchQueries: [TeamsQuery, TinyProfiles, TeamQuery],
     });
 
     const [update, { loading: updateLoading }] = useTeamUpdate({
@@ -125,6 +133,7 @@ const TeamForm = (): ReactElement => {
                       },
                   }
                 : undefined,
+        refetchQueries: [TeamsQuery, TinyProfiles, TeamQuery],
     });
 
     const submit = () => {

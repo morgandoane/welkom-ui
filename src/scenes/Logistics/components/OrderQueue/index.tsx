@@ -143,6 +143,12 @@ const OrderQueue = (): ReactElement => {
                         content: (
                             <OrderQueueTable
                                 contents={contents}
+                                setLocation={(location) =>
+                                    localStorage.setItem(
+                                        'OrderQueue_Location',
+                                        location
+                                    )
+                                }
                                 setContents={(data) => {
                                     setTimer(threshold);
                                     setContents(data);
@@ -230,10 +236,15 @@ const OrderQueue = (): ReactElement => {
                 contents={contents}
                 addItem={(item) => {
                     setTimer(threshold);
+                    const locationFromStorage = localStorage.getItem(
+                        'OrderQueue_Location'
+                    );
+                    const location = locationFromStorage || undefined;
                     setContents([
                         ...contents,
                         {
                             item: item._id,
+                            location,
                             quantity: item.order_queue_qty || 0,
                             unit: item.default_unit
                                 ? item.default_unit._id

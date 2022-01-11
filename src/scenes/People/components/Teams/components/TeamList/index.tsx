@@ -21,6 +21,7 @@ const TeamList = (): ReactElement => {
 
     const { data, error, loading } = useTeams({
         variables: { filter },
+        fetchPolicy: 'network-only',
     });
 
     const count = data ? data.teams.count : 0;

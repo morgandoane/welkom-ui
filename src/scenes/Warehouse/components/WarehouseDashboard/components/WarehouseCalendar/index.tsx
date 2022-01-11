@@ -7,6 +7,7 @@ import {
     MdLocalShipping,
     MdRadioButtonUnchecked,
 } from 'react-icons/md';
+import BolIcon from '../../../../../../components/BolIcon';
 import Calendar, {
     EventGroupProps,
 } from '../../../../../../components/Calendar';
@@ -34,42 +35,6 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
         target: EventTarget & HTMLButtonElement;
         bol: TinyBol;
     }>(null);
-
-    const bolIcons: Record<BolStatus, ReactElement> = {
-        [BolStatus.Complete]: (
-            <Box
-                sx={{
-                    display: 'flex',
-                    fontSize: '2rem',
-                    color: palette.success.main,
-                }}
-            >
-                <MdCheckCircle />
-            </Box>
-        ),
-        [BolStatus.Partial]: (
-            <Box
-                sx={{
-                    display: 'flex',
-                    fontSize: '2rem',
-                    color: palette.primary.main,
-                }}
-            >
-                <MdDownloading />
-            </Box>
-        ),
-        [BolStatus.Pending]: (
-            <Box
-                sx={{
-                    display: 'flex',
-                    fontSize: '2rem',
-                    color: palette.text.disabled,
-                }}
-            >
-                <MdRadioButtonUnchecked />
-            </Box>
-        ),
-    };
 
     const indexFromStorage = localStorage.getItem('warehouse_index');
     const locationFromStorage = localStorage.getItem('warehouse_location');
@@ -212,7 +177,7 @@ const WarehouseCalendar = (props: WarehouseCalendarProps): ReactElement => {
                 getEventProps={(bol, index) => ({
                     id: bol._id,
                     event: bol,
-                    icon: bolIcons[bol.status],
+                    icon: <BolIcon view={view} bol={bol} />,
                     primary: bol.contents
                         .map((c) => `${c.item.english}`)
                         .join(', '),

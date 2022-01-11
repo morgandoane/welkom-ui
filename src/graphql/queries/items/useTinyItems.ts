@@ -3,29 +3,36 @@ import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
 import { ItemFilter } from '../../schema/Item/ItemFilter';
 import { Pagination } from '../../schema/Pagination/Pagination';
 
+export const TinyItemFragment = gql`
+    fragment TinyItemFragment on Item {
+        _id
+        english
+        spanish
+        unit_class
+        order_queue_qty
+        default_unit {
+            _id
+            class
+            english
+            spanish
+            english_plural
+            spanish_plural
+            base_per_unit
+        }
+        default_vendor {
+            _id
+            name
+        }
+    }
+`;
+
 export const TinyItems = gql`
+    ${TinyItemFragment}
     query TinyItems($filter: ItemFilter!) {
         items(filter: $filter) {
             count
             items {
-                _id
-                english
-                spanish
-                unit_class
-                order_queue_qty
-                default_unit {
-                    _id
-                    class
-                    english
-                    spanish
-                    english_plural
-                    spanish_plural
-                    base_per_unit
-                }
-                default_vendor {
-                    _id
-                    name
-                }
+                ...TinyItemFragment
             }
         }
     }
