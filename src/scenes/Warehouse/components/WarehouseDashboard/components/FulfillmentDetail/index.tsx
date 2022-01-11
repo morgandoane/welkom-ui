@@ -30,6 +30,7 @@ import { useClickState } from '../../../../../../hooks/useClickState';
 import { dateFormats } from '../../../../../../utils/dateFormats';
 import FulfillmentAttachments from './components/FulfillmentAttachments';
 import FulfillmentContents from './components/FulfillmentContents';
+import FulfillmentDetails from './components/FulfillmentDetails';
 import FulfillmentVerification from './components/FulfillmentVerification';
 
 const FulfillmentDetail = (): ReactElement => {
@@ -96,13 +97,15 @@ const FulfillmentDetail = (): ReactElement => {
                                 >
                                     {[
                                         fulfillment.type,
-                                        `Against ${
-                                            fulfillment.bol.code
-                                                .toLowerCase()
-                                                .includes('bol')
-                                                ? ''
-                                                : 'BOL '
-                                        } ${fulfillment.bol.code}`,
+                                        fulfillment.bol.code
+                                            ? `Against ${
+                                                  (fulfillment.bol.code || '')
+                                                      .toLowerCase()
+                                                      .includes('bol')
+                                                      ? ''
+                                                      : 'BOL '
+                                              } ${fulfillment.bol.code}`
+                                            : '',
                                     ]}
                                 </PageTitle>
                             </Box>
@@ -116,45 +119,9 @@ const FulfillmentDetail = (): ReactElement => {
                                         />
                                     ),
                                     Details: (
-                                        <Box sx={{ paddingTop: 3 }}>
-                                            <Details gap={4}>
-                                                {[
-                                                    {
-                                                        key: 'Created by',
-                                                        value: fulfillment
-                                                            .created_by.name,
-                                                    },
-                                                    {
-                                                        key: 'Date created',
-                                                        value: format(
-                                                            new Date(
-                                                                fulfillment.date_created
-                                                            ),
-                                                            dateFormats.condensedDate
-                                                        ),
-                                                    },
-                                                    {
-                                                        key: 'Last modified by',
-                                                        value: !fulfillment.modified_by
-                                                            ? '-'
-                                                            : fulfillment
-                                                                  .modified_by
-                                                                  .name,
-                                                    },
-                                                    {
-                                                        key: 'Date modified',
-                                                        value: !fulfillment.date_modified
-                                                            ? 'Never'
-                                                            : format(
-                                                                  new Date(
-                                                                      fulfillment.date_modified
-                                                                  ),
-                                                                  dateFormats.condensedDate
-                                                              ),
-                                                    },
-                                                ]}
-                                            </Details>
-                                        </Box>
+                                        <FulfillmentDetails
+                                            fulfillment={fulfillment}
+                                        />
                                     ),
                                     Documents: (
                                         <FulfillmentAttachments

@@ -13,7 +13,14 @@ export enum FulfillmentType {
 
 export interface FulfillmentBol {
     _id: string;
-    code: string;
+    code?: string | null;
+    seal?: string | null;
+    from: {
+        date: Date;
+    };
+    to: {
+        date: Date;
+    };
 }
 
 export interface Fulfillment extends Verified {
@@ -47,6 +54,13 @@ export const FulfillmentFragment = gql`
         bol {
             _id
             code
+            seal
+            from {
+                date
+            }
+            to {
+                date
+            }
         }
         lots {
             _id

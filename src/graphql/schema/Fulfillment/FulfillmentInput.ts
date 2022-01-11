@@ -18,6 +18,7 @@ export interface FulfillmentItemInput {
 export interface CreateFulfillmentInput {
     bol: string;
     bol_code_override?: string;
+    seal?: string;
     items: FulfillmentItemInput[];
     type: FulfillmentType;
     location: string;

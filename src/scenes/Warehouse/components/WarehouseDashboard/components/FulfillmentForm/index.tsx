@@ -351,24 +351,52 @@ const FulfillmentForm = (props: {
                                                 }}
                                             >
                                                 {bol && (
-                                                    <FormRow gap={4}>
-                                                        <TextFormField
-                                                            label="BOL number"
-                                                            value={
-                                                                state.bol_code_override ||
-                                                                bol.code ||
-                                                                ''
-                                                            }
-                                                            onChange={(val) => {
-                                                                setState({
-                                                                    ...state,
-                                                                    bol_code_override:
-                                                                        val ||
-                                                                        undefined,
-                                                                });
-                                                            }}
-                                                        />
-                                                    </FormRow>
+                                                    <Box>
+                                                        <FormRow gap={4}>
+                                                            <TextFormField
+                                                                label="BOL number"
+                                                                value={
+                                                                    state.bol_code_override ||
+                                                                    bol.code ||
+                                                                    ''
+                                                                }
+                                                                onChange={(
+                                                                    val
+                                                                ) => {
+                                                                    setState({
+                                                                        ...state,
+                                                                        bol_code_override:
+                                                                            val ||
+                                                                            undefined,
+                                                                    });
+                                                                }}
+                                                            />
+                                                        </FormRow>
+                                                        {action ==
+                                                            'receive' && (
+                                                            <FormRow gap={4}>
+                                                                <TextFormField
+                                                                    label="Seal number"
+                                                                    value={
+                                                                        state.seal ||
+                                                                        ''
+                                                                    }
+                                                                    onChange={(
+                                                                        val
+                                                                    ) => {
+                                                                        setState(
+                                                                            {
+                                                                                ...state,
+                                                                                seal:
+                                                                                    val ||
+                                                                                    '',
+                                                                            }
+                                                                        );
+                                                                    }}
+                                                                />
+                                                            </FormRow>
+                                                        )}
+                                                    </Box>
                                                 )}
                                                 <Box
                                                     sx={{

@@ -1,5 +1,3 @@
-import { FulfillmentFragment } from './../Fulfillment/Fulfillment';
-import { BaseFragment } from './../../fragments/BaseFragment';
 import { gql } from '@apollo/client';
 import { TinyLocation } from './../../queries/locations/useTinyLocations';
 import { TinyCompany } from './../Company/Company';
@@ -35,6 +33,7 @@ export interface BolItinerary {
 export interface Bol extends Base {
     itinerary: BolItinerary;
     code?: string | null;
+    seal?: string | null;
     status: BolStatus;
     from: BolAppointment;
     to: BolAppointment;
@@ -47,6 +46,7 @@ export interface Bol extends Base {
 export const BolFragment = gql`
     fragment BolFragment on Bol {
         _id
+        seal
         itinerary {
             _id
             code

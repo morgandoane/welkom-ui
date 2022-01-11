@@ -12,6 +12,7 @@ export const TinyBolsQuery = gql`
             count
             items {
                 _id
+                seal
                 from {
                     date
                 }
@@ -49,6 +50,7 @@ export const TinyBolsQuery = gql`
 
 export interface TinyBol {
     _id: string;
+    seal?: string | null;
     itinerary: {
         _id: string;
         code: string;

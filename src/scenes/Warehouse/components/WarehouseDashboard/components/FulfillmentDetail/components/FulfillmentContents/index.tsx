@@ -38,16 +38,8 @@ const FulfillmentContents = (props: FulfillmentContentsProps): ReactElement => {
 
     return (
         <Box sx={{ paddingTop: 3 }}>
-            <Typography
-                sx={{ maxWidth: 480 }}
-            >{`This ${fulfillment.type.toLowerCase()} contains ${
-                fulfillment.lots.length
-            } lot${
-                fulfillment.lots.length == 1 ? '' : 's'
-            }. Each lot inside a ${fulfillment.type.toLowerCase()} may contain fragments of other lots, grouped together by item.`}</Typography>
             <Box
                 sx={{
-                    paddingTop: 2,
                     maxWidth: 600,
                 }}
             >
