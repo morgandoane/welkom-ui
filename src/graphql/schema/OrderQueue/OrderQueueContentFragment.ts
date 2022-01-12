@@ -46,5 +46,6 @@ export const OrderQueueContentFragment = gql`
             }
         }
         date
+        time_sensitive
     }
 `;

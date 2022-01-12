@@ -7,4 +7,5 @@ export interface OrderQueueContentInput {
     date?: Date;
     vendor?: string;
     vendor_location?: string;
+    time_sensitive?: boolean;
 }

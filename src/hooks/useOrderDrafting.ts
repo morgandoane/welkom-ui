@@ -86,16 +86,33 @@ const useOrderDraftingData = (): {
     };
 };
 
+const template = (
+    to: string[],
+    cc: string[],
+    bcc: string[],
+    subject: string,
+    body: string
+) => {
+    if (!body) throw new Error('Please provide a body!');
+    if (!subject) throw new Error('Please provide a subject!');
+
+    return `mailto:${to.join(',')}?cc=${cc.join(',')}${
+        bcc.length == 0 ? '' : `$bcc=${bcc.join(',')}}`
+    }&subject=${subject}&body=${body}`;
+};
+
 export interface OrderDraft {
     company: TinyCompany;
     link: string;
     holdup: string | null;
     items: {
         content: OrderQueueContentInput;
-        link: string;
+        line: string;
         holdup: string | null;
     }[];
 }
+
+const br = '%0D%0A';
 
 export const useOrderDrafting = (
     contents: OrderQueueContentInput[]
@@ -106,51 +123,82 @@ export const useOrderDrafting = (
         loading,
     } = useOrderDraftingData();
 
-    const lineText = (content: OrderQueueContentInput): string | null => {
-        const po = content.order_code;
-        const item = items.find((i) => i._id === content.item);
-        const unit = units.find((u) => u._id === content.unit);
-        const quantity = content.quantity;
-        const location = locations.find((l) => l._id === content.location);
-        const locationLabel = !location
-            ? null
-            : location.label
-            ? location.label
-            : location.address
-            ? location.address
-            : null;
-        const date = content.date;
-        const vendorLocation = locations.find(
-            (l) => l._id === content.vendor_location
+    const getLineForContent = ({
+        order_code,
+        item,
+        unit,
+        quantity,
+        location,
+        date,
+        vendor,
+        vendor_location,
+        time_sensitive,
+    }: OrderQueueContentInput): { line: string; holdup: string | null } => {
+        const tinyItem = items.find((i) => item === i._id);
+        const tinyUnit = units.find((i) => unit === i._id);
+        const tinyLocation = locations.find((i) => location === i._id);
+        const tinyVendor = companies.find((i) => vendor === i._id);
+        const tinyVendorLocation = locations.find(
+            (i) => vendor_location === i._id
         );
 
-        if (
-            po &&
-            item &&
-            unit &&
-            quantity &&
-            location &&
-            locationLabel &&
-            date
-        ) {
-            return `${item.english} - ${quantity} x ${
-                unit[quantity == 1 ? 'english' : 'english_plural']
-            } (${po}) delivered to ${locationLabel} on ${format(
-                date,
-                dateFormats.condensedDate
-            )}\n`;
-        } else {
-            return null;
+        if (!order_code)
+            return {
+                line: '',
+                holdup: 'Needs a PO number.',
+            };
+        if (!tinyItem)
+            return {
+                line: '',
+                holdup: 'Needs an item.',
+            };
+        if (!tinyUnit)
+            return {
+                line: '',
+                holdup: 'Needs a unit.',
+            };
+        if (!quantity)
+            return {
+                line: '',
+                holdup: 'Needs a quantity.',
+            };
+        if (!tinyLocation)
+            return {
+                line: '',
+                holdup: 'Needs a destination.',
+            };
+        if (!date)
+            return {
+                line: '',
+                holdup: 'Needs a delivery date.',
+            };
+        if (!tinyVendor)
+            return {
+                line: '',
+                holdup: 'Needs a vendor.',
+            };
+        else {
+            return {
+                line: `${order_code}${br}------------------${br}${quantity} ${
+                    tinyUnit[quantity == 1 ? 'english' : 'english_plural']
+                } of ${tinyItem.english}${br}delivered to ${
+                    tinyLocation.label || tinyLocation?.address?.city || 'us'
+                }${
+                    tinyVendorLocation
+                        ? ` from ${
+                              tinyVendorLocation.label ||
+                              tinyVendorLocation?.address?.city ||
+                              tinyVendor.name
+                          }`
+                        : ''
+                } on ${format(date, dateFormats.condensedDate)}${
+                    time_sensitive
+                        ? ' by ' + format(date, dateFormats.time)
+                        : ''
+                }${br}${br}`,
+                holdup: null,
+            };
         }
-    };
-
-    const getDraftForContent = (
-        content: OrderQueueContentInput
-    ): { link: string; holdup: string | null } => {
-        return {
-            link: '',
-            holdup: 'Not ready.',
-        };
     };
 
     const getDraftForContents = (): OrderDraft[] => {
@@ -166,33 +214,55 @@ export const useOrderDrafting = (
                 }
         }
 
-        const drafts: OrderDraft[] = [];
+        const data: OrderDraft[] = [];
 
         for (const key of Object.keys(groups)) {
             const company = companies.find((c) => c._id === key);
             const contents = groups[key];
 
-            const link = '';
-            const holdup = 'Not ready';
+            const emailToSet: string[] = [];
+
+            const subject =
+                data.length === 1 || !data[0]
+                    ? 'PO - Little Dutch Boy Bakeries'
+                    : `PO# ${data[0].items[0].content.order_code}`;
+
+            let body =
+                (emailToSet.length === 1 ? emailToSet[0] : 'Hey there!') +
+                `${br}${br}${
+                    contents.length == 1
+                        ? 'We need - '
+                        : `Please process these ${contents.length} POs for Little Dutch Boy`
+                }${br}`;
+
+            for (const content of contents) {
+                const { holdup, line } = getLineForContent(content);
+                body += `${br}${line}`;
+            }
+
+            body += `${br}Please confirm.${br}Thanks!${br}${br}`;
 
             if (company && contents.length > 0) {
-                drafts.push({
+                data.push({
                     company,
-                    link,
-                    holdup,
+                    link: template([], [], [], subject, body),
+                    holdup:
+                        contents
+                            .map((c) => getLineForContent(c))
+                            .find((c) => c.holdup !== null)?.holdup || null,
                     items: contents.map((content) => ({
                         content,
-                        ...getDraftForContent(content),
+                        ...getLineForContent(content),
                     })),
                 });
             }
         }
 
-        return drafts;
+        return data;
     };
 
     return {
-        data: [],
+        data: getDraftForContents(),
         error,
         loading,
     };

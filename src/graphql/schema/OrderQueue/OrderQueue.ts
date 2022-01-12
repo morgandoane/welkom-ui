@@ -12,6 +12,7 @@ export interface OrderQueueContent {
     quantity?: number | null;
     location?: TinyLocation | null;
     date?: Date | null;
+    time_sensitive?: boolean;
 }
 
 export interface OrderQueue {

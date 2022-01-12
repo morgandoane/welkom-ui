@@ -18,7 +18,6 @@ const Files = (props: FilesProps): ReactElement => {
     const { files, storage_category, prefix, refetchQueries } = props;
 
     const [view, setView] = React.useState<'grid' | 'table'>('table');
-    const [pdf, setPdf] = React.useState<any>(null);
 
     const [remove, { loading }] = useFileDeletion({
         refetchQueries,
@@ -41,20 +40,11 @@ const Files = (props: FilesProps): ReactElement => {
                                     },
                                 });
                             }}
-                            setPdf={(d) => setPdf(d)}
                             file={file}
                             key={'filePreview_' + index}
                         />
                     ))}
                 </Box>
-                <Dialog
-                    fullWidth={true}
-                    maxWidth="xl"
-                    open={Boolean(pdf)}
-                    onClose={() => setPdf(null)}
-                >
-                    <iframe style={{ height: '85vh' }} src={pdf} />
-                </Dialog>
             </React.Fragment>
         );
     else return <Box></Box>;

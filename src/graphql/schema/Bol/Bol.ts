@@ -1,3 +1,5 @@
+import { FulfillmentType } from './../Fulfillment/Fulfillment';
+import { TinyProfile } from './../Profile/Profile';
 import { gql } from '@apollo/client';
 import { TinyLocation } from './../../queries/locations/useTinyLocations';
 import { TinyCompany } from './../Company/Company';
@@ -30,6 +32,12 @@ export interface BolItinerary {
     orders: BolOrder[];
 }
 
+export interface BolSignature {
+    profile: TinyProfile;
+    fulfillment_type: FulfillmentType;
+    confidence: number;
+}
+
 export interface Bol extends Base {
     itinerary: BolItinerary;
     code?: string | null;
@@ -47,6 +55,18 @@ export const BolFragment = gql`
     fragment BolFragment on Bol {
         _id
         seal
+        signatures {
+            profile {
+                user_id
+                picture
+                name
+                email
+                given_name
+                family_name
+            }
+            fulfillment_type
+            confidence
+        }
         itinerary {
             _id
             code

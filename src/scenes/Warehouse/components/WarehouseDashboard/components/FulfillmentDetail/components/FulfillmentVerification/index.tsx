@@ -5,6 +5,8 @@ import React, { ReactElement } from 'react';
 import { RiShieldCheckFill } from 'react-icons/ri';
 import AuthGuy from '../../../../../../../../auth/components/AuthGuy';
 import { UiPermission } from '../../../../../../../../auth/UiPermission';
+import usePermissions from '../../../../../../../../auth/usePermissions';
+import { UserRole } from '../../../../../../../../auth/UserRole';
 import VerificationForm from '../../../../../../../../components/Forms/VerificationForm';
 import Message from '../../../../../../../../components/Message';
 import VerificationPreview from '../../../../../../../../components/VerificationPreview';
@@ -34,6 +36,8 @@ export const FulfillmentVerification = (
 ): ReactElement => {
     const { fulfillment } = props;
     const { verification } = fulfillment;
+
+    const { roles } = usePermissions();
 
     const [state, setState] = React.useState<
         | null
@@ -198,6 +202,21 @@ export const FulfillmentVerification = (
                             Verify now
                         </Button>
                     </AuthGuy>
+                </Box>
+            )}
+            {roles.includes(UserRole.Admin) && (
+                <Box sx={{ paddingTop: 4 }}>
+                    <Typography variant="h6" sx={{ paddingBottom: 1 }}>
+                        Signatures
+                    </Typography>
+                    {fulfillment.bol.signatures.map((sig, i) => (
+                        <Box key={'sig_' + i}>
+                            <Typography>{sig.profile.name}</Typography>
+                            <Typography variant="caption" color="textSecondary">
+                                {sig.fulfillment_type}
+                            </Typography>
+                        </Box>
+                    ))}
                 </Box>
             )}
         </Box>

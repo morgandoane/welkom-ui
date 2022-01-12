@@ -23,6 +23,21 @@ export const TinyItemFragment = gql`
             _id
             name
         }
+        created_by {
+            user_id
+            name
+            email
+            picture
+            given_name
+            family_name
+        }
+        modified_by {
+            user_id
+            name
+            email
+        }
+        date_modified
+        date_created
     }
 `;
 

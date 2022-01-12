@@ -31,6 +31,7 @@ import { dateFormats } from '../../../../../../utils/dateFormats';
 import FulfillmentAttachments from './components/FulfillmentAttachments';
 import FulfillmentContents from './components/FulfillmentContents';
 import FulfillmentDetails from './components/FulfillmentDetails';
+import FulfillmentDocument from './components/FulfillmentDocument';
 import FulfillmentVerification from './components/FulfillmentVerification';
 
 const FulfillmentDetail = (): ReactElement => {
@@ -123,7 +124,13 @@ const FulfillmentDetail = (): ReactElement => {
                                             fulfillment={fulfillment}
                                         />
                                     ),
-                                    Documents: (
+                                    ['Bol Document']: (
+                                        <FulfillmentDocument
+                                            fulfillment={fulfillment}
+                                            refetch={() => refetch()}
+                                        />
+                                    ),
+                                    ['Other documents']: (
                                         <FulfillmentAttachments
                                             fulfillment={fulfillment}
                                             refetch={() => refetch()}

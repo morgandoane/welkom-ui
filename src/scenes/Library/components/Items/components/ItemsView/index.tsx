@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Fab } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +29,7 @@ import { TinyItem } from '../../../../../../graphql/schema/Item/Item';
 import { ItemFilter } from '../../../../../../graphql/schema/Item/ItemFilter';
 import { UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
 import { OperationResult } from '../../../../../../graphql/types';
+import { dateFormats } from '../../../../../../utils/dateFormats';
 
 const ItemsView = (): ReactElement => {
     const nav = useNavigate();
@@ -144,6 +146,48 @@ const ItemsView = (): ReactElement => {
                                               UnitClass.Weight
                                             ? 'Pounds'
                                             : '',
+                                },
+                                {
+                                    field: 'created_by',
+                                    flex: 1,
+                                    headerName: 'Created by',
+                                    valueGetter: (data) =>
+                                        (data.row as TinyItem).created_by.name,
+                                },
+                                {
+                                    field: 'date_created',
+                                    flex: 1,
+                                    headerName: 'Date created',
+                                    valueGetter: (data) =>
+                                        format(
+                                            new Date(
+                                                (
+                                                    data.row as TinyItem
+                                                ).date_created
+                                            ),
+                                            dateFormats.condensedDate
+                                        ),
+                                },
+                                {
+                                    field: 'modified_by',
+                                    flex: 1,
+                                    headerName: 'Modified by',
+                                    valueGetter: (data) =>
+                                        (data.row as TinyItem).modified_by.name,
+                                },
+                                {
+                                    field: 'date_modified',
+                                    flex: 1,
+                                    headerName: 'Date modified',
+                                    valueGetter: (data) =>
+                                        format(
+                                            new Date(
+                                                (
+                                                    data.row as TinyItem
+                                                ).date_modified
+                                            ),
+                                            dateFormats.condensedDate
+                                        ),
                                 },
                             ]}
                             onPageChange={(page) => {

@@ -20,6 +20,7 @@ import {
 } from '../../../../graphql/mutations/orderQueue/processOrderQueue';
 import { OperationResult } from '../../../../graphql/types';
 import { addDays, setHours, setMinutes } from 'date-fns';
+import OrderQueueEmails from './components/OrderQueueEmails';
 
 const threshold = 1500;
 
@@ -129,15 +130,25 @@ const OrderQueue = (): ReactElement => {
                 <ColumnBox>
                     {{
                         header: (
-                            <Box sx={{ paddingBottom: 2 }}>
-                                <PageTitle>Order Queue </PageTitle>
-                                <Typography
-                                    color="textSecondary"
-                                    variant="body2"
-                                >
-                                    Each line in the queue will produce a linked
-                                    Order, Itinerary, and BOL.
-                                </Typography>
+                            <Box
+                                sx={{
+                                    paddingBottom: 2,
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'flex-end',
+                                }}
+                            >
+                                <Box>
+                                    <PageTitle>Order Queue </PageTitle>
+                                    <Typography
+                                        color="textSecondary"
+                                        variant="body2"
+                                    >
+                                        Each line in the queue will produce a
+                                        linked Order, Itinerary, and BOL.
+                                    </Typography>
+                                </Box>
+                                <OrderQueueEmails contents={contents} />
                             </Box>
                         ),
                         content: (

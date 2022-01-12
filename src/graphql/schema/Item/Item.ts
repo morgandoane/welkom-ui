@@ -1,3 +1,4 @@
+import { TinyProfile } from './../Profile/Profile';
 import { TinyUnit } from './../Unit/Unit';
 import { TinyCompany } from './../Company/Company';
 import { Conversion } from './../Conversion/Conversion';
@@ -23,4 +24,8 @@ export interface TinyItem {
     default_vendor?: TinyCompany | null;
     default_unit?: TinyUnit | null;
     order_queue_qty?: number | null;
+    created_by: TinyProfile;
+    modified_by: TinyProfile;
+    date_modified: Date;
+    date_created: Date;
 }

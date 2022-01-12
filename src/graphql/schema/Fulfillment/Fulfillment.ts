@@ -1,3 +1,4 @@
+import { BolSignature } from './../Bol/Bol';
 import { Verified } from './../Verified/Verified';
 import { AppFile } from './../AppFile/AppFile';
 import { gql } from '@apollo/client';
@@ -15,12 +16,14 @@ export interface FulfillmentBol {
     _id: string;
     code?: string | null;
     seal?: string | null;
+    file?: AppFile | null;
     from: {
         date: Date;
     };
     to: {
         date: Date;
     };
+    signatures: BolSignature[];
 }
 
 export interface Fulfillment extends Verified {
@@ -60,6 +63,21 @@ export const FulfillmentFragment = gql`
             }
             to {
                 date
+            }
+            file {
+                ...AppFileFragment
+            }
+            signatures {
+                profile {
+                    user_id
+                    picture
+                    name
+                    email
+                    given_name
+                    family_name
+                }
+                fulfillment_type
+                confidence
             }
         }
         lots {
