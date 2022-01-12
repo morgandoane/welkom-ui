@@ -24,6 +24,7 @@ import {
     TinyItems,
     useTinyItems,
 } from '../../../../../../graphql/queries/items/useTinyItems';
+import { TinyItem } from '../../../../../../graphql/schema/Item/Item';
 import { ItemFilter } from '../../../../../../graphql/schema/Item/ItemFilter';
 import { UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
 import { OperationResult } from '../../../../../../graphql/types';
@@ -115,13 +116,34 @@ const ItemsView = (): ReactElement => {
                             columns={[
                                 {
                                     field: 'english',
-                                    width: 200,
+                                    flex: 1,
                                     headerName: 'English name',
                                 },
                                 {
                                     field: 'spanish',
-                                    width: 200,
+                                    flex: 1,
                                     headerName: 'Spanish name',
+                                },
+                                {
+                                    field: 'class',
+                                    flex: 1,
+                                    headerName: 'Measured in',
+                                    valueGetter: (data) =>
+                                        (data.row as TinyItem).unit_class ==
+                                        UnitClass.Count
+                                            ? 'Eaches'
+                                            : (data.row as TinyItem)
+                                                  .unit_class == UnitClass.Time
+                                            ? 'Minutes'
+                                            : (data.row as TinyItem)
+                                                  .unit_class ==
+                                              UnitClass.Volume
+                                            ? 'Gallons'
+                                            : (data.row as TinyItem)
+                                                  .unit_class ==
+                                              UnitClass.Weight
+                                            ? 'Pounds'
+                                            : '',
                                 },
                             ]}
                             onPageChange={(page) => {

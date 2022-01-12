@@ -20,16 +20,22 @@ import UnitClassField from '../../../../components/Forms/components/UnitClassFie
 import ColumnBox from '../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../components/PageTitle';
 import { useOrderStats } from '../../../../graphql/queries/orderQueue/useOrderStats';
-import { OrderStatisticRangeQuantity } from '../../../../graphql/schema/OrderStatistic/OrderStatistic';
+import {
+    OrderStatistic,
+    OrderStatisticRangeQuantity,
+} from '../../../../graphql/schema/OrderStatistic/OrderStatistic';
 import { OrderStatisticFilter } from '../../../../graphql/schema/OrderStatistic/OrderStatisticsFilter';
 import { UnitClass } from '../../../../graphql/schema/Unit/Unit';
 import { commafy } from '../../../../utils/commafy';
+import StatsGraph from './components/StatsGraph';
 
 const OrderStats = (): ReactElement => {
     const fromState = localStorage.getItem('logistics_stats_filter');
     const parsedFromState = fromState ? JSON.parse(fromState) : null;
 
     const { palette, shape } = useTheme();
+
+    const [focused, setFocused] = React.useState<OrderStatistic | null>(null);
 
     const indexFromState: number =
         parsedFromState && !isNaN(parsedFromState.index)
@@ -172,7 +178,12 @@ const OrderStats = (): ReactElement => {
                                                             .paper,
                                                 }}
                                             >
-                                                <Typography variant="h6">
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: '1rem',
+                                                        fontWeight: 900,
+                                                    }}
+                                                >
                                                     Item
                                                 </Typography>
                                             </TableCell>
@@ -183,8 +194,13 @@ const OrderStats = (): ReactElement => {
                                                             .paper,
                                                 }}
                                             >
-                                                <Typography variant="h6">
-                                                    Year Total
+                                                <Typography
+                                                    sx={{
+                                                        fontSize: '1rem',
+                                                        fontWeight: 900,
+                                                    }}
+                                                >
+                                                    Total
                                                 </Typography>
                                             </TableCell>
                                             <TableCell
@@ -298,7 +314,13 @@ const OrderStats = (): ReactElement => {
                                         </TableHead>
                                         <TableBody>
                                             {stats.map((stat, i) => (
-                                                <TableRow key={'stat_' + i}>
+                                                <TableRow
+                                                    hover
+                                                    key={'stat_' + i}
+                                                    onClick={() =>
+                                                        setFocused(stat)
+                                                    }
+                                                >
                                                     {[...Array(14).keys()].map(
                                                         (i) => {
                                                             if (i == 0) {
@@ -521,6 +543,11 @@ const OrderStats = (): ReactElement => {
                     }}
                 </ColumnBox>
             )}
+            <StatsGraph
+                filter={filter}
+                stat={focused}
+                onClose={() => setFocused(null)}
+            />
         </AppNav>
     );
 };

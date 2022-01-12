@@ -23,7 +23,7 @@ import {
     useTinyUnits,
 } from '../../../../../../graphql/queries/units/useTinyUnits';
 import { UnitFilter } from '../../../../../../graphql/schema/Unit/UnitFilter';
-import { UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
+import { Unit, UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
 import { OperationResult } from '../../../../../../graphql/types';
 import NumberField from '../../../../../../components/Forms/components/NumberField';
 import { BaseUnits } from '../UnitView/components/UnitDetails';
@@ -114,18 +114,32 @@ const UnitsView = (): ReactElement => {
                             columns={[
                                 {
                                     field: 'english',
-                                    width: 200,
+                                    flex: 1,
                                     headerName: 'English name',
                                 },
                                 {
                                     field: 'spanish',
-                                    width: 200,
+                                    flex: 1,
                                     headerName: 'Spanish name',
                                 },
                                 {
-                                    field: 'spanish',
-                                    width: 200,
-                                    headerName: 'Spanish name',
+                                    field: 'class',
+                                    flex: 1,
+                                    headerName: 'Measured in',
+                                    valueGetter: (data) =>
+                                        (data.row as Unit).class ==
+                                        UnitClass.Count
+                                            ? 'Eaches'
+                                            : (data.row as Unit).class ==
+                                              UnitClass.Time
+                                            ? 'Minutes'
+                                            : (data.row as Unit).class ==
+                                              UnitClass.Volume
+                                            ? 'Gallons'
+                                            : (data.row as Unit).class ==
+                                              UnitClass.Weight
+                                            ? 'Pounds'
+                                            : '',
                                 },
                             ]}
                             onPageChange={(page) => {

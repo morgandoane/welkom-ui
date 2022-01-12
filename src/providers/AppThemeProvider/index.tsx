@@ -65,7 +65,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
             },
             crisp: {
                 fontFamily: 'rubik',
-                fontSize: '3.5rem',
+                fontSize: '3rem',
                 fontWeight: 800,
             },
         },
