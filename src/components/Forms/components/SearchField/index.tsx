@@ -8,7 +8,7 @@ export type SearchFieldProps = TextFormFieldProps;
 const threshold = 350;
 
 const SearchField = (props: SearchFieldProps): ReactElement => {
-    const { value, onChange, label } = props;
+    const { value, onChange, label, naked = false } = props;
 
     const [val, setVal] = React.useState('');
 
@@ -39,11 +39,12 @@ const SearchField = (props: SearchFieldProps): ReactElement => {
                     </InputAdornment>
                 ),
             }}
-            variant="standard"
+            variant={naked ? 'standard' : 'filled'}
             fullWidth
             value={val}
             onChange={(e) => setVal(e.target.value)}
-            placeholder={label}
+            placeholder={naked ? label : ''}
+            label={!naked ? label : ''}
         />
     );
 };

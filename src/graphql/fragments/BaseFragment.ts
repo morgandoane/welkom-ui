@@ -12,11 +12,13 @@ const createBaseFragment = () => {
         date_created
         date_modified
         modified_by {
+          picture
           user_id
           name
           email
         }
         created_by {
+          picture
           user_id
           name
           email

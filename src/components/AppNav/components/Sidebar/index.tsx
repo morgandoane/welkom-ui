@@ -120,6 +120,7 @@ const Sidebar = (): ReactElement => {
             items: [
                 { label: 'Order Queue', url: '/logistics/orderqueue' },
                 { label: 'Orders', url: '/logistics/orders' },
+                { label: 'Statistics', url: '/logistics/statistics' },
             ],
             auth: { _type: 'permission', permission: UiPermission.Logistics },
         },
