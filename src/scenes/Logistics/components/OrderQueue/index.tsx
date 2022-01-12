@@ -49,6 +49,7 @@ const OrderQueue = (): ReactElement => {
                         unit: c.unit ? c.unit._id : undefined,
                         location: c.location ? c.location._id : undefined,
                         date: c.date ? new Date(c.date) : undefined,
+                        time_sensitive: c.time_sensitive,
                     }))
                 );
         },

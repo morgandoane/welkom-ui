@@ -1,8 +1,10 @@
 import {
     Button,
+    Collapse,
     Dialog,
     IconButton,
     Popover,
+    Switch,
     TableCell,
     TableRow,
     Typography,
@@ -27,6 +29,7 @@ import FormRow from '../../../../../../../../components/Forms/components/FormRow
 import { useTinyLocations } from '../../../../../../../../graphql/queries/locations/useTinyLocations';
 import { useTinyItems } from '../../../../../../../../graphql/queries/items/useTinyItems';
 import { useTinyUnits } from '../../../../../../../../graphql/queries/units/useTinyUnits';
+import TimeField from '../../../../../../../../components/Forms/components/TimeField';
 
 export interface QueueLineProps {
     content: OrderQueueContentInput;
@@ -221,6 +224,32 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                         setContent({ ...content, date: val || undefined });
                     }}
                 />
+            </TableCell>
+            <TableCell sx={{ width: 120 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Switch
+                        checked={content.time_sensitive}
+                        onClick={() =>
+                            setContent({
+                                ...content,
+                                time_sensitive: !content.time_sensitive,
+                            })
+                        }
+                    />
+                    <Collapse
+                        in={content.time_sensitive == true}
+                        orientation="horizontal"
+                    >
+                        <Box sx={{ width: 100 }}>
+                            <TimeField
+                                value={content.date || null}
+                                onChange={(val) =>
+                                    setContent({ ...content, date: val })
+                                }
+                            />
+                        </Box>
+                    </Collapse>
+                </Box>
             </TableCell>
             <TableCell>
                 <IconButton onClick={() => drop()}>

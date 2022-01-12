@@ -83,6 +83,9 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
                     <TableCell sx={{ background: palette.background.paper }}>
                         Date
                     </TableCell>
+                    <TableCell sx={{ background: palette.background.paper }}>
+                        Time
+                    </TableCell>
                     <TableCell
                         sx={{ background: palette.background.paper }}
                     ></TableCell>
