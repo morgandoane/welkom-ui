@@ -6,7 +6,7 @@ import { UserRole } from '../../../../auth/UserRole';
 import ListSelect from '../../../ListSelect';
 
 export interface RoleFieldProps {
-    value: UserRole;
+    value: UserRole | undefined;
     onChange: (value: UserRole | null) => void;
 }
 

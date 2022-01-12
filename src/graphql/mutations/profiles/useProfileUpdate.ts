@@ -14,11 +14,12 @@ export const UpdateProfile = gql`
 `;
 
 export interface UpdateProfileInput {
-    given_name: string;
-    family_name: string;
-    email: string;
-    role: UserRole;
+    given_name?: string;
+    family_name?: string;
+    email?: string;
+    role?: UserRole;
     phone_number?: string;
+    password?: string;
 }
 
 export interface UpdateProfileRes {
