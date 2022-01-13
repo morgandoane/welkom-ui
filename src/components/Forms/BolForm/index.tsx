@@ -50,7 +50,10 @@ import LocationField from '../components/LocationField';
 import NumberField from '../components/NumberField';
 import UnitField from '../components/UnitField';
 
-const BolForm = (): ReactElement => {
+const BolForm = (props: {
+    back?: string;
+    back_label?: string;
+}): ReactElement => {
     const { id, order_id, itinerary_id } = useParams();
     const nav = useNavigate();
     const theme = useTheme();
@@ -214,7 +217,13 @@ const BolForm = (): ReactElement => {
                                 : 'BOL updated!'
                             : 'Bol saved!'
                     }
-                    onComplete={() => nav('/logistics/orders/' + order_id)}
+                    onComplete={() =>
+                        nav(
+                            props.back
+                                ? props.back
+                                : '/logistics/orders/' + order_id
+                        )
+                    }
                 />
             ) : result ? (
                 <Message
@@ -236,10 +245,15 @@ const BolForm = (): ReactElement => {
                                     variant="text"
                                     color="inherit"
                                     onClick={() =>
-                                        nav('/logistics/orders/' + order_id)
+                                        nav(
+                                            props.back
+                                                ? props.back
+                                                : '/logistics/orders/' +
+                                                      order_id
+                                        )
                                     }
                                 >
-                                    Back to order
+                                    {props.back_label || 'Back to order'}
                                 </Button>
                                 <PageTitle>
                                     {id && id.length > 0

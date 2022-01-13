@@ -8,7 +8,14 @@ import {
 } from '@mui/material';
 import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
-import { MdAdd, MdCancel, MdChevronRight, MdClear } from 'react-icons/md';
+import {
+    MdAdd,
+    MdArrowRight,
+    MdArrowRightAlt,
+    MdCancel,
+    MdChevronRight,
+    MdClear,
+} from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import AuthGuy from '../../../../../../../../auth/components/AuthGuy';
 import { UiPermission } from '../../../../../../../../auth/UiPermission';
@@ -23,6 +30,7 @@ import {
 } from '../../../../../../../../graphql/queries/bols/useTinyBols';
 import { Bol } from '../../../../../../../../graphql/schema/Bol/Bol';
 import { Fulfillment } from '../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
+import { useClickState } from '../../../../../../../../hooks/useClickState';
 import { dateFormats } from '../../../../../../../../utils/dateFormats';
 import FulfillmentTag from './components/FulfillmentTag';
 
@@ -41,6 +49,8 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
     const nav = useNavigate();
 
     const [cancel, { loading: cancelLoading }] = useOrderCancelation();
+
+    const [clickState, setClickState] = useClickState();
 
     const { data } = useBol({
         variables: {
@@ -84,33 +94,6 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
                             }`}</Typography>
                         </Box>
                         <Box sx={{ flex: 1 }} />
-                        <AuthGuy permission={UiPermission.Logistics}>
-                            <Box>
-                                <CarefulButton
-                                    size="small"
-                                    loading={cancelLoading}
-                                    onClick={() => {
-                                        cancel({
-                                            variables: {
-                                                ids: bol.orders.map(
-                                                    (order) => order._id
-                                                ),
-                                            },
-                                            refetchQueries: [
-                                                BolsQuery,
-                                                TinyBolsQuery,
-                                            ],
-                                            onCompleted: () => onClose(),
-                                        });
-                                    }}
-                                    endIcon={<MdClear />}
-                                >
-                                    {bol.orders.length == 1
-                                        ? 'Cancel PO'
-                                        : 'Cancel POs'}
-                                </CarefulButton>
-                            </Box>
-                        </AuthGuy>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box>
@@ -212,7 +195,7 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
                             )}
                         </Box>
                     </FormRow>
-                    <Box>
+                    <Box sx={{ display: 'flex', flexFlow: 'column', gap: 2 }}>
                         <Button
                             endIcon={<MdAdd />}
                             fullWidth
@@ -226,6 +209,63 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
                                 ? 'Receive this BOL'
                                 : 'Ship this BOL'}
                         </Button>
+                        <AuthGuy permission={UiPermission.Logistics}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: 2,
+                                    flexFlow: 'row',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <CarefulButton
+                                    size="small"
+                                    loading={cancelLoading}
+                                    onClick={() => {
+                                        cancel({
+                                            variables: {
+                                                ids: bol.orders.map(
+                                                    (order) => order._id
+                                                ),
+                                            },
+                                            refetchQueries: [
+                                                BolsQuery,
+                                                TinyBolsQuery,
+                                            ],
+                                            onCompleted: () => onClose(),
+                                        });
+                                    }}
+                                    endIcon={<MdClear />}
+                                >
+                                    {bol.orders.length == 1
+                                        ? 'Cancel PO'
+                                        : 'Cancel POs'}
+                                </CarefulButton>
+                                <CarefulButton
+                                    size="small"
+                                    loading={cancelLoading}
+                                    onClick={() => {
+                                        nav(
+                                            `${bol.itinerary.orders[0]._id}/${bol.itinerary._id}/${bol._id}/edit`
+                                        );
+                                        // :shippingorreceiving/:itinerary_id/:bol_id/edit
+                                    }}
+                                    endIcon={<MdArrowRightAlt />}
+                                    to={{
+                                        variant: 'contained',
+                                        color: 'primary',
+                                        fullWidth: true,
+                                    }}
+                                    from={{
+                                        variant: 'outlined',
+                                        color: 'inherit',
+                                        fullWidth: true,
+                                    }}
+                                >
+                                    Edit BOL
+                                </CarefulButton>
+                            </Box>
+                        </AuthGuy>
                     </Box>
                 </Box>
             )}

@@ -14,7 +14,7 @@ export interface FolderChild {
 export interface Folder extends Base {
     class: FolderClass;
     name: string;
-    parent?: FolderChild | null;
+    ancestry: FolderChild[];
     folders: FolderChild[];
 }
 
@@ -22,7 +22,7 @@ export const FolderFragment = gql`
     fragment FolderFragment on Folder {
         ...BaseFragment
         name
-        parent {
+        ancestry {
             _id
             name
         }
