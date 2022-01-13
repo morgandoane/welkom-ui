@@ -1,3 +1,4 @@
+import { TinyProfile } from './../Profile/Profile';
 import { AppFile } from './../AppFile/AppFile';
 import { Contact } from './../Contact/Contact';
 import { Base } from '../Base/Base';
@@ -13,4 +14,8 @@ export interface Company extends Base {
 export interface TinyCompany {
     _id: string;
     name: string;
+    created_by: TinyProfile;
+    modified_by?: TinyProfile | null;
+    date_created: Date;
+    date_modified?: Date | null;
 }

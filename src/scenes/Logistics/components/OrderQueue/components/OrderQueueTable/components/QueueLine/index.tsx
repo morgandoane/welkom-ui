@@ -126,6 +126,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                     onChange={(val) => {
                         setContent({ ...content, order_code: val });
                     }}
+                    disabled={false}
                 />
             </TableCell>
             <TableCell>

@@ -27,13 +27,16 @@ import { Unit, UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
 import { OperationResult } from '../../../../../../graphql/types';
 import NumberField from '../../../../../../components/Forms/components/NumberField';
 import { BaseUnits } from '../UnitView/components/UnitDetails';
+import SmartTable from '../../../../../../components/SmartTable';
+import { format } from 'date-fns';
+import { dateFormats } from '../../../../../../utils/dateFormats';
 
 const UnitsView = (): ReactElement => {
     const nav = useNavigate();
 
     const [filter, setFilter] = React.useState<UnitFilter>({
         skip: 0,
-        take: 20,
+        take: 50,
     });
 
     const { data, error, loading } = useTinyUnits({ variables: { filter } });
@@ -63,29 +66,24 @@ const UnitsView = (): ReactElement => {
         <AppNav loading={loading} error={error}>
             <ColumnBox>
                 {{
-                    header: (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                paddingBottom: 2,
-                                alignItems: 'flex-end',
+                    header: <PageTitle>Units</PageTitle>,
+                    content: (
+                        <SmartTable
+                            data={units}
+                            getProps={(d) => ({
+                                id: d._id,
+                                onClick: (d) => nav(d._id),
+                            })}
+                            search={{
+                                label: 'Search by name',
+                                value: filter.name || '',
+                                setValue: (d) =>
+                                    setFilter({
+                                        ...filter,
+                                        name: d || '',
+                                    }),
                             }}
-                        >
-                            <Box>
-                                <PageTitle>Units</PageTitle>
-                                <SearchField
-                                    label="Search"
-                                    value={filter.name || ''}
-                                    onChange={(val) => {
-                                        setFilter({
-                                            ...filter,
-                                            name: val || '',
-                                        });
-                                    }}
-                                />
-                            </Box>
-                            <Box sx={{ flex: 1 }} />
-                            <Box>
+                            action={
                                 <Button
                                     onClick={() =>
                                         setEdits({
@@ -99,56 +97,89 @@ const UnitsView = (): ReactElement => {
                                 >
                                     Unit
                                 </Button>
-                            </Box>
-                        </Box>
-                    ),
-                    content: (
-                        <DataGrid
-                            onRowClick={(params) => nav(params.row.id)}
-                            loading={loading}
-                            rowsPerPageOptions={[50]}
-                            paginationMode="server"
-                            pageSize={filter.take}
-                            rowCount={count}
-                            rows={units.map((c) => ({ ...c, id: c._id }))}
-                            columns={[
-                                {
-                                    field: 'english',
-                                    flex: 1,
-                                    headerName: 'English name',
+                            }
+                            pagination={{
+                                count,
+                                skip: filter.skip,
+                                take: filter.take,
+                                setPage: (p: number) => {
+                                    setFilter({
+                                        ...filter,
+                                        skip:
+                                            p == 1 ? 0 : (p - 1) * filter.take,
+                                    });
                                 },
-                                {
-                                    field: 'spanish',
-                                    flex: 1,
-                                    headerName: 'Spanish name',
-                                },
-                                {
-                                    field: 'class',
-                                    flex: 1,
-                                    headerName: 'Measured in',
-                                    valueGetter: (data) =>
-                                        (data.row as Unit).class ==
-                                        UnitClass.Count
-                                            ? 'Eaches'
-                                            : (data.row as Unit).class ==
-                                              UnitClass.Time
-                                            ? 'Minutes'
-                                            : (data.row as Unit).class ==
-                                              UnitClass.Volume
-                                            ? 'Gallons'
-                                            : (data.row as Unit).class ==
-                                              UnitClass.Weight
-                                            ? 'Pounds'
-                                            : '',
-                                },
-                            ]}
-                            onPageChange={(page) => {
-                                setFilter({
-                                    ...filter,
-                                    skip: page == 0 ? 0 : filter.take * page,
-                                });
                             }}
-                        />
+                        >
+                            {{
+                                Name: (d) => d.english,
+                                Spanish: (d) => d.spanish || '',
+                                ['Measured in']: (d) => d.class,
+                                ['Created by']: (d) =>
+                                    d.created_by.name +
+                                    ' - ' +
+                                    format(
+                                        new Date(d.date_created),
+                                        dateFormats.condensedDate
+                                    ),
+
+                                ['Last modified']: (d) =>
+                                    d.modified_by && d.date_modified
+                                        ? d.modified_by.name +
+                                          ' - ' +
+                                          format(
+                                              new Date(d.date_modified),
+                                              dateFormats.condensedDate
+                                          )
+                                        : '',
+                            }}
+                        </SmartTable>
+                        // <DataGrid
+                        //     onRowClick={(params) => nav(params.row.id)}
+                        //     loading={loading}
+                        //     rowsPerPageOptions={[50]}
+                        //     paginationMode="server"
+                        //     pageSize={filter.take}
+                        //     rowCount={count}
+                        //     rows={units.map((c) => ({ ...c, id: c._id }))}
+                        //     columns={[
+                        //         {
+                        //             field: 'english',
+                        //             flex: 1,
+                        //             headerName: 'English name',
+                        //         },
+                        //         {
+                        //             field: 'spanish',
+                        //             flex: 1,
+                        //             headerName: 'Spanish name',
+                        //         },
+                        //         {
+                        //             field: 'class',
+                        //             flex: 1,
+                        //             headerName: 'Measured in',
+                        //             valueGetter: (data) =>
+                        //                 (data.row as Unit).class ==
+                        //                 UnitClass.Count
+                        //                     ? 'Eaches'
+                        //                     : (data.row as Unit).class ==
+                        //                       UnitClass.Time
+                        //                     ? 'Minutes'
+                        //                     : (data.row as Unit).class ==
+                        //                       UnitClass.Volume
+                        //                     ? 'Gallons'
+                        //                     : (data.row as Unit).class ==
+                        //                       UnitClass.Weight
+                        //                     ? 'Pounds'
+                        //                     : '',
+                        //         },
+                        //     ]}
+                        //     onPageChange={(page) => {
+                        //         setFilter({
+                        //             ...filter,
+                        //             skip: page == 0 ? 0 : filter.take * page,
+                        //         });
+                        //     }}
+                        // />
                     ),
                 }}
             </ColumnBox>

@@ -21,10 +21,11 @@ export interface CodeFieldProps {
     value: string;
     onChange: (value: string) => void;
     naked?: boolean;
+    disabled?: boolean;
 }
 
 const CodeField = (props: CodeFieldProps): ReactElement => {
-    const { type, value, onChange, naked = false } = props;
+    const { type, value, onChange, naked = false, disabled = true } = props;
 
     // false = static
     // true = fetch
@@ -60,8 +61,9 @@ const CodeField = (props: CodeFieldProps): ReactElement => {
             label={!naked ? lables[type] : undefined}
             placeholder={naked ? lables[type] : undefined}
             variant={naked ? 'standard' : undefined}
-            disabled
+            disabled={disabled}
             value={value}
+            onChange={(e) => onChange(e.target.value)}
             InputProps={{
                 disableUnderline: naked,
                 endAdornment: (

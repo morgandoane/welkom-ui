@@ -15,6 +15,21 @@ export const TinyUnits = gql`
                 english_plural
                 spanish_plural
                 base_per_unit
+                created_by {
+                    user_id
+                    name
+                    email
+                    picture
+                    given_name
+                    family_name
+                }
+                modified_by {
+                    user_id
+                    name
+                    email
+                }
+                date_modified
+                date_created
             }
         }
     }

@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Fab } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { format, setDate } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../../../components/PageTitle';
 import PanelHeader from '../../../../../../components/PanelComponents/PanelHeader';
 import SideDrawer from '../../../../../../components/SideDrawer';
+import SmartTable from '../../../../../../components/SmartTable';
 import {
     CreateCompanyArgs,
     CreateCompanyRes,
@@ -21,23 +23,30 @@ import {
     TinyCompanies,
     useTinyCompanies,
 } from '../../../../../../graphql/queries/companies/useTinyCompanies';
+import { TinyCompany } from '../../../../../../graphql/schema/Company/Company';
 import { CompanyFilter } from '../../../../../../graphql/schema/Company/CompanyFilter';
 import { OperationResult } from '../../../../../../graphql/types';
+import { dateFormats } from '../../../../../../utils/dateFormats';
 
 const CompaniesView = (): ReactElement => {
     const nav = useNavigate();
 
     const [filter, setFilter] = React.useState<CompanyFilter>({
         skip: 0,
-        take: 20,
+        take: 50,
     });
 
-    const { data, error, loading } = useTinyCompanies({
+    const [{ companies, count }, setData] = React.useState<{
+        count: number;
+        companies: TinyCompany[];
+    }>({ count: 0, companies: [] });
+
+    const { error, loading } = useTinyCompanies({
         variables: { filter },
+        fetchPolicy: 'network-only',
+        onCompleted: ({ companies }) =>
+            setData({ count: companies.count, companies: companies.items }),
     });
-
-    const count = data ? data.companies.count : 0;
-    const companies = data ? data.companies.items : [];
 
     const [result, setResult] =
         React.useState<OperationResult<CreateCompanyRes> | null>(null);
@@ -61,61 +70,66 @@ const CompaniesView = (): ReactElement => {
         <AppNav loading={loading} error={error}>
             <ColumnBox>
                 {{
-                    header: (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                paddingBottom: 2,
-                                alignItems: 'flex-end',
+                    header: <PageTitle>Companies</PageTitle>,
+                    content: (
+                        <SmartTable
+                            data={companies}
+                            getProps={(c) => ({
+                                id: c._id,
+                                onClick: (c, e) => nav(c._id),
+                            })}
+                            search={{
+                                label: 'Search by name',
+                                value: filter.name || '',
+                                setValue: (val) => {
+                                    setFilter({
+                                        ...filter,
+                                        name: val || '',
+                                    });
+                                },
                             }}
-                        >
-                            <Box>
-                                <PageTitle>Companies</PageTitle>
-                                <SearchField
-                                    label="Search"
-                                    value={filter.name || ''}
-                                    onChange={(val) => {
-                                        setFilter({
-                                            ...filter,
-                                            name: val || '',
-                                        });
-                                    }}
-                                />
-                            </Box>
-                            <Box sx={{ flex: 1 }} />
-                            <Box>
+                            action={
                                 <Button
                                     onClick={() => setEdits({ name: '' })}
                                     startIcon={<MdAdd />}
                                 >
                                     Company
                                 </Button>
-                            </Box>
-                        </Box>
-                    ),
-                    content: (
-                        <DataGrid
-                            onRowClick={(params) => nav(params.row.id)}
-                            loading={loading}
-                            rowsPerPageOptions={[50]}
-                            paginationMode="server"
-                            pageSize={filter.take}
-                            rowCount={count}
-                            rows={companies.map((c) => ({ ...c, id: c._id }))}
-                            columns={[
-                                {
-                                    field: 'name',
-                                    width: 200,
-                                    headerName: 'Name',
+                            }
+                            pagination={{
+                                count,
+                                skip: filter.skip,
+                                take: filter.take,
+                                setPage: (p) => {
+                                    setFilter({
+                                        ...filter,
+                                        skip:
+                                            p == 1 ? 0 : (p - 1) * filter.take,
+                                    });
                                 },
-                            ]}
-                            onPageChange={(page) => {
-                                setFilter({
-                                    ...filter,
-                                    skip: page == 0 ? 0 : filter.take * page,
-                                });
                             }}
-                        />
+                        >
+                            {{
+                                Name: (d) => d.name,
+                                ['Created by']: (d) =>
+                                    d.created_by.name +
+                                    ' - ' +
+                                    format(
+                                        new Date(d.date_created),
+                                        dateFormats.condensedDate
+                                    ),
+
+                                ['Last modified']: (d) =>
+                                    d.modified_by && d.date_modified
+                                        ? d.modified_by.name +
+                                          ' - ' +
+                                          format(
+                                              new Date(d.date_modified),
+                                              dateFormats.condensedDate
+                                          )
+                                        : '',
+                            }}
+                        </SmartTable>
                     ),
                 }}
             </ColumnBox>

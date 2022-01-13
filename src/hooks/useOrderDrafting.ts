@@ -217,7 +217,7 @@ export const useOrderDrafting = (
         const data: OrderDraft[] = [];
 
         for (const key of Object.keys(groups)) {
-            const company = companies.find((c) => c._id === key);
+            const vendor = companies.find((c) => c._id === key);
             const contents = groups[key];
 
             const emailToSet: string[] = [];
@@ -242,9 +242,9 @@ export const useOrderDrafting = (
 
             body += `${br}Please confirm.${br}Thanks!${br}${br}`;
 
-            if (company && contents.length > 0) {
+            if (vendor && contents.length > 0) {
                 data.push({
-                    company,
+                    company: vendor,
                     link: template([], [], [], subject, body),
                     holdup:
                         contents

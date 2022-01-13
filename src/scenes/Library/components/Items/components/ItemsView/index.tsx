@@ -1,14 +1,12 @@
 import { LoadingButton } from '@mui/lab';
 import { Box, Button, Fab } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import { format } from 'date-fns';
+import { format, setDate } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import AppNav from '../../../../../../components/AppNav';
 import CompanyField from '../../../../../../components/Forms/components/CompanyField';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
-import SearchField from '../../../../../../components/Forms/components/SearchField';
 import TextFormField from '../../../../../../components/Forms/components/TextFormField';
 import UnitClassField from '../../../../../../components/Forms/components/UnitClassField';
 import UnitField from '../../../../../../components/Forms/components/UnitField';
@@ -16,6 +14,7 @@ import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../../../components/PageTitle';
 import PanelHeader from '../../../../../../components/PanelComponents/PanelHeader';
 import SideDrawer from '../../../../../../components/SideDrawer';
+import SmartTable from '../../../../../../components/SmartTable';
 import {
     CreateItemArgs,
     CreateItemRes,
@@ -34,15 +33,39 @@ import { dateFormats } from '../../../../../../utils/dateFormats';
 const ItemsView = (): ReactElement => {
     const nav = useNavigate();
 
+    const skipFromState = localStorage.getItem('library_items_skip');
+    const skipParsed = !skipFromState
+        ? 0
+        : isNaN(parseInt(skipFromState))
+        ? 0
+        : parseInt(skipFromState);
+
     const [filter, setFilter] = React.useState<ItemFilter>({
-        skip: 0,
-        take: 20,
+        skip: skipParsed,
+        take: 50,
     });
 
-    const { data, error, loading } = useTinyItems({ variables: { filter } });
+    React.useEffect(() => {
+        localStorage.setItem('library_items_skip', filter.skip.toString());
+    }, [filter]);
 
-    const count = data ? data.items.count : 0;
-    const items = data ? data.items.items : [];
+    const [{ items, count }, setData] = React.useState<{
+        count: number;
+        items: TinyItem[];
+    }>({
+        count: 0,
+        items: [],
+    });
+
+    const { error, loading } = useTinyItems({
+        variables: { filter },
+        fetchPolicy: 'network-only',
+        onCompleted: ({ items }) =>
+            setData({
+                count: items.count,
+                items: items.items,
+            }),
+    });
 
     const [result, setResult] =
         React.useState<OperationResult<CreateItemRes> | null>(null);
@@ -66,137 +89,70 @@ const ItemsView = (): ReactElement => {
         <AppNav loading={loading} error={error}>
             <ColumnBox>
                 {{
-                    header: (
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                paddingBottom: 2,
-                                alignItems: 'flex-end',
+                    header: <PageTitle>Items</PageTitle>,
+                    content: (
+                        <SmartTable
+                            data={items}
+                            getProps={(item) => ({
+                                id: item._id,
+                                onClick: (item, event) => nav(item._id),
+                            })}
+                            pagination={{
+                                count,
+                                skip: filter.skip,
+                                take: filter.take,
+                                setPage: (p: number) => {
+                                    setFilter({
+                                        ...filter,
+                                        skip:
+                                            p == 1 ? 0 : (p - 1) * filter.take,
+                                    });
+                                },
                             }}
-                        >
-                            <Box>
-                                <PageTitle>Items</PageTitle>
-                                <SearchField
-                                    label="Search"
-                                    value={filter.name || ''}
-                                    onChange={(val) => {
-                                        setFilter({
-                                            ...filter,
-                                            name: val || '',
+                            search={{
+                                label: 'Search by name',
+                                value: filter.name || '',
+                                setValue: (d) =>
+                                    setFilter({ ...filter, name: d, skip: 0 }),
+                            }}
+                            action={
+                                <Button
+                                    startIcon={<MdAdd />}
+                                    onClick={() => {
+                                        setEdits({
+                                            english: '',
+                                            spanish: '',
+                                            unit_class: UnitClass.Weight,
                                         });
                                     }}
-                                />
-                            </Box>
-                            <Box sx={{ flex: 1 }} />
-                            <Box>
-                                <Box>
-                                    <Button
-                                        onClick={() =>
-                                            setEdits({
-                                                english: '',
-                                                spanish: '',
-                                                unit_class: UnitClass.Weight,
-                                            })
-                                        }
-                                        startIcon={<MdAdd />}
-                                    >
-                                        Item
-                                    </Button>
-                                </Box>
-                            </Box>
-                        </Box>
-                    ),
-                    content: (
-                        <DataGrid
-                            onRowClick={(params) => nav(params.row.id)}
-                            loading={loading}
-                            rowsPerPageOptions={[50]}
-                            paginationMode="server"
-                            pageSize={filter.take}
-                            rowCount={count}
-                            rows={items.map((c) => ({ ...c, id: c._id }))}
-                            columns={[
-                                {
-                                    field: 'english',
-                                    flex: 1,
-                                    headerName: 'English name',
-                                },
-                                {
-                                    field: 'spanish',
-                                    flex: 1,
-                                    headerName: 'Spanish name',
-                                },
-                                {
-                                    field: 'class',
-                                    flex: 1,
-                                    headerName: 'Measured in',
-                                    valueGetter: (data) =>
-                                        (data.row as TinyItem).unit_class ==
-                                        UnitClass.Count
-                                            ? 'Eaches'
-                                            : (data.row as TinyItem)
-                                                  .unit_class == UnitClass.Time
-                                            ? 'Minutes'
-                                            : (data.row as TinyItem)
-                                                  .unit_class ==
-                                              UnitClass.Volume
-                                            ? 'Gallons'
-                                            : (data.row as TinyItem)
-                                                  .unit_class ==
-                                              UnitClass.Weight
-                                            ? 'Pounds'
-                                            : '',
-                                },
-                                {
-                                    field: 'created_by',
-                                    flex: 1,
-                                    headerName: 'Created by',
-                                    valueGetter: (data) =>
-                                        (data.row as TinyItem).created_by.name,
-                                },
-                                {
-                                    field: 'date_created',
-                                    flex: 1,
-                                    headerName: 'Date created',
-                                    valueGetter: (data) =>
-                                        format(
-                                            new Date(
-                                                (
-                                                    data.row as TinyItem
-                                                ).date_created
-                                            ),
-                                            dateFormats.condensedDate
-                                        ),
-                                },
-                                {
-                                    field: 'modified_by',
-                                    flex: 1,
-                                    headerName: 'Modified by',
-                                    valueGetter: (data) =>
-                                        (data.row as TinyItem).modified_by.name,
-                                },
-                                {
-                                    field: 'date_modified',
-                                    flex: 1,
-                                    headerName: 'Date modified',
-                                    valueGetter: (data) =>
-                                        format(
-                                            new Date(
-                                                (
-                                                    data.row as TinyItem
-                                                ).date_modified
-                                            ),
-                                            dateFormats.condensedDate
-                                        ),
-                                },
-                            ]}
-                            onPageChange={(page) => {
-                                setFilter({
-                                    ...filter,
-                                    skip: page == 0 ? 0 : filter.take * page,
-                                });
+                                >
+                                    Item
+                                </Button>
+                            }
+                        >
+                            {{
+                                Name: (d) => d.english,
+                                Spanish: (d) => d.spanish,
+                                ['Measured in']: (d) => d.unit_class,
+                                ['Created by']: (d) =>
+                                    d.created_by.name +
+                                    ' - ' +
+                                    format(
+                                        new Date(d.date_created),
+                                        dateFormats.condensedDate
+                                    ),
+
+                                ['Last modified']: (d) =>
+                                    d.modified_by && d.date_modified
+                                        ? d.modified_by.name +
+                                          ' - ' +
+                                          format(
+                                              new Date(d.date_modified),
+                                              dateFormats.condensedDate
+                                          )
+                                        : '',
                             }}
-                        />
+                        </SmartTable>
                     ),
                 }}
             </ColumnBox>

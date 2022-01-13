@@ -1,3 +1,4 @@
+import { TinyProfile } from './../Profile/Profile';
 import { Base } from '../Base/Base';
 
 export enum UnitClass {
@@ -24,4 +25,8 @@ export interface TinyUnit {
     english_plural?: string;
     spanish_plural?: string;
     base_per_unit: number;
+    created_by: TinyProfile;
+    date_created: Date;
+    modified_by?: TinyProfile | null;
+    date_modified?: Date | null;
 }

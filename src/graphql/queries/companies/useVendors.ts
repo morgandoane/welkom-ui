@@ -3,43 +3,19 @@ import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
 import { CompanyFilter } from '../../schema/Company/CompanyFilter';
 import { Pagination } from '../../schema/Pagination/Pagination';
 
-export const TinyCompanies = gql`
-    query TinyCompanies($filter: CompanyFilter!) {
+export const Vendors = gql`
+    query Vendors($filter: CompanyFilter!) {
         companies(filter: $filter) {
             count
             items {
                 _id
                 name
-                created_by {
-                    user_id
-                    name
-                    email
-                    picture
-                    given_name
-                    family_name
-                }
-                modified_by {
-                    user_id
-                    name
-                    email
-                }
-                date_modified
-                date_created
             }
         }
     }
 `;
 
-export const MyTinyCompanies = gql`
-    query MyTinyCompanies {
-        myCompanies {
-            _id
-            name
-        }
-    }
-`;
-
-export const useTinyCompanies = (
+export const useVendors = (
     options?: QueryHookOptions<
         { companies: Pagination<TinyCompany> },
         { filter: CompanyFilter }
@@ -47,7 +23,7 @@ export const useTinyCompanies = (
 ): QueryResult<
     { companies: Pagination<TinyCompany> },
     { filter: CompanyFilter }
-> => useQuery(TinyCompanies, options);
+> => useQuery(Vendors, options);
 
 export const useMyCompanies = (
     options?: QueryHookOptions<{
@@ -55,4 +31,4 @@ export const useMyCompanies = (
     }>
 ): QueryResult<{
     myCompanies: TinyCompany[];
-}> => useQuery(TinyCompanies);
+}> => useQuery(Vendors);
