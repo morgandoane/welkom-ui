@@ -1,3 +1,4 @@
+import { BolItemContent } from './../Content/Content';
 import { BolSignature } from './../Bol/Bol';
 import { Verified } from './../Verified/Verified';
 import { AppFile } from './../AppFile/AppFile';
@@ -24,6 +25,7 @@ export interface FulfillmentBol {
         date: Date;
     };
     signatures: BolSignature[];
+    contents: BolItemContent[];
 }
 
 export interface Fulfillment extends Verified {
@@ -78,6 +80,24 @@ export const FulfillmentFragment = gql`
                 }
                 fulfillment_type
                 confidence
+            }
+            contents {
+                quantity
+                item {
+                    _id
+                    unit_class
+                    english
+                    spanish
+                }
+                unit {
+                    _id
+                    class
+                    english
+                    spanish
+                    english_plural
+                    spanish_plural
+                    base_per_unit
+                }
             }
         }
         lots {
@@ -135,6 +155,7 @@ export const FulfillmentFragment = gql`
                     spanish
                     english_plural
                     spanish_plural
+                    base_per_unit
                 }
                 lot {
                     _id

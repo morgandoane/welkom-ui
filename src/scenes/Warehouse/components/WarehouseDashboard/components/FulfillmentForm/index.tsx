@@ -10,7 +10,12 @@ import {
 } from '@mui/material';
 import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
-import { MdArrowDownward, MdArrowUpward, MdCheck } from 'react-icons/md';
+import {
+    MdArrowDownward,
+    MdArrowUpward,
+    MdCheck,
+    MdChevronLeft,
+} from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppNav from '../../../../../../components/AppNav';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
@@ -239,6 +244,35 @@ const FulfillmentForm = (props: {
                             <Box>
                                 <Box sx={{ display: 'flex', flexFlow: 'row' }}>
                                     <Box>
+                                        <Button
+                                            variant="text"
+                                            color="inherit"
+                                            startIcon={<MdChevronLeft />}
+                                            onClick={() =>
+                                                nav(
+                                                    fulfillment
+                                                        ? `/warehouse/${
+                                                              fulfillment.type ===
+                                                              FulfillmentType.Receipt
+                                                                  ? 'receiving'
+                                                                  : 'shipping'
+                                                          }/${
+                                                              fulfillment.bol
+                                                                  ._id
+                                                          }/${fulfillment._id}`
+                                                        : `/warehouse/${
+                                                              action ==
+                                                              'receive'
+                                                                  ? 'receiving'
+                                                                  : 'shipping'
+                                                          }`
+                                                )
+                                            }
+                                        >
+                                            {fulfillment
+                                                ? fulfillment.type
+                                                : 'Back to BOL'}
+                                        </Button>
                                         <PageTitle>
                                             {formType == FulfillmentType.Receipt
                                                 ? fulfillment_id
