@@ -228,7 +228,7 @@ export const useOrderDrafting = (
                     : `PO# ${data[0].items[0].content.order_code}`;
 
             let body =
-                (emailToSet.length === 1 ? emailToSet[0] : 'Hey there!') +
+                (emailToSet.length === 1 ? emailToSet[0] : 'Hello,') +
                 `${br}${br}${
                     contents.length == 1
                         ? 'We need - '
