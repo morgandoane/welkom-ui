@@ -134,7 +134,7 @@ const FulfillmentLine = (props: FulfillmentLineProps): ReactElement => {
                         <Typography variant="caption" color="textSecondary">
                             Actually{' '}
                             {fulfillment.type == FulfillmentType.Receipt
-                                ? 'receivied'
+                                ? 'received'
                                 : 'shipped'}
                         </Typography>
                         <Typography>
@@ -238,9 +238,12 @@ const FulfillmentLine = (props: FulfillmentLineProps): ReactElement => {
                                                         : 'english_plural'
                                                 ]
                                             }`}</Typography>
-                                            {c.lot.quality_check_responses
-                                                ? c.lot.quality_check_responses
-                                                : 'none'}
+                                            <Typography
+                                                variant="caption"
+                                                color="textSecondary"
+                                            >
+                                                Total
+                                            </Typography>
                                         </Box>
                                     </Box>
                                     <Divider />
