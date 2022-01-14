@@ -37,7 +37,7 @@ const FulfillmentTag = (props: FulfillmentTagProps): ReactElement => {
                 flexFlow: 'row',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
-                background: palette.background.paper,
+                background: palette.primary.main,
                 gap: 1,
                 textAlign: 'left',
             }}

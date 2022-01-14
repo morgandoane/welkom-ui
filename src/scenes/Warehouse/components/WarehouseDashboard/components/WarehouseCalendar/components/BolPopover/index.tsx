@@ -197,6 +197,14 @@ const BolPopover = (props: AppointmentPopoverProps): ReactElement => {
                     </FormRow>
                     <Box sx={{ display: 'flex', flexFlow: 'column', gap: 2 }}>
                         <Button
+                            color={
+                                fulfillments.length > 0 ? 'inherit' : 'primary'
+                            }
+                            variant={
+                                fulfillments.length > 0
+                                    ? 'outlined'
+                                    : 'contained'
+                            }
                             endIcon={<MdAdd />}
                             fullWidth
                             onClick={() => nav(bol._id)}
