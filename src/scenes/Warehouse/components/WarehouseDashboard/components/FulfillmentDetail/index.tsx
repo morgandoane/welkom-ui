@@ -17,6 +17,13 @@ import {
 } from 'react-icons/md';
 import { RiErrorWarningFill } from 'react-icons/ri';
 import { useNavigate, useParams } from 'react-router-dom';
+import {
+    getUiPermissions,
+    UiPermission,
+    UiPermissions,
+} from '../../../../../../auth/UiPermission';
+import usePermissions from '../../../../../../auth/usePermissions';
+import { UserRole } from '../../../../../../auth/UserRole';
 import AppFab from '../../../../../../components/AppFab';
 import AppNav from '../../../../../../components/AppNav';
 import Details from '../../../../../../components/Details';
@@ -32,11 +39,13 @@ import FulfillmentAttachments from './components/FulfillmentAttachments';
 import FulfillmentContents from './components/FulfillmentContents';
 import FulfillmentDetails from './components/FulfillmentDetails';
 import FulfillmentDocument from './components/FulfillmentDocument';
+import FulfillmentExpenses from './components/FulfillmentExpenses';
 import FulfillmentVerification from './components/FulfillmentVerification';
 
 const FulfillmentDetail = (): ReactElement => {
     const nav = useNavigate();
     const { palette } = useTheme();
+    const { permissions, roles } = usePermissions();
 
     const { fulfillment_id } = useParams();
 
@@ -47,6 +56,22 @@ const FulfillmentDetail = (): ReactElement => {
     });
 
     const fulfillment = data ? data.fulfillment : null;
+
+    const getAdditionalTabs = (): Record<string, ReactElement> => {
+        const uiPermissions = getUiPermissions(permissions);
+        if (fulfillment)
+            if (
+                uiPermissions
+                    .map((p) => p.name)
+                    .includes(UiPermission.TrackExpenses) ||
+                roles.includes(UserRole.Admin) ||
+                roles.includes(UserRole.Manager)
+            )
+                return {
+                    Expenses: <FulfillmentExpenses fulfillment={fulfillment} />,
+                };
+        return {};
+    };
 
     return (
         <AppNav error={error} loading={loading}>
@@ -141,6 +166,7 @@ const FulfillmentDetail = (): ReactElement => {
                                             fulfillment={fulfillment}
                                         />
                                     ),
+                                    ...getAdditionalTabs(),
                                 }}
                             </TabFade>
                         ),

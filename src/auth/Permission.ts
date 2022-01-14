@@ -15,6 +15,10 @@ export enum Permission {
     CreateConversion = 'CreateConversion',
     UpdateConversion = 'UpdateConversion',
 
+    GetExpenses = 'GetExpenses',
+    CreateExpenses = 'CreateExpenses',
+    UpdateExpenses = 'UpdateExpenses',
+
     GetRecipeFolders = 'GetRecipeFolders',
     CreateRecipeFolder = 'CreateRecipeFolder',
     UpdateRecipeFolder = 'UpdateRecipeFolder',
@@ -39,6 +43,10 @@ export enum Permission {
     GetLots = 'GetLots',
     CreateLot = 'CreateLot',
     UpdateLot = 'UpdateLot',
+
+    GetMachines = 'GetMachines',
+    CreateMachine = 'CreateMachine',
+    UpdateMachine = 'UpdateMachine',
 
     GetOrders = 'GetOrders',
     CreateOrder = 'CreateOrder',

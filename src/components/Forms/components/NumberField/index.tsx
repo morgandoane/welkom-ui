@@ -14,11 +14,8 @@ const NumberField = (props: NumberFieldProps): ReactElement => {
     return (
         <TextField
             fullWidth
-            value={
-                value == null
-                    ? ''
-                    : value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            }
+            type="number"
+            value={value == null ? '' : value}
             onChange={(e) =>
                 onChange(
                     e.target.value

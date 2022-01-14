@@ -1,6 +1,7 @@
 import { Permission } from './Permission';
 
 export enum UiPermission {
+    TrackExpenses = 'Track Expenses',
     WarehouseOperator = 'Warehouse Operator',
     WarehouseVerification = 'Warehouse Verification',
     Logistics = 'Logistics',
@@ -15,6 +16,15 @@ export interface UiPermissionData {
 }
 
 export const UiPermissions: UiPermissionData[] = [
+    {
+        name: UiPermission.TrackExpenses,
+        description: 'Create, update, and analyze expenses.',
+        permissions: [
+            Permission.CreateExpenses,
+            Permission.UpdateExpenses,
+            Permission.GetExpenses,
+        ],
+    },
     {
         name: UiPermission.WarehouseOperator,
         description: 'Perform the duties of shipping and receiving.',
