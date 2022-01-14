@@ -165,29 +165,52 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         }
                                     />
                                 ),
-                                [view == 'receiving'
-                                    ? 'Received by'
-                                    : 'Shipped by']: (
-                                    <Box sx={{ minWidth: 160 }}>
-                                        {view}
-                                        <PersonField
-                                            label={
-                                                'receiving'
-                                                    ? 'Received by'
-                                                    : 'Shipped by'
-                                            }
-                                            naked
-                                            value={filter.fulfilled_by || null}
-                                            onChange={(val) =>
-                                                setFilter({
-                                                    ...filter,
-                                                    fulfilled_by:
-                                                        val || undefined,
-                                                })
-                                            }
-                                        />
-                                    </Box>
-                                ),
+                                ...(view == 'receiving'
+                                    ? {
+                                          ['Received by']: (
+                                              <Box sx={{ minWidth: 160 }}>
+                                                  <PersonField
+                                                      label="Received by"
+                                                      naked
+                                                      value={
+                                                          filter.fulfilled_by ||
+                                                          null
+                                                      }
+                                                      onChange={(val) =>
+                                                          setFilter({
+                                                              ...filter,
+                                                              fulfilled_by:
+                                                                  val ||
+                                                                  undefined,
+                                                          })
+                                                      }
+                                                  />
+                                              </Box>
+                                          ),
+                                      }
+                                    : {
+                                          ['Shipped by']: (
+                                              <Box sx={{ minWidth: 160 }}>
+                                                  <PersonField
+                                                      label="Shipped by"
+                                                      naked
+                                                      value={
+                                                          filter.fulfilled_by ||
+                                                          null
+                                                      }
+                                                      onChange={(val) =>
+                                                          setFilter({
+                                                              ...filter,
+                                                              fulfilled_by:
+                                                                  val ||
+                                                                  undefined,
+                                                          })
+                                                      }
+                                                  />
+                                              </Box>
+                                          ),
+                                      }),
+
                                 Verified: (
                                     <VerificationField
                                         naked
