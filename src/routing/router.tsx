@@ -13,6 +13,7 @@ import {
 } from '../auth/UiPermission';
 import usePermissions from '../auth/usePermissions';
 import { UserRole } from '../auth/UserRole';
+import Accounting from '../scenes/Accounting';
 import Library from '../scenes/Library';
 import Login from '../scenes/Login';
 import Logistics from '../scenes/Logistics';
@@ -52,6 +53,17 @@ const routes: {
             element: (
                 <AuthenticatedRoute>
                     <Logistics />
+                </AuthenticatedRoute>
+            ),
+        },
+    },
+    {
+        auth: { _type: 'permission', permission: UiPermission.TrackExpenses },
+        props: {
+            path: '/accounting/*',
+            element: (
+                <AuthenticatedRoute>
+                    <Accounting />
                 </AuthenticatedRoute>
             ),
         },

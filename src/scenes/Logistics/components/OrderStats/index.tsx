@@ -69,8 +69,8 @@ const OrderStats = (): ReactElement => {
     const thisYear = getYear(new Date());
 
     const years = [
-        2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028,
-        2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040,
+        2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031,
+        2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040,
     ].filter((y) => y <= thisYear);
 
     return (
@@ -334,89 +334,81 @@ const OrderStats = (): ReactElement => {
                                                                     </TableCell>
                                                                 );
                                                             } else if (i == 1) {
-                                                                const qtys: OrderStatisticRangeQuantity[] =
-                                                                    stat.ranges
-                                                                        .map(
-                                                                            (
-                                                                                r
-                                                                            ) =>
-                                                                                r.quantitys
-                                                                        )
-                                                                        .flat()
-                                                                        .reduce(
-                                                                            (
-                                                                                acc,
-                                                                                item
-                                                                            ) => {
-                                                                                const index =
-                                                                                    acc
-                                                                                        .map(
-                                                                                            (
-                                                                                                a
-                                                                                            ) =>
-                                                                                                a.unit_class
-                                                                                        )
-                                                                                        .indexOf(
-                                                                                            item.unit_class
-                                                                                        );
+                                                                const qtys: Partial<
+                                                                    Record<
+                                                                        UnitClass,
+                                                                        number
+                                                                    >
+                                                                > = {};
 
-                                                                                if (
-                                                                                    index ==
-                                                                                    -1
-                                                                                )
-                                                                                    return [
-                                                                                        ...acc,
-                                                                                        item,
-                                                                                    ];
-                                                                                else {
-                                                                                    acc.splice(
-                                                                                        index,
-                                                                                        1,
-                                                                                        {
-                                                                                            quantity:
-                                                                                                acc[
-                                                                                                    index
-                                                                                                ]
-                                                                                                    .quantity +
-                                                                                                item.quantity,
-                                                                                            unit_class:
-                                                                                                item.unit_class,
-                                                                                        }
-                                                                                    );
-                                                                                    return acc;
-                                                                                }
-                                                                            },
-                                                                            [] as OrderStatisticRangeQuantity[]
-                                                                        );
+                                                                for (const {
+                                                                    quantitys,
+                                                                } of stat.ranges) {
+                                                                    for (const {
+                                                                        unit_class,
+                                                                        quantity,
+                                                                    } of quantitys) {
+                                                                        if (
+                                                                            unit_class in
+                                                                            qtys
+                                                                        ) {
+                                                                            qtys[
+                                                                                unit_class
+                                                                            ] =
+                                                                                (qtys[
+                                                                                    unit_class
+                                                                                ] ||
+                                                                                    0) +
+                                                                                quantity;
+                                                                        } else {
+                                                                            qtys[
+                                                                                unit_class
+                                                                            ] =
+                                                                                quantity;
+                                                                        }
+                                                                    }
+                                                                }
                                                                 return (
                                                                     <TableCell>
-                                                                        {qtys.map(
+                                                                        {Object.keys(
+                                                                            qtys
+                                                                        ).map(
                                                                             (
-                                                                                q,
-                                                                                qi
+                                                                                uClass,
+                                                                                qtyIndex
                                                                             ) => (
                                                                                 <Box
-                                                                                    key={`${i}_${qi}`}
+                                                                                    key={
+                                                                                        'stat_' +
+                                                                                        i +
+                                                                                        '_' +
+                                                                                        uClass +
+                                                                                        '_' +
+                                                                                        qtyIndex
+                                                                                    }
                                                                                 >
-                                                                                    <Typography variant="body2">
+                                                                                    <Typography>
                                                                                         {commafy(
-                                                                                            q.quantity
+                                                                                            qtys[
+                                                                                                uClass as UnitClass
+                                                                                            ] ||
+                                                                                                0
                                                                                         )}
                                                                                     </Typography>
                                                                                     <Typography
-                                                                                        variant="caption"
                                                                                         color="textSecondary"
+                                                                                        variant="caption"
                                                                                     >
-                                                                                        {q.unit_class ==
+                                                                                        {uClass ==
                                                                                         UnitClass.Count
                                                                                             ? 'Eaches'
-                                                                                            : q.unit_class ==
+                                                                                            : uClass ==
                                                                                               UnitClass.Time
                                                                                             ? 'Minutes'
-                                                                                            : q.unit_class ==
+                                                                                            : uClass ==
                                                                                               UnitClass.Volume
                                                                                             ? 'Gallons'
-                                                                                            : q.unit_class ==
+                                                                                            : uClass ==
                                                                                               UnitClass.Weight
                                                                                             ? 'Pounds'
                                                                                             : ''}
@@ -432,7 +424,7 @@ const OrderStats = (): ReactElement => {
                                                                         (r) =>
                                                                             r.month ==
                                                                             i -
-                                                                                1
+                                                                                2
                                                                     );
 
                                                                 if (range) {

@@ -5,5 +5,5 @@ import { BaseFilter } from './../Base/BaseFilter';
 export interface ExpenseFilter extends BaseFilter {
     key?: ExpenseKey;
     amount?: RangeInput;
-    against?: string;
+    against?: string[];
 }

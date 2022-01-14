@@ -25,6 +25,7 @@ export interface SmartTableProps<T> {
     data: T[];
     getProps: (d: T) => SmartRowProps<T>;
     children: Record<string, (d: T) => string | ReactElement>;
+    controls?: Record<string, ReactElement>;
     search?: {
         label: string;
         value: string;
@@ -47,6 +48,7 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
         action,
         pagination,
         children: rows,
+        controls = {},
     } = props;
 
     const { palette } = useTheme();
@@ -87,16 +89,29 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
                 content: (
                     <Table stickyHeader>
                         <TableHead>
-                            {Object.keys(rows).map((k, i) => (
-                                <TableCell
-                                    sx={{
-                                        background: palette.background.paper,
-                                    }}
-                                    key={'cell_' + k}
-                                >
-                                    {k}
-                                </TableCell>
-                            ))}
+                            {Object.keys(rows).map((k, i) =>
+                                controls[k] ? (
+                                    <TableCell
+                                        sx={{
+                                            background:
+                                                palette.background.paper,
+                                        }}
+                                        key={'cell_' + k}
+                                    >
+                                        {controls[k]}
+                                    </TableCell>
+                                ) : (
+                                    <TableCell
+                                        sx={{
+                                            background:
+                                                palette.background.paper,
+                                        }}
+                                        key={'cell_' + k}
+                                    >
+                                        {k}
+                                    </TableCell>
+                                )
+                            )}
                         </TableHead>
                         <TableBody>
                             {data.map((d, i) => (

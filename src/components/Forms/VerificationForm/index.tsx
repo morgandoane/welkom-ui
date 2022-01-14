@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Theme, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { VerificationStatus } from '../../../graphql/schema/Verification/Verification';
 import {
@@ -17,36 +17,41 @@ export interface VerificationFormProps {
     onChange: (data: CreateVerificationInput | UpdateVerificationInput) => void;
 }
 
+export const getVerificationIcons = (
+    theme: Theme,
+    active?: boolean
+): Record<VerificationStatus, ReactElement> => ({
+    [VerificationStatus.Problem]: (
+        <MdWarningAmber
+            style={{
+                color: active ? theme.palette.error.main : undefined,
+            }}
+        />
+    ),
+    [VerificationStatus.Verified]: (
+        <RiShieldCheckFill
+            style={{
+                color: active ? theme.palette.success.main : undefined,
+            }}
+        />
+    ),
+    [VerificationStatus.Warning]: (
+        <RiErrorWarningFill
+            style={{
+                color: active ? theme.palette.warning.main : undefined,
+            }}
+        />
+    ),
+});
+
 export const VerificationIcon = (props: {
     status: VerificationStatus | null;
     active?: boolean;
 }) => {
     const { status, active = true } = props;
-    const { palette } = useTheme();
+    const theme = useTheme();
 
-    const icons: Record<VerificationStatus, ReactElement> = {
-        [VerificationStatus.Problem]: (
-            <MdWarningAmber
-                style={{
-                    color: active ? palette.error.main : undefined,
-                }}
-            />
-        ),
-        [VerificationStatus.Verified]: (
-            <RiShieldCheckFill
-                style={{
-                    color: active ? palette.success.main : undefined,
-                }}
-            />
-        ),
-        [VerificationStatus.Warning]: (
-            <RiErrorWarningFill
-                style={{
-                    color: active ? palette.warning.main : undefined,
-                }}
-            />
-        ),
-    };
+    const icons = getVerificationIcons(theme, active);
 
     return (
         <Tooltip arrow title={status || 'Unverified'}>
@@ -54,7 +59,7 @@ export const VerificationIcon = (props: {
                 {status ? (
                     icons[status]
                 ) : (
-                    <BiRadioCircle color={palette.text.secondary} />
+                    <BiRadioCircle color={theme.palette.text.secondary} />
                 )}
             </Box>
         </Tooltip>

@@ -13,7 +13,10 @@ export interface PersonFieldProps {
 const PersonField = (props: PersonFieldProps): ReactElement => {
     const { label = 'Person', value, onChange, naked = false } = props;
 
-    const { data } = useTinyProfiles();
+    const { data } = useTinyProfiles({
+        variables: { filter: { skip: 0, take: 250 } },
+    });
+
     const users = data
         ? data.profiles.items.map((i) => ({
               ...i,

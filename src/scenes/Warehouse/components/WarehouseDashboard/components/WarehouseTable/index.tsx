@@ -1,4 +1,4 @@
-import { Button, Popover } from '@mui/material';
+import { AvatarGroup, Button, Popover, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid';
 import { addDays, endOfDay, format, startOfDay } from 'date-fns';
@@ -13,19 +13,31 @@ import SearchField from '../../../../../../components/Forms/components/SearchFie
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PanelHeader from '../../../../../../components/PanelComponents/PanelHeader';
 import SideDrawer from '../../../../../../components/SideDrawer';
-import { useBols } from '../../../../../../graphql/queries/bols/useBols';
+import {
+    BolsRes,
+    useBols,
+} from '../../../../../../graphql/queries/bols/useBols';
 import { Bol } from '../../../../../../graphql/schema/Bol/Bol';
 import { BolFilter } from '../../../../../../graphql/schema/Bol/BolFilter';
 
 import { dateFormats } from '../../../../../../utils/dateFormats';
 import BolPopover from '../WarehouseCalendar/components/BolPopover';
+import SmartTable from '../../../../../../components/SmartTable';
+import { OperationResult } from '../../../../../../graphql/types';
+import { TinyBolsRes } from '../../../../../../graphql/queries/bols/useTinyBols';
+import { VerificationIcon } from '../../../../../../components/Forms/VerificationForm';
+import { VerificationStatus } from '../../../../../../graphql/schema/Verification/Verification';
+import { FulfillmentType } from '../../../../../../graphql/schema/Fulfillment/Fulfillment';
+import VerificationField from '../../../../../../components/Forms/components/VerificationField';
+import PersonField from '../../../../../../components/Forms/components/PersonField';
 
 export interface WarehouseTableProps {
     view: 'shipping' | 'receiving';
+    setLoading: (d: boolean) => void;
 }
 
 const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
-    const { view } = props;
+    const { view, setLoading } = props;
 
     const [clickState, setClickState] = React.useState<null | {
         target: EventTarget & Element;
@@ -41,171 +53,249 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
         null
     );
 
-    const { data, error, loading } = useBols({
+    const [data, setData] = React.useState<OperationResult<BolsRes> | null>(
+        null
+    );
+
+    const { loading } = useBols({
         variables: { filter },
         skip: !filter,
+        onCompleted: (data) => setData({ success: true, data }),
+        onError: (error) => setData({ success: false, error }),
+        fetchPolicy: 'network-only',
     });
 
-    const bols = data ? data.bols.items : [];
-    const count = data ? data.bols.count : 0;
+    React.useEffect(() => {
+        setLoading(loading);
+    }, [loading]);
+
+    const bols = data && data && data.success ? data.data.bols.items : [];
+    const count = data && data && data.success ? data.data.bols.count : 0;
 
     return (
         <React.Fragment>
             <ColumnBox>
                 {{
-                    header: (
-                        <Box sx={{ display: 'flex', gap: 2, paddingBottom: 2 }}>
-                            <Box>
-                                <SearchField
-                                    label="Search by BOL"
-                                    value={filter.code || ''}
-                                    onChange={(val) =>
-                                        setFilter({
-                                            ...filter,
-                                            code: val || '',
-                                        })
-                                    }
-                                />
-                            </Box>
-                            <Button
-                                onClick={() => setFilterEdits(filter)}
-                                variant="outlined"
-                                endIcon={<FaFilter />}
-                            >
-                                Filters
-                            </Button>
-                        </Box>
-                    ),
                     content: (
-                        <DataGrid
-                            rowCount={count}
-                            error={error}
-                            loading={loading}
-                            rowsPerPageOptions={[25]}
-                            onPageChange={(page) =>
-                                setFilter({ ...filter, skip: page * 25 })
-                            }
-                            rows={bols.map((bol) => ({ ...bol, id: bol._id }))}
-                            onRowClick={(params, event) => {
-                                const bol = params.row as Bol;
-                                const target = event.currentTarget;
-                                setClickState({ target, bol });
+                        <SmartTable
+                            data={bols}
+                            getProps={(d) => ({
+                                id: d._id,
+                                onClick: (bol, event) => {
+                                    const target = event.currentTarget;
+                                    setClickState({ target, bol });
+                                },
+                            })}
+                            pagination={{
+                                skip: filter.skip,
+                                take: filter.take,
+                                count,
+                                setPage: (p) => {
+                                    setFilter({
+                                        ...filter,
+                                        skip:
+                                            p == 1 ? 0 : (p - 1) * filter.take,
+                                    });
+                                },
                             }}
-                            pagination={true}
-                            paginationMode="server"
-                            columns={[
-                                {
-                                    field: 'code',
-                                    headerName: 'BOL #',
-                                    width: 120,
-                                },
-                                {
-                                    flex: 1,
-                                    field: 'orders',
-                                    headerName: 'Order #',
-                                    valueGetter: (data) =>
-                                        (data.row as Bol).orders
-                                            .map((order) => order.code)
-                                            .join(', '),
-                                },
-                                {
-                                    flex: 1,
-                                    field: 'contents',
-                                    headerName: 'BOL contents',
-                                    valueGetter: (data) =>
-                                        (data.row as Bol).contents
-                                            .map(
-                                                (content) =>
-                                                    `${
-                                                        content.item.english
-                                                    } - ${content.quantity} ${
-                                                        content.unit[
-                                                            content.quantity ==
-                                                            1
-                                                                ? 'english'
-                                                                : 'english_plural'
-                                                        ]
-                                                    }`
-                                            )
-                                            .join(', '),
-                                },
-                                {
-                                    field: 'status',
-                                    headerName: 'BOL Status',
-                                    width: 120,
-                                },
-                                {
-                                    flex: 1,
-                                    field: 'from',
-                                    headerName: 'From',
-                                    valueGetter: (data) => {
-                                        const from = (data.row as Bol).from;
-                                        return `${from.company.name}${
-                                            from.location
-                                                ? ` (${
-                                                      from.location.label ||
-                                                      from.location.address
-                                                          ?.city ||
-                                                      ''
-                                                  })`
-                                                : ''
-                                        }`;
-                                    },
-                                },
-                                {
-                                    flex: 1,
-                                    field: 'to',
-                                    headerName: 'To',
-                                    valueGetter: (data) => {
-                                        const to = (data.row as Bol).to;
-                                        return `${to.company.name}${
-                                            to.location
-                                                ? ` (${
-                                                      to.location.label ||
-                                                      to.location.address
-                                                          ?.city ||
-                                                      ''
-                                                  })`
-                                                : ''
-                                        }`;
-                                    },
-                                },
-                                {
-                                    flex: 1,
-                                    field: 'receiving'
-                                        ? 'receipts'
-                                        : 'shipments',
-                                    headerName:
-                                        view == 'receiving'
-                                            ? 'Receipts'
-                                            : 'Shipments',
-                                    valueGetter: (data) => {
-                                        const fulfillments = (data.row as Bol)[
+                            controls={{
+                                PO: (
+                                    <SearchField
+                                        label="PO Number"
+                                        naked
+                                        value={filter.order_code || ''}
+                                        onChange={(val) => {
+                                            setFilter({
+                                                ...filter,
+                                                order_code: val,
+                                            });
+                                        }}
+                                    />
+                                ),
+                                BOL: (
+                                    <SearchField
+                                        label="BOL Number"
+                                        naked
+                                        value={filter.code || ''}
+                                        onChange={(val) => {
+                                            if (val !== (filter.code || ''))
+                                                setFilter({
+                                                    ...filter,
+                                                    code: val,
+                                                });
+                                        }}
+                                    />
+                                ),
+                                From: (
+                                    <CompanyField
+                                        label="From"
+                                        naked
+                                        value={filter.from_company || null}
+                                        onChange={(val) =>
+                                            setFilter({
+                                                ...filter,
+                                                from_company: val || undefined,
+                                            })
+                                        }
+                                    />
+                                ),
+                                To: (
+                                    <CompanyField
+                                        label="To"
+                                        naked
+                                        value={filter.to_company || null}
+                                        onChange={(val) =>
+                                            setFilter({
+                                                ...filter,
+                                                to_company: val || undefined,
+                                            })
+                                        }
+                                    />
+                                ),
+                                Items: (
+                                    <ItemField
+                                        label="Item"
+                                        naked
+                                        value={filter.item || null}
+                                        onChange={(val) =>
+                                            setFilter({
+                                                ...filter,
+                                                item: val || undefined,
+                                            })
+                                        }
+                                    />
+                                ),
+                                [view == 'receiving'
+                                    ? 'Received by'
+                                    : 'Shipped by']: (
+                                    <Box sx={{ minWidth: 160 }}>
+                                        {view}
+                                        <PersonField
+                                            label={
+                                                'receiving'
+                                                    ? 'Received by'
+                                                    : 'Shipped by'
+                                            }
+                                            naked
+                                            value={filter.fulfilled_by || null}
+                                            onChange={(val) =>
+                                                setFilter({
+                                                    ...filter,
+                                                    fulfilled_by:
+                                                        val || undefined,
+                                                })
+                                            }
+                                        />
+                                    </Box>
+                                ),
+                                Verified: (
+                                    <VerificationField
+                                        naked
+                                        value={filter.verification_status}
+                                        onChange={(verification_status) => {
+                                            setFilter({
+                                                ...filter,
+                                                verification_status,
+                                            });
+                                        }}
+                                    />
+                                ),
+                            }}
+                        >
+                            {{
+                                PO: (bol) =>
+                                    bol.orders.map((o) => o.code).join(', '),
+                                BOL: (bol) => bol.code || '',
+                                From: (bol) => (
+                                    <Box>
+                                        <Typography variant="body2">
+                                            {bol.from.company.name}
+                                        </Typography>
+                                        {bol.from.location && (
+                                            <Typography
+                                                variant="caption"
+                                                color="textSecondary"
+                                            >
+                                                {bol.from.location.label ||
+                                                    bol.from.location.address
+                                                        ?.city ||
+                                                    'Unknown location'}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                ),
+                                To: (bol) => (
+                                    <Box>
+                                        <Typography variant="body2">
+                                            {bol.to.company.name}
+                                        </Typography>
+                                        {bol.to.location && (
+                                            <Typography
+                                                variant="caption"
+                                                color="textSecondary"
+                                            >
+                                                {bol.to.location.label ||
+                                                    bol.to.location.address
+                                                        ?.city ||
+                                                    'Unknown location'}
+                                            </Typography>
+                                        )}
+                                    </Box>
+                                ),
+                                Items: (bol) =>
+                                    bol.contents
+                                        .map((c) => c.item.english)
+                                        .join(', '),
+                                Verified: (bol) => {
+                                    const fulfillments =
+                                        bol[
                                             view == 'receiving'
                                                 ? 'receipts'
                                                 : 'shipments'
                                         ];
-                                        if (fulfillments.length == 0)
-                                            return 'None';
-                                        return fulfillments
-                                            .map((f) =>
-                                                f.lots.map(
-                                                    (l) =>
-                                                        `${
-                                                            l.item.english
-                                                        } (${format(
-                                                            new Date(
-                                                                f.date_created
-                                                            ),
-                                                            dateFormats.condensedDate
-                                                        )})`
-                                                )
-                                            )
-                                            .join(', ');
-                                    },
+
+                                    const verifications = fulfillments
+                                        .filter((f) => f.verification)
+                                        .map((f) => f.verification);
+
+                                    return fulfillments.length == 0 ? (
+                                        ''
+                                    ) : (
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                fontSize: '2rem',
+                                            }}
+                                        >
+                                            <AvatarGroup>
+                                                {verifications.map((v, vi) =>
+                                                    v ? (
+                                                        <VerificationIcon
+                                                            status={v?.status}
+                                                            key={bol._id + vi}
+                                                        />
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                )}
+                                            </AvatarGroup>
+                                        </Box>
+                                    );
                                 },
-                            ]}
-                        />
+                                [view == 'receiving'
+                                    ? 'Received by'
+                                    : 'Shipped by']: (bol) =>
+                                    [
+                                        ...new Set(
+                                            bol[
+                                                view == 'receiving'
+                                                    ? 'receipts'
+                                                    : 'shipments'
+                                            ].map((r) => r.created_by.name)
+                                        ),
+                                    ].join(', '),
+                            }}
+                        </SmartTable>
                     ),
                 }}
             </ColumnBox>

@@ -22,8 +22,10 @@ const WarehouseDashboard = (props: WarehouseDashboardProps): ReactElement => {
         { mode: 'Table' }
     );
 
+    const [childLoading, setChildLoading] = React.useState(false);
+
     return (
-        <AppNav>
+        <AppNav loading={childLoading}>
             <ColumnBox>
                 {{
                     header: (
@@ -65,7 +67,10 @@ const WarehouseDashboard = (props: WarehouseDashboardProps): ReactElement => {
                                     flexFlow: 'column',
                                 }}
                             >
-                                <WarehouseTable view={view} />
+                                <WarehouseTable
+                                    setLoading={(d) => setChildLoading(d)}
+                                    view={view}
+                                />
                             </Box>
                             <Box
                                 sx={{

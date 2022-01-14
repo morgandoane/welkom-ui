@@ -28,7 +28,7 @@ const ExpensePreview = (props: ExpensePreviewProps): ReactElement => {
                     key={'expense_' + index}
                 >
                     <Box sx={{ p: 2 }}>
-                        <Typography variant="h6">
+                        <Typography variant="body1">
                             ${commafy(expense.amount)}
                         </Typography>
                         <Box
@@ -38,11 +38,11 @@ const ExpensePreview = (props: ExpensePreviewProps): ReactElement => {
                                 gap: 0.5,
                             }}
                         >
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant="caption" color="textSecondary">
                                 {expense.customer.name}
                             </Typography>
                             <MdChevronRight />
-                            <Typography variant="body2" color="textSecondary">
+                            <Typography variant="caption" color="textSecondary">
                                 {expense.vendor.name}
                             </Typography>
                         </Box>

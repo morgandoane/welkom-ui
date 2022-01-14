@@ -8,6 +8,7 @@ import { Expense } from '../../schema/Expense/Expense';
 export const ExpenseFragment = gql`
     fragment ExpenseFragment on Expense {
         ...BaseFragment
+        against
         amount
         key
         customer {

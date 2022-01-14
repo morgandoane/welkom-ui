@@ -25,8 +25,8 @@ import ResponsiveDialog from '../ResponsiveDialog';
 
 export interface ExpenseDialogProps {
     expense_key: ExpenseKey;
-    against: string;
-    target: true | string | null;
+    against: string | null;
+    expense: string | null;
     onClose: () => void;
     refetchQueries?: InternalRefetchQueriesInclude;
     vendor?: string;
@@ -36,8 +36,8 @@ export interface ExpenseDialogProps {
 const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
     const {
         expense_key: key,
-        target,
         against,
+        expense,
         refetchQueries,
         onClose,
         vendor,
@@ -53,12 +53,12 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
         vendor: vendor || '',
         amount: 0,
         key: key,
-        against,
+        against: against || '',
     });
 
     const { error, loading: expenseLoading } = useExpense({
         variables:
-            target !== null && target !== true ? { id: target } : undefined,
+            against !== null && expense !== null ? { id: expense } : undefined,
         onCompleted: ({ expense }) => {
             setState({
                 _type: 'update',
@@ -69,7 +69,7 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
                 note: expense.note || undefined,
             });
         },
-        skip: target == null || target == true,
+        skip: against == null || expense == null,
         fetchPolicy: 'network-only',
     });
 
@@ -90,7 +90,7 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
                           note: state.note,
                           invoice: state.invoice,
                           key: state.key,
-                          against,
+                          against: against || '',
                       },
                   }
                 : undefined,
@@ -101,9 +101,9 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
 
     const [update, { loading: updateLoading }] = useExpenseUpdate({
         variables:
-            state._type == 'update' && target !== null && target !== true
+            state._type == 'update' && expense !== null
                 ? {
-                      id: target,
+                      id: expense,
                       data: {
                           customer: state.customer,
                           vendor: state.vendor,
@@ -130,10 +130,18 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
     const handleClose = () => {
         setResult(null);
         onClose();
+        setState({
+            _type: 'create',
+            customer: customer || '',
+            vendor: vendor || '',
+            amount: 0,
+            key: key,
+            against: against || '',
+        });
     };
 
     return (
-        <ResponsiveDialog open={Boolean(target)} onClose={handleClose}>
+        <ResponsiveDialog open={Boolean(against)} onClose={handleClose}>
             {result && result.success ? (
                 <Message
                     type="Success"
@@ -166,10 +174,10 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
                             <CarefulButton
                                 loading={loading}
                                 onClick={() => {
-                                    if (target !== null && target !== true)
+                                    if (against !== null && expense !== null)
                                         update({
                                             variables: {
-                                                id: target,
+                                                id: expense,
                                                 data: { deleted: true },
                                             },
                                             refetchQueries,
