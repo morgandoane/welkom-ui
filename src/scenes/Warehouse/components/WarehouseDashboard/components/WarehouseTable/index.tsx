@@ -30,6 +30,7 @@ import { VerificationStatus } from '../../../../../../graphql/schema/Verificatio
 import { FulfillmentType } from '../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import VerificationField from '../../../../../../components/Forms/components/VerificationField';
 import PersonField from '../../../../../../components/Forms/components/PersonField';
+import LocationField from '../../../../../../components/Forms/components/LocationField';
 
 export interface WarehouseTableProps {
     view: 'shipping' | 'receiving';
@@ -126,9 +127,9 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         }}
                                     />
                                 ),
-                                From: (
+                                Vendor: (
                                     <CompanyField
-                                        label="From"
+                                        label="Vendor"
                                         naked
                                         value={filter.from_company || null}
                                         onChange={(val) =>
@@ -139,9 +140,9 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         }
                                     />
                                 ),
-                                To: (
+                                Customer: (
                                     <CompanyField
-                                        label="To"
+                                        label="Customer"
                                         naked
                                         value={filter.to_company || null}
                                         onChange={(val) =>
@@ -150,6 +151,33 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                                 to_company: val || undefined,
                                             })
                                         }
+                                    />
+                                ),
+                                Destination: (
+                                    <LocationField
+                                        label="Destination"
+                                        naked
+                                        company={filter.to_company}
+                                        value={
+                                            (view == 'receiving'
+                                                ? filter.to_location
+                                                : filter.from_location) || null
+                                        }
+                                        onChange={(val) => {
+                                            setFilter(
+                                                view == 'receiving'
+                                                    ? {
+                                                          ...filter,
+                                                          to_location:
+                                                              val || undefined,
+                                                      }
+                                                    : {
+                                                          ...filter,
+                                                          from_location:
+                                                              val || undefined,
+                                                      }
+                                            );
+                                        }}
                                     />
                                 ),
                                 Items: (
@@ -229,7 +257,7 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                 PO: (bol) =>
                                     bol.orders.map((o) => o.code).join(', '),
                                 BOL: (bol) => bol.code || '',
-                                From: (bol) => (
+                                Vendor: (bol) => (
                                     <Box>
                                         <Typography variant="body2">
                                             {bol.from.company.name}
@@ -247,24 +275,19 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         )}
                                     </Box>
                                 ),
-                                To: (bol) => (
+                                Customer: (bol) => (
                                     <Box>
                                         <Typography variant="body2">
                                             {bol.to.company.name}
                                         </Typography>
-                                        {bol.to.location && (
-                                            <Typography
-                                                variant="caption"
-                                                color="textSecondary"
-                                            >
-                                                {bol.to.location.label ||
-                                                    bol.to.location.address
-                                                        ?.city ||
-                                                    'Unknown location'}
-                                            </Typography>
-                                        )}
                                     </Box>
                                 ),
+                                Destination: (bol) =>
+                                    bol.to.location
+                                        ? bol.to.location.label ||
+                                          bol.to.location.address?.city ||
+                                          'unkown location'
+                                        : '',
                                 Items: (bol) =>
                                     bol.contents
                                         .map((c) => c.item.english)

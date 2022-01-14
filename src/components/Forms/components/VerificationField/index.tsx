@@ -73,7 +73,7 @@ const VerificationField = (props: VerificationFieldProps): ReactElement => {
             placeholder="Stuff"
         >
             <MenuItem value={'_un'} disabled>
-                Verification status
+                Verification
             </MenuItem>
             {Object.keys(VerificationStatus).map((status) => (
                 <MenuItem value={status} key={'s_' + status}>
