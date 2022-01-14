@@ -29,6 +29,8 @@ export interface ExpenseDialogProps {
     target: true | string | null;
     onClose: () => void;
     refetchQueries?: InternalRefetchQueriesInclude;
+    vendor?: string;
+    customer?: string;
 }
 
 const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
@@ -38,6 +40,8 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
         against,
         refetchQueries,
         onClose,
+        vendor,
+        customer,
     } = props;
 
     const [state, setState] = React.useState<
@@ -45,8 +49,8 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
         | ({ _type: 'create' } & CreateExpenseInput)
     >({
         _type: 'create',
-        customer: '',
-        vendor: '',
+        customer: customer || '',
+        vendor: vendor || '',
         amount: 0,
         key: key,
         against,
@@ -150,6 +154,8 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
                 <Box>
                     <PanelHeader onClose={handleClose}>Expense</PanelHeader>
                     <ExpenseForm
+                        customer={customer}
+                        vendor={vendor}
                         value={rest}
                         onChange={(d) => {
                             setState({ ...state, ...d });

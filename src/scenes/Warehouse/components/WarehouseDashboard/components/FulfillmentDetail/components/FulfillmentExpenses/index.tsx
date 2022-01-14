@@ -44,6 +44,8 @@ const FulfillmentExpenses = (props: FulfillmentExpensesProps): ReactElement => {
                 Add expense
             </Button>
             <ExpenseDialog
+                customer={fulfillment.bol.to.company._id}
+                vendor={fulfillment.bol.from.company._id}
                 expense_key={ExpenseKey.Bol}
                 against={fulfillment.bol._id}
                 target={target}

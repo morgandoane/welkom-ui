@@ -12,10 +12,12 @@ import TextFormField from '../components/TextFormField';
 export interface ExpenseFormProps {
     value: CreateExpenseInput | UpdateExpenseInput;
     onChange: (value: CreateExpenseInput | UpdateExpenseInput) => void;
+    customer?: string;
+    vendor?: string;
 }
 
 const ExpenseForm = (props: ExpenseFormProps): ReactElement => {
-    const { value, onChange } = props;
+    const { value, customer, vendor, onChange } = props;
 
     return (
         <Box>

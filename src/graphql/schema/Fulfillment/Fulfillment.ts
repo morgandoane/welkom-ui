@@ -20,9 +20,11 @@ export interface FulfillmentBol {
     file?: AppFile | null;
     from: {
         date: Date;
+        company: TinyCompany;
     };
     to: {
         date: Date;
+        company: TinyCompany;
     };
     signatures: BolSignature[];
     contents: BolItemContent[];
@@ -62,9 +64,17 @@ export const FulfillmentFragment = gql`
             seal
             from {
                 date
+                company {
+                    _id
+                    name
+                }
             }
             to {
                 date
+                company {
+                    _id
+                    name
+                }
             }
             file {
                 ...AppFileFragment

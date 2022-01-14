@@ -11,6 +11,7 @@ export interface CompanyFieldProps {
     naked?: boolean;
     allow_unassigned?: boolean;
     mine?: boolean;
+    disabled?: boolean;
 }
 
 const CompanyField = (props: CompanyFieldProps): ReactElement => {
@@ -21,6 +22,7 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
         naked = false,
         allow_unassigned = false,
         mine,
+        disabled = false,
     } = props;
 
     const { data, error, loading } = useTinyCompanies({
@@ -53,6 +55,7 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
     return (
         <Autocomplete
             fullWidth
+            disabled={disabled}
             value={match ? match : allow_unassigned ? unAssigned : null}
             onChange={(e, val) => {
                 if (!val) onChange(null);
