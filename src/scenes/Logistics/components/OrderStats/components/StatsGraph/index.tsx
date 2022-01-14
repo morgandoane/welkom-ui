@@ -55,7 +55,7 @@ const StatsGraph = (props: StatsGraphProps): ReactElement => {
             ? [...Array(12).keys()].map((i) => ({
                   month: dateFormats.months[i][1],
                   total: (
-                      stat.ranges.find((r) => r.month === i + 1) || {
+                      stat.ranges.find((r) => r.month === i) || {
                           month: i,
                           quantitys: [],
                       }
