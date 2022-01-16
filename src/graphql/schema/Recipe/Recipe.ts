@@ -25,8 +25,5 @@ export const TinyRecipeFragment = gql`
         item {
             _id
         }
-        folder {
-            ...FolderFragment
-        }
     }
 `;

@@ -106,19 +106,19 @@ const Sidebar = (): ReactElement => {
             | { _type: 'permission'; permission: UiPermission }
             | { _type: 'role'; role: UserRole };
     }[] = [
-        {
-            icon: <BiDollarCircle style={iconStyle} />,
-            label: 'Accounting',
-            items: [
-                { label: 'Expenses', url: '/accounting/expenses' },
-                { label: 'Pending', url: '/accounting/pending' },
-                { label: 'Reports', url: '/accounting/reports' },
-            ],
-            auth: {
-                _type: 'permission',
-                permission: UiPermission.TrackExpenses,
-            },
-        },
+        // {
+        //     icon: <BiDollarCircle style={iconStyle} />,
+        //     label: 'Accounting',
+        //     items: [
+        //         { label: 'Expenses', url: '/accounting/expenses' },
+        //         { label: 'Pending', url: '/accounting/pending' },
+        //         { label: 'Reports', url: '/accounting/reports' },
+        //     ],
+        //     auth: {
+        //         _type: 'permission',
+        //         permission: UiPermission.TrackExpenses,
+        //     },
+        // },
         {
             icon: <MdFolderOpen style={iconStyle} />,
             label: 'Library',
@@ -149,12 +149,12 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'role', role: UserRole.Manager },
         },
-        {
-            icon: <IoMdDocument style={iconStyle} />,
-            label: 'Recipes',
-            items: [{ label: 'Recipes', url: '/recipes' }],
-            auth: { _type: 'permission', permission: UiPermission.Recipes },
-        },
+        // {
+        //     icon: <IoMdDocument style={iconStyle} />,
+        //     label: 'Recipes',
+        //     items: [{ label: 'Recipes', url: '/recipes' }],
+        //     auth: { _type: 'permission', permission: UiPermission.Recipes },
+        // },
         {
             icon: <FaTruckLoading style={iconStyle} />,
             label: 'Warehouse',

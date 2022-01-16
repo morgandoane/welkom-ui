@@ -56,4 +56,5 @@ export interface TinyProfile {
     user_id: string;
     email: string;
     name: string;
+    picture?: string;
 }

@@ -18,7 +18,6 @@ export const BaseUnionFields = [
     'Conversion',
     'Expense',
     'Folder',
-    'RecipeFolder',
     'Fulfillment',
     'Item',
     'Itinerary',

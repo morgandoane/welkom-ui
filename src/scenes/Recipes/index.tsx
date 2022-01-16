@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { UiPermission } from '../../auth/UiPermission';
 import PermissionRoute from '../../routing/components/PermissionRoute';
 import Recipe from './components/Recipe';
-import RecipeFolder from './components/RecipeFolder';
+import RecipeFolderView from './components/RecipeFolder';
 
 const Recipes = (): ReactElement => {
     return (
@@ -13,7 +13,7 @@ const Recipes = (): ReactElement => {
                 path="folders/:id"
                 element={
                     <PermissionRoute permission={UiPermission.Recipes}>
-                        <RecipeFolder />
+                        <RecipeFolderView />
                     </PermissionRoute>
                 }
             />
@@ -21,7 +21,7 @@ const Recipes = (): ReactElement => {
                 path="folders"
                 element={
                     <PermissionRoute permission={UiPermission.Recipes}>
-                        <RecipeFolder />
+                        <RecipeFolderView />
                     </PermissionRoute>
                 }
             />
