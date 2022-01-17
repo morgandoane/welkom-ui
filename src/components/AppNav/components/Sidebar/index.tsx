@@ -10,23 +10,16 @@ import {
     MenuItem,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
-import { AiFillBuild, AiOutlineNodeIndex } from 'react-icons/ai';
-import { BiDollarCircle } from 'react-icons/bi';
-import { FaHandsHelping, FaTruckLoading } from 'react-icons/fa';
-import { IoMdDocument } from 'react-icons/io';
+import { FaTruckLoading } from 'react-icons/fa';
+import { IoIosDocument, IoMdDocument } from 'react-icons/io';
 import {
     MdAccountCircle,
     MdChevronRight,
     MdDarkMode,
-    MdDescription,
-    MdDocumentScanner,
     MdFolderOpen,
     MdLightMode,
-    MdMoney,
 } from 'react-icons/md';
-import { VscGraphLeft } from 'react-icons/vsc';
 import { useNavigate } from 'react-router';
-import { Permission } from '../../../../auth/Permission';
 import { UiPermission } from '../../../../auth/UiPermission';
 import usePermissions from '../../../../auth/usePermissions';
 import { UserRole } from '../../../../auth/UserRole';
@@ -106,19 +99,6 @@ const Sidebar = (): ReactElement => {
             | { _type: 'permission'; permission: UiPermission }
             | { _type: 'role'; role: UserRole };
     }[] = [
-        // {
-        //     icon: <BiDollarCircle style={iconStyle} />,
-        //     label: 'Accounting',
-        //     items: [
-        //         { label: 'Expenses', url: '/accounting/expenses' },
-        //         { label: 'Pending', url: '/accounting/pending' },
-        //         { label: 'Reports', url: '/accounting/reports' },
-        //     ],
-        //     auth: {
-        //         _type: 'permission',
-        //         permission: UiPermission.TrackExpenses,
-        //     },
-        // },
         {
             icon: <MdFolderOpen style={iconStyle} />,
             label: 'Library',
@@ -149,12 +129,12 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'role', role: UserRole.Manager },
         },
-        // {
-        //     icon: <IoMdDocument style={iconStyle} />,
-        //     label: 'Recipes',
-        //     items: [{ label: 'Recipes', url: '/recipes' }],
-        //     auth: { _type: 'permission', permission: UiPermission.Recipes },
-        // },
+        {
+            icon: <IoMdDocument style={iconStyle} />,
+            label: 'Recipes',
+            items: [{ label: 'Recipes', url: '/recipes' }],
+            auth: { _type: 'permission', permission: UiPermission.Recipes },
+        },
         {
             icon: <FaTruckLoading style={iconStyle} />,
             label: 'Warehouse',

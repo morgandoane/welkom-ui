@@ -1,12 +1,12 @@
+import { useDraggable, useDroppable } from '@dnd-kit/core';
 import {
-    MouseSensor,
-    TouchSensor,
-    useDraggable,
-    useDroppable,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import { Box, ButtonBase, Grid, Typography, useTheme } from '@mui/material';
+    Box,
+    ButtonBase,
+    Grid,
+    Tooltip,
+    Typography,
+    useTheme,
+} from '@mui/material';
 import { CSS } from '@dnd-kit/utilities';
 import React, { ReactElement } from 'react';
 import { MdFolder } from 'react-icons/md';
@@ -65,6 +65,8 @@ export const FolderChip = (props: {
 const FolderBox = (props: FolderBoxProps): ReactElement => {
     const { folder, onClick, onContext } = props;
 
+    const [helper, setHelper] = React.useState(false);
+
     const {
         setNodeRef: setDragRef,
         active,
@@ -80,6 +82,10 @@ const FolderBox = (props: FolderBoxProps): ReactElement => {
         disabled: active ? active.id.split('_')[1] === folder._id : false,
     });
 
+    React.useEffect(() => {
+        setHelper(isOver);
+    }, [isOver]);
+
     const theme = useTheme();
 
     const { palette, shape } = theme;
@@ -89,25 +95,42 @@ const FolderBox = (props: FolderBoxProps): ReactElement => {
     };
 
     return (
-        <Grid item xs={12} sm={4} md={3} lg={2} ref={setDropRef} style={style}>
-            <Box
-                sx={{
-                    ...shape,
-                    border: `2px solid ${
-                        isOver && active?.id.split('_')[1] !== folder._id
-                            ? palette.primary.main
-                            : palette.background.default
-                    }`,
-                }}
+        <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            lg={4}
+            xl={2}
+            ref={setDropRef}
+            style={style}
+        >
+            <Tooltip
+                title={'Move here'}
+                arrow
+                placement="top"
+                open={helper}
+                onClose={() => setHelper(false)}
             >
-                <Box ref={setDragRef} {...attributes} {...listeners}>
-                    <FolderChip
-                        onContext={onContext}
-                        onClick={onClick}
-                        folder={folder}
-                    />
+                <Box
+                    sx={{
+                        ...shape,
+                        border: `2px solid ${
+                            isOver && active?.id.split('_')[1] !== folder._id
+                                ? palette.primary.main
+                                : palette.background.default
+                        }`,
+                    }}
+                >
+                    <Box ref={setDragRef} {...attributes} {...listeners}>
+                        <FolderChip
+                            onContext={onContext}
+                            onClick={onClick}
+                            folder={folder}
+                        />
+                    </Box>
                 </Box>
-            </Box>
+            </Tooltip>
         </Grid>
     );
 };

@@ -19,6 +19,7 @@ const FolderForm = (props: FolderFormProps): ReactElement => {
         <Box>
             <FormRow>
                 <TextFormField
+                    autoFocus
                     label="Name"
                     value={value ? value.name || '' : ''}
                     onChange={(val) => onChange({ ...value, name: val || '' })}

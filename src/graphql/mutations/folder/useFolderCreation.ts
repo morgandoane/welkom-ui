@@ -1,14 +1,16 @@
+import { RecipeFragment } from './../../schema/Recipe/Recipe';
 import { BaseFragment } from './../../fragments/BaseFragment';
 import { getMutationHook } from './../../types';
 import { CreateFolderInput } from './../../schema/Folder/FolderInput';
 import { Folder, FolderFragment } from './../../schema/Folder/Folder';
 import { gql } from '@apollo/client';
-import { TinyRecipeFragment } from '../../schema/Recipe/Recipe';
+import { TinyItemFragment } from '../../queries/items/useTinyItems';
 
 export const CreateFolder = gql`
     ${BaseFragment}
     ${FolderFragment}
-    ${TinyRecipeFragment}
+    ${RecipeFragment}
+    ${TinyItemFragment}
     mutation CreateFolder($data: CreateFolderInput!) {
         createFolder(data: $data) {
             ...FolderFragment

@@ -1,5 +1,4 @@
-import { TinyRecipeFragment } from './../Recipe/Recipe';
-import { FolderRecipe } from './../Recipe/FolderRecipe';
+import { Recipe } from './../Recipe/Recipe';
 import { gql } from '@apollo/client';
 import { Base } from '../Base/Base';
 
@@ -17,9 +16,23 @@ export interface Folder extends Base {
     name: string;
     parent: FolderChild | null;
     folders: FolderChild[];
-    recipes: FolderRecipe[];
-    ancestry: FolderRecipe[];
+    recipes: Recipe[];
+    ancestry: FolderChild[];
 }
+
+export interface TinyFolder {
+    _id: string;
+    class: FolderClass;
+    name: string;
+}
+
+export const TinyFolderFragment = gql`
+    fragment TinyFolderFragment on Folder {
+        _id
+        class
+        name
+    }
+`;
 
 export const FolderFragment = gql`
     fragment FolderFragment on Folder {
@@ -39,7 +52,7 @@ export const FolderFragment = gql`
             name
         }
         recipes {
-            ...TinyRecipeFragment
+            ...RecipeFragment
         }
     }
 `;

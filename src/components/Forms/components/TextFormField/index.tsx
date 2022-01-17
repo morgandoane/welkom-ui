@@ -8,13 +8,23 @@ export interface TextFormFieldProps {
     disabled?: boolean;
     naked?: boolean;
     onBlur?: () => void;
+    autoFocus?: boolean;
 }
 
 const TextFormField = (props: TextFormFieldProps): ReactElement => {
-    const { value, onChange, onBlur, label, disabled, naked = false } = props;
+    const {
+        autoFocus = false,
+        value,
+        onChange,
+        onBlur,
+        label,
+        disabled,
+        naked = false,
+    } = props;
 
     return (
         <TextField
+            autoFocus={autoFocus}
             onBlur={onBlur}
             disabled={disabled}
             fullWidth

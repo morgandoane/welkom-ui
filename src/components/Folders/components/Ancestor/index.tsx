@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
-import { MdChevronRight } from 'react-icons/md';
+import { CgFormatSlash } from 'react-icons/cg';
 import { Folder, FolderChild } from '../../../../graphql/schema/Folder/Folder';
 
 export interface AncestorProps {
@@ -13,26 +13,53 @@ export interface AncestorProps {
 const Ancestor = (props: AncestorProps): ReactElement => {
     const { folder, active = false, onClick } = props;
 
-    const { setNodeRef: setDropRef, isOver } = useDroppable({
+    const { palette, shape } = useTheme();
+
+    const [helper, setHelper] = React.useState(false);
+
+    const {
+        setNodeRef: setDropRef,
+        isOver,
+        over,
+    } = useDroppable({
         id: 'ancestorDrop_' + folder._id,
     });
 
+    React.useEffect(() => {
+        setHelper(isOver);
+    }, [isOver]);
+
     return (
         <Box ref={setDropRef}>
-            <Box>
-                <Button
-                    endIcon={!active ? <MdChevronRight /> : undefined}
-                    variant="text"
-                    color="inherit"
-                    onClick={() => {
-                        if (onClick) {
-                            onClick(folder);
-                        }
+            <Tooltip
+                title={'Move here'}
+                arrow
+                placement="top"
+                open={helper}
+                onClose={() => setHelper(false)}
+            >
+                <Box
+                    sx={{
+                        background: isOver ? palette.action.hover : undefined,
+                        paddingTop: 1,
+                        paddingBottom: 1,
+                        ...shape,
                     }}
                 >
-                    {folder.name}
-                </Button>
-            </Box>
+                    <Button
+                        endIcon={!active ? <CgFormatSlash /> : undefined}
+                        variant="text"
+                        color="inherit"
+                        onClick={() => {
+                            if (onClick) {
+                                onClick(folder);
+                            }
+                        }}
+                    >
+                        {folder.name}
+                    </Button>
+                </Box>
+            </Tooltip>
         </Box>
     );
 };

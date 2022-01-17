@@ -48,6 +48,17 @@ const routes: {
         },
     },
     {
+        auth: { _type: 'permission', permission: UiPermission.Recipes },
+        props: {
+            path: '/recipes/*',
+            element: (
+                <PermissionRoute permission={UiPermission.Recipes}>
+                    <Recipes />
+                </PermissionRoute>
+            ),
+        },
+    },
+    {
         auth: { _type: 'permission', permission: UiPermission.Logistics },
         props: {
             path: '/logistics/*',
@@ -65,17 +76,6 @@ const routes: {
             element: (
                 <AuthenticatedRoute>
                     <Accounting />
-                </AuthenticatedRoute>
-            ),
-        },
-    },
-    {
-        auth: { _type: 'permission', permission: UiPermission.Recipes },
-        props: {
-            path: '/recipes/*',
-            element: (
-                <AuthenticatedRoute>
-                    <Recipes />
                 </AuthenticatedRoute>
             ),
         },
