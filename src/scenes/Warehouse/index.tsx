@@ -4,6 +4,7 @@ import BolForm from '../../components/Forms/BolForm';
 import WarehouseDashboard from './components/WarehouseDashboard';
 import FulfillmentDetail from './components/WarehouseDashboard/components/FulfillmentDetail';
 import FulfillmentForm from './components/WarehouseDashboard/components/FulfillmentForm';
+import FulfillmentPrint from './components/WarehouseDashboard/components/FulfillmentPrint';
 
 const Warehouse = (): ReactElement => {
     return (
@@ -36,6 +37,10 @@ const Warehouse = (): ReactElement => {
             <Route
                 path=":shippingorreceiving/:bol_id/:fulfillment_id/edit"
                 element={<FulfillmentForm />}
+            />
+            <Route
+                path=":shippingorreceiving/:bol_id/:fulfillment_id/print"
+                element={<FulfillmentPrint />}
             />
         </Routes>
     );

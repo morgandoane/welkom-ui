@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, Fab } from '@mui/material';
+import { Box, Button, Collapse, Fab } from '@mui/material';
 import { format, setDate } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdAdd } from 'react-icons/md';
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import AppNav from '../../../../../../components/AppNav';
 import CompanyField from '../../../../../../components/Forms/components/CompanyField';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
+import NumberField from '../../../../../../components/Forms/components/NumberField';
 import TextFormField from '../../../../../../components/Forms/components/TextFormField';
 import UnitClassField from '../../../../../../components/Forms/components/UnitClassField';
 import UnitField from '../../../../../../components/Forms/components/UnitField';
@@ -123,6 +124,7 @@ const ItemsView = (): ReactElement => {
                                             english: '',
                                             spanish: '',
                                             unit_class: UnitClass.Weight,
+                                            to_base_unit: 1,
                                         });
                                     }}
                                 >
@@ -161,6 +163,9 @@ const ItemsView = (): ReactElement => {
                 onClose={onClose}
                 error={
                     result && result.success == false ? result.error : undefined
+                }
+                resetError={
+                    <Button onClick={() => setResult(null)}>Reset form</Button>
                 }
                 success={
                     result && result.success == true
@@ -201,10 +206,36 @@ const ItemsView = (): ReactElement => {
                         label="Measured in"
                         value={edits ? edits.unit_class : UnitClass.Weight}
                         onChange={(unit_class) => {
-                            if (edits) setEdits({ ...edits, unit_class });
+                            if (edits)
+                                setEdits({
+                                    ...edits,
+                                    unit_class,
+                                    default_unit: undefined,
+                                });
                         }}
                     />
                 </FormRow>
+                <Collapse
+                    in={edits !== null && edits.unit_class == UnitClass.Volume}
+                >
+                    <FormRow>
+                        <NumberField
+                            label={`How much does 1 gallon of ${
+                                edits && edits.english
+                                    ? edits.english
+                                    : 'this item'
+                            } weigh? (pounds)`}
+                            value={edits ? edits.to_base_unit : 1}
+                            onChange={(val) => {
+                                if (edits)
+                                    setEdits({
+                                        ...edits,
+                                        to_base_unit: val !== null ? val : 0,
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                </Collapse>
                 <FormRow>
                     <UnitField
                         class={edits ? edits.unit_class : undefined}

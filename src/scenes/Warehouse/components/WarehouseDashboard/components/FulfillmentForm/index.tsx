@@ -219,13 +219,21 @@ const FulfillmentForm = (props: {
                 <Message
                     type="Success"
                     message="Receipt saved!"
-                    onComplete={() =>
-                        nav(
-                            formType == FulfillmentType.Receipt
-                                ? '/warehouse/receiving'
-                                : '/warehouse/shipping'
-                        )
-                    }
+                    onComplete={() => {
+                        if ('createFulfillment' in result.data) {
+                            nav(
+                                formType == FulfillmentType.Receipt
+                                    ? `/warehouse/receiving/${result.data.createFulfillment.bol._id}/${result.data.createFulfillment._id}/print`
+                                    : `/warehouse/shipping/${result.data.createFulfillment.bol._id}/${result.data.createFulfillment._id}/print`
+                            );
+                        } else {
+                            nav(
+                                formType == FulfillmentType.Receipt
+                                    ? '/warehouse/receiving'
+                                    : '/warehouse/shipping'
+                            );
+                        }
+                    }}
                 />
             ) : result ? (
                 <Message
@@ -442,7 +450,8 @@ const FulfillmentForm = (props: {
                                                         disabled={
                                                             !bol ||
                                                             (!bol.code &&
-                                                                !state.bol_code_override)
+                                                                !state.bol_code_override) ||
+                                                            !state.seal
                                                         }
                                                         endIcon={
                                                             <MdArrowDownward />

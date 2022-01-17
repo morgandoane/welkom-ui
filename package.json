@@ -5,6 +5,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.6",
     "@auth0/auth0-react": "^1.8.0",
+    "@createnextapp/react-barcode": "^1.1.1",
     "@date-io/date-fns": "^2.11.0",
     "@dnd-kit/core": "^4.0.3",
     "@dnd-kit/modifiers": "^4.0.0",
@@ -19,6 +20,7 @@
     "@mui/lab": "^5.0.0-alpha.59",
     "@mui/material": "^5.2.3",
     "@mui/x-data-grid": "^5.2.0",
+    "@react-pdf/renderer": "^2.1.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -26,13 +28,17 @@
     "@types/firebase": "^3.2.1",
     "@types/jest": "^26.0.24",
     "@types/node": "^12.20.37",
+    "@types/qrcode": "^1.4.2",
     "@types/react-pdf": "^5.0.9",
     "axios": "^0.24.0",
     "date-fns": "^2.27.0",
     "firebase": "^9.6.1",
+    "jsbarcode": "^3.11.4",
     "lottie-react": "^2.1.0",
     "netlify-lambda": "^2.0.15",
+    "qrcode": "^1.5.0",
     "react": "^17.0.2",
+    "react-barcode": "^1.4.1",
     "react-dom": "^17.0.2",
     "react-dropzone": "^11.4.2",
     "react-error-boundary": "^3.1.4",
@@ -86,5 +92,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "typings": "./dist/index.d.ts"
 }

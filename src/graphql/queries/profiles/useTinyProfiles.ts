@@ -11,6 +11,8 @@ export const TinyProfiles = gql`
                 user_id
                 email
                 name
+                given_name
+                family_name
             }
         }
     }

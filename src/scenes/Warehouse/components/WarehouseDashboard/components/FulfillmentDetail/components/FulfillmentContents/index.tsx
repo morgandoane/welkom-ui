@@ -1,31 +1,13 @@
-import {
-    Box,
-    Button,
-    Collapse,
-    IconButton,
-    Popover,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Typography,
-    useTheme,
-} from '@mui/material';
+import { Box, Button, Collapse, Dialog, useTheme } from '@mui/material';
 import { id } from 'date-fns/locale';
 import React, { ReactElement } from 'react';
-import { BsBoxSeam } from 'react-icons/bs';
-import { MdCheckCircle, MdExpandMore, MdEdit } from 'react-icons/md';
-import { RiErrorWarningFill } from 'react-icons/ri';
+import { MdEdit } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
-import Anima from '../../../../../../../../components/Anima';
 import AppFab from '../../../../../../../../components/AppFab';
-import {
-    Fulfillment,
-    FulfillmentType,
-} from '../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
-import { useClickState } from '../../../../../../../../hooks/useClickState';
+import { Fulfillment } from '../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import FulfillmentLine from './components/FulfillmentLine';
+import { PDFViewer } from '@react-pdf/renderer';
+import LotDocumentRender from '../../../../../../../../components/Document/components/LotDocument';
 
 export interface FulfillmentContentsProps {
     fulfillment: Fulfillment;
@@ -37,6 +19,10 @@ const FulfillmentContents = (props: FulfillmentContentsProps): ReactElement => {
     const nav = useNavigate();
 
     const { palette } = useTheme();
+
+    const [focusedLot, setFocusedLot] = React.useState<
+        null | Fulfillment['lots'][number]
+    >(null);
 
     return (
         <Box
@@ -53,12 +39,43 @@ const FulfillmentContents = (props: FulfillmentContentsProps): ReactElement => {
                     key={'fLine_' + i}
                     content={c}
                     fulfillment={fulfillment}
+                    onPrint={(lot) => {
+                        setFocusedLot(lot);
+                    }}
                 />
             ))}
             <AppFab
                 icon={<MdEdit />}
                 onClick={() => nav('edit')}
             >{`Edit ${fulfillment.type}`}</AppFab>
+            <Dialog
+                onClose={() => setFocusedLot(null)}
+                open={Boolean(focusedLot)}
+                maxWidth="lg"
+                fullWidth
+                PaperProps={{ sx: { height: '90vh' } }}
+            >
+                <PDFViewer
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                    }}
+                >
+                    {
+                        (focusedLot ? [focusedLot] : []).map((lot) => (
+                            <LotDocumentRender key={'lotDoc_' + lot._id}>
+                                {{
+                                    _type: 'lot',
+                                    ...lot,
+                                    fulfillment_id: fulfillment._id,
+                                    bol_id: fulfillment.bol._id,
+                                }}
+                            </LotDocumentRender>
+                        )) as any
+                    }
+                </PDFViewer>
+            </Dialog>
         </Box>
     );
 };

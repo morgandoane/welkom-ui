@@ -16,7 +16,8 @@ export const CreateProfile = gql`
 export interface CreateProfileInput {
     given_name: string;
     family_name: string;
-    email: string;
+    email?: string;
+    username?: string;
     phone_number?: string;
     role: UserRole;
     temporary_password: string;

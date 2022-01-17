@@ -165,10 +165,6 @@ const RecipeFolderView = (): ReactElement => {
                           user_id: '',
                           name: '',
                           email: '',
-                          app_metadata: {
-                              created_by: '',
-                              require_password_rest: false,
-                          },
                       },
                 deleted: false,
                 _id: folder ? folder._id : '',

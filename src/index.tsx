@@ -14,6 +14,7 @@ import '@fontsource/rubik';
 import '@fontsource/jost';
 import { UploadProvider } from './providers/UploadProvider';
 import ErrorProvider from './providers/ErrorProvider';
+import TypefaceProvider from './providers/TypefaceProvider';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -24,7 +25,9 @@ ReactDOM.render(
                         <LocalizationProvider dateAdapter={DateAdapter}>
                             <SnackbarProvider>
                                 <UploadProvider>
-                                    <Router />
+                                    <TypefaceProvider>
+                                        <Router />
+                                    </TypefaceProvider>
                                 </UploadProvider>
                             </SnackbarProvider>
                         </LocalizationProvider>

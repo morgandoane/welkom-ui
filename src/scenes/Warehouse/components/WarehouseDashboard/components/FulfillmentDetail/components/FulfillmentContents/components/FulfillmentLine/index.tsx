@@ -4,17 +4,15 @@ import {
     Collapse,
     Divider,
     Grow,
-    IconButton,
     Popover,
     Typography,
     useTheme,
 } from '@mui/material';
-import { id } from 'date-fns/locale';
 import React, { ReactElement } from 'react';
-import { BsBoxSeam } from 'react-icons/bs';
+import { IoMdBarcode } from 'react-icons/io';
 import { MdCheckCircle, MdExpandMore } from 'react-icons/md';
 import { RiErrorWarningFill } from 'react-icons/ri';
-import { Cell, Pie, PieChart, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart } from 'recharts';
 import Anima from '../../../../../../../../../../components/Anima';
 import { BolItemContent } from '../../../../../../../../../../graphql/schema/Content/Content';
 import {
@@ -28,10 +26,11 @@ import { percentage } from '../../../../../../../../../../utils/percentage';
 export interface FulfillmentLineProps {
     fulfillment: Fulfillment;
     content: BolItemContent;
+    onPrint: (lot: Fulfillment['lots'][number]) => void;
 }
 
 const FulfillmentLine = (props: FulfillmentLineProps): ReactElement => {
-    const { fulfillment, content } = props;
+    const { fulfillment, content, onPrint } = props;
 
     const { palette, shape } = useTheme();
 
@@ -252,7 +251,13 @@ const FulfillmentLine = (props: FulfillmentLineProps): ReactElement => {
                             ))}
                     </Box>
                 </Collapse>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        gap: 3,
+                    }}
+                >
                     <Button
                         onClick={(event) => setShowBreakdown(!showBreakdown)}
                         variant="text"
@@ -265,6 +270,18 @@ const FulfillmentLine = (props: FulfillmentLineProps): ReactElement => {
                         }
                     >
                         Lot breakdown
+                    </Button>
+                    <Button
+                        endIcon={<IoMdBarcode />}
+                        onClick={() => {
+                            const match = fulfillment.lots.find(
+                                (l) => l.item._id === content.item._id
+                            );
+                            if (match) onPrint(match);
+                        }}
+                        variant="text"
+                    >
+                        Print label
                     </Button>
                     {responses.length > 0 && (
                         <Button

@@ -1,40 +1,20 @@
-import {
-    Box,
-    Button,
-    IconButton,
-    Popover,
-    Typography,
-    useTheme,
-} from '@mui/material';
-import { format } from 'date-fns';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
-import { BsBoxSeam } from 'react-icons/bs';
-import {
-    MdCheckCircle,
-    MdChevronLeft,
-    MdEdit,
-    MdExpandMore,
-} from 'react-icons/md';
-import { RiErrorWarningFill } from 'react-icons/ri';
+import { MdChevronLeft } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     getUiPermissions,
     UiPermission,
-    UiPermissions,
 } from '../../../../../../auth/UiPermission';
 import usePermissions from '../../../../../../auth/usePermissions';
 import { UserRole } from '../../../../../../auth/UserRole';
-import AppFab from '../../../../../../components/AppFab';
 import AppNav from '../../../../../../components/AppNav';
-import Details from '../../../../../../components/Details';
 import { VerificationIcon } from '../../../../../../components/Forms/VerificationForm';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../../../components/PageTitle';
 import TabFade from '../../../../../../components/TabFade';
 import { useFulfillment } from '../../../../../../graphql/queries/fulfillment/useFulfillment';
 import { FulfillmentType } from '../../../../../../graphql/schema/Fulfillment/Fulfillment';
-import { useClickState } from '../../../../../../hooks/useClickState';
-import { dateFormats } from '../../../../../../utils/dateFormats';
 import FulfillmentAttachments from './components/FulfillmentAttachments';
 import FulfillmentContents from './components/FulfillmentContents';
 import FulfillmentDetails from './components/FulfillmentDetails';
@@ -121,19 +101,33 @@ const FulfillmentDetail = (): ReactElement => {
                                         ) : undefined
                                     }
                                 >
-                                    {[
-                                        fulfillment.type,
-                                        fulfillment.bol.code
-                                            ? `Against ${
-                                                  (fulfillment.bol.code || '')
-                                                      .toLowerCase()
-                                                      .includes('bol')
-                                                      ? ''
-                                                      : 'BOL '
-                                              } ${fulfillment.bol.code}`
-                                            : '',
-                                    ]}
+                                    {fulfillment.type}
                                 </PageTitle>
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                >
+                                    {fulfillment.bol.code
+                                        ? `Against ${
+                                              (fulfillment.bol.code || '')
+                                                  .toLowerCase()
+                                                  .includes('bol')
+                                                  ? ''
+                                                  : 'BOL '
+                                          }
+                                    ${fulfillment.bol.code}`
+                                        : ''}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="textSecondary"
+                                >{`On behalf of ${
+                                    fulfillment.bol.itinerary.orders.length > 1
+                                        ? `POs ${fulfillment.bol.itinerary.orders
+                                              .map((o) => o.code)
+                                              .join(', ')}`
+                                        : `${fulfillment.bol.itinerary.orders[0].code}`
+                                }`}</Typography>
                             </Box>
                         ),
                         content: (
@@ -166,6 +160,7 @@ const FulfillmentDetail = (): ReactElement => {
                                             fulfillment={fulfillment}
                                         />
                                     ),
+
                                     ...getAdditionalTabs(),
                                 }}
                             </TabFade>

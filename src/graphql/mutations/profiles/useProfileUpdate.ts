@@ -17,6 +17,7 @@ export interface UpdateProfileInput {
     given_name?: string;
     family_name?: string;
     email?: string;
+    username?: string;
     role?: UserRole;
     phone_number?: string;
     password?: string;

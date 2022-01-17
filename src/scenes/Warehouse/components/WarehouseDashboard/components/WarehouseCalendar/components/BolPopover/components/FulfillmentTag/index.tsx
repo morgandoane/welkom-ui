@@ -38,6 +38,7 @@ const FulfillmentTag = (props: FulfillmentTagProps): ReactElement => {
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 background: palette.primary.main,
+                color: palette.primary.contrastText,
                 gap: 1,
                 textAlign: 'left',
             }}

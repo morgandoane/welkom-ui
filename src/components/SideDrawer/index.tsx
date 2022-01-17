@@ -7,6 +7,7 @@ export interface SideDrawerProps {
     onClose: () => void;
     loading?: boolean;
     error?: Error;
+    errorAction?: ReactElement;
     resetError?: ReactElement;
     success?: string;
     onSuccess?: () => void;

@@ -18,6 +18,7 @@ import Library from '../scenes/Library';
 import Login from '../scenes/Login';
 import Logistics from '../scenes/Logistics';
 import Logout from '../scenes/Logout';
+import NoPermissions from '../scenes/NoPermissions';
 import NotFound from '../scenes/NotFound';
 import People from '../scenes/People';
 import Recipes from '../scenes/Recipes';
@@ -131,7 +132,7 @@ export const useIndexRoute = (): { path: string } => {
         }
     });
 
-    if (!match) return { path: '/login' };
+    if (!match) return { path: '/nopermissions' };
     else return { path: match.props.path.replace('*', '') };
 };
 
@@ -153,6 +154,14 @@ export const Router = (): ReactElement => {
                 {routes.map(({ props: rProps, auth }) => (
                     <Route {...rProps} key={'route' + rProps.path} />
                 ))}
+                <Route
+                    path="/nopermissions"
+                    element={
+                        <AuthenticatedRoute>
+                            <NoPermissions />
+                        </AuthenticatedRoute>
+                    }
+                />
                 <Route
                     path="/resetpassword"
                     element={

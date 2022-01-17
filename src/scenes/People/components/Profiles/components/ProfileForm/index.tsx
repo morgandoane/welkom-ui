@@ -5,12 +5,14 @@ import { MdCheck, MdChevronLeft } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserRole } from '../../../../../../auth/UserRole';
 import AppNav from '../../../../../../components/AppNav';
+import ButtonToggle from '../../../../../../components/ButtonToggle';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
 import RoleField from '../../../../../../components/Forms/components/RoleField';
 import TextFormField from '../../../../../../components/Forms/components/TextFormField';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import Message from '../../../../../../components/Message';
 import PageTitle from '../../../../../../components/PageTitle';
+import ToggleInput from '../../../../../../components/ToggleInput';
 import {
     CreateProfileInput,
     CreateProfileRes,
@@ -59,6 +61,7 @@ const ProfileForm = (): ReactElement => {
                           given_name: state.given_name,
                           family_name: state.family_name,
                           email: state.email,
+                          username: state.username,
                           phone_number: state.phone_number,
                           temporary_password: state.temporary_password,
                           role: state.role,
@@ -79,6 +82,7 @@ const ProfileForm = (): ReactElement => {
                           given_name: state.given_name || '',
                           family_name: state.family_name || '',
                           email: state.email || '',
+                          username: state.username || '',
                           phone_number: state.phone_number,
                           role: state.role,
                       },
@@ -98,13 +102,21 @@ const ProfileForm = (): ReactElement => {
         },
         skip: !id,
         onCompleted: ({
-            profile: { roles, given_name, family_name, email, phone_number },
+            profile: {
+                roles,
+                given_name,
+                family_name,
+                username,
+                email,
+                phone_number,
+            },
         }) => {
             setState({
                 _type: 'update',
                 given_name: given_name || '',
                 family_name: family_name || '',
-                email: email || '',
+                email: email,
+                username: username || undefined,
                 phone_number: phone_number || '',
                 role: roles[0],
             });
@@ -178,8 +190,6 @@ const ProfileForm = (): ReactElement => {
                                             })
                                         }
                                     />
-                                </FormRow>
-                                <FormRow>
                                     <TextFormField
                                         label="Family name"
                                         value={state.family_name || ''}
@@ -192,27 +202,50 @@ const ProfileForm = (): ReactElement => {
                                     />
                                 </FormRow>
                                 <FormRow>
-                                    <TextFormField
-                                        label="Email"
-                                        value={state.email || ''}
-                                        onChange={(val) =>
+                                    <ToggleInput
+                                        label={
+                                            state.email !== undefined
+                                                ? 'Email'
+                                                : 'Username'
+                                        }
+                                        value={
+                                            (state.email !== undefined
+                                                ? state.email
+                                                : state.username) || null
+                                        }
+                                        onChange={(val) => {
                                             setState({
                                                 ...state,
-                                                email: val || '',
-                                            })
+                                                [state.email !== undefined
+                                                    ? 'email'
+                                                    : 'username']: val || '',
+                                            });
+                                        }}
+                                        getOptionData={(d) => ({
+                                            id: 'opt_' + d.split,
+                                            value: d,
+                                        })}
+                                        options={['Email', 'Username']}
+                                        optionValue={
+                                            state.username !== undefined
+                                                ? 'Username'
+                                                : 'Email'
                                         }
-                                    />
-                                </FormRow>
-                                <FormRow>
-                                    <TextFormField
-                                        label="Phone Number"
-                                        value={state.phone_number || ''}
-                                        onChange={(val) =>
-                                            setState({
-                                                ...state,
-                                                phone_number: val || '',
-                                            })
-                                        }
+                                        onOptionChange={(val) => {
+                                            if (val === 'Email') {
+                                                setState({
+                                                    ...state,
+                                                    email: '',
+                                                    username: undefined,
+                                                });
+                                            } else {
+                                                setState({
+                                                    ...state,
+                                                    username: '',
+                                                    email: undefined,
+                                                });
+                                            }
+                                        }}
                                     />
                                 </FormRow>
                                 {state._type == 'create' && (

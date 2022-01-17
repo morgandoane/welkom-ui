@@ -1,4 +1,11 @@
-import { Button, Fab, Tooltip, Typography, useTheme } from '@mui/material';
+import {
+    Button,
+    CircularProgress,
+    Fab,
+    Tooltip,
+    Typography,
+    useTheme,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import React, { ReactElement } from 'react';
 import { MdAdd, MdCheck } from 'react-icons/md';
@@ -171,7 +178,9 @@ const OrderQueue = (): ReactElement => {
                             <Box sx={{ display: 'flex' }}>
                                 <Box>
                                     {updateLoading || Boolean(timer) ? (
-                                        <Message type="Loading" size={40} />
+                                        <CircularProgress
+                                            sx={{ maxHeight: 24, maxWidth: 24 }}
+                                        />
                                     ) : timer == 0 ? (
                                         <Message type="Success" size={40} />
                                     ) : (

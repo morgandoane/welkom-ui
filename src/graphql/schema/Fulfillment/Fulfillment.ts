@@ -1,3 +1,4 @@
+import { BaseFragment } from './../../fragments/BaseFragment';
 import { BolItemContent } from './../Content/Content';
 import { BolSignature } from './../Bol/Bol';
 import { Verified } from './../Verified/Verified';
@@ -28,6 +29,15 @@ export interface FulfillmentBol {
     };
     signatures: BolSignature[];
     contents: BolItemContent[];
+    itinerary: {
+        _id: string;
+        code: string;
+        carrier: TinyCompany;
+        orders: {
+            _id: string;
+            code: string;
+        }[];
+    };
 }
 
 export interface Fulfillment extends Verified {
@@ -62,6 +72,18 @@ export const FulfillmentFragment = gql`
             _id
             code
             seal
+            itinerary {
+                _id
+                code
+                carrier {
+                    _id
+                    name
+                }
+                orders {
+                    _id
+                    code
+                }
+            }
             from {
                 date
                 company {
@@ -111,7 +133,7 @@ export const FulfillmentFragment = gql`
             }
         }
         lots {
-            _id
+            ...BaseFragment
             code
             quality_check_responses {
                 qualityCheck {

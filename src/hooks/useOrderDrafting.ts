@@ -1,3 +1,4 @@
+import { startsWithNumber } from './../utils/startsWithNumber';
 import { dateFormats } from './../utils/dateFormats';
 import { TinyItem } from './../graphql/schema/Item/Item';
 import { useTinyItems } from './../graphql/queries/items/useTinyItems';
@@ -179,9 +180,17 @@ export const useOrderDrafting = (
             };
         else {
             return {
-                line: `${order_code}${br}------------------${br}${quantity} ${
+                line: `${quantity}${
+                    startsWithNumber(
+                        tinyUnit[
+                            quantity == 1 ? 'english' : 'english_plural'
+                        ] || ''
+                    )
+                        ? ' x'
+                        : ''
+                } ${
                     tinyUnit[quantity == 1 ? 'english' : 'english_plural']
-                } of ${tinyItem.english}${br}delivered to ${
+                } of ${tinyItem.english} delivered to ${
                     tinyLocation.label || tinyLocation?.address?.city || 'us'
                 }${
                     tinyVendorLocation
@@ -195,7 +204,7 @@ export const useOrderDrafting = (
                     time_sensitive
                         ? ' by ' + format(date, dateFormats.time)
                         : ''
-                }${br}${br}`,
+                }${br}PO# ${order_code}${br}`,
                 holdup: null,
             };
         }

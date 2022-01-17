@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab';
-import { Box, Button, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { format } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { MdEdit } from 'react-icons/md';
@@ -19,9 +19,6 @@ import { Item } from '../../../../../../../../graphql/schema/Item/Item';
 import { OperationResult } from '../../../../../../../../graphql/types';
 import { dateFormats } from '../../../../../../../../utils/dateFormats';
 import { MdRefresh } from 'react-icons/md';
-import { TinyItems } from '../../../../../../../../graphql/queries/items/useTinyItems';
-import { ItemQuery } from '../../../../../../../../graphql/queries/items/useItem';
-import { InternalRefetchQueriesInclude } from '@apollo/client';
 import UnitField from '../../../../../../../../components/Forms/components/UnitField';
 import CompanyField from '../../../../../../../../components/Forms/components/CompanyField';
 
