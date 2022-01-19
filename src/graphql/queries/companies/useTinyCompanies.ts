@@ -25,6 +25,15 @@ export const TinyCompanies = gql`
                 }
                 date_modified
                 date_created
+                contacts {
+                    _id
+                    given_name
+                    family_name
+                    email
+                    email_on_order
+                    cc_on_order
+                    phone
+                }
             }
         }
     }

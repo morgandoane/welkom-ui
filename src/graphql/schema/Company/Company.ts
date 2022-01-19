@@ -1,6 +1,6 @@
 import { TinyProfile } from './../Profile/Profile';
 import { AppFile } from './../AppFile/AppFile';
-import { Contact } from './../Contact/Contact';
+import { Contact, TinyContact } from './../Contact/Contact';
 import { Base } from '../Base/Base';
 import { Location } from '../Location/Location';
 
@@ -18,4 +18,5 @@ export interface TinyCompany {
     modified_by?: TinyProfile | null;
     date_created: Date;
     date_modified?: Date | null;
+    contacts: TinyContact[];
 }

@@ -44,6 +44,7 @@ const CompanyField = (props: CompanyFieldProps): ReactElement => {
         name: 'Unassigned',
         created_by: { user_id: '', email: '', name: '' },
         date_created: new Date(),
+        contacts: [],
     };
 
     const options: TinyCompany[] = allow_unassigned

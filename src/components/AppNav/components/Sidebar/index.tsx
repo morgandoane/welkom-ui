@@ -129,12 +129,12 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'role', role: UserRole.Manager },
         },
-        {
-            icon: <IoMdDocument style={iconStyle} />,
-            label: 'Recipes',
-            items: [{ label: 'Recipes', url: '/recipes' }],
-            auth: { _type: 'permission', permission: UiPermission.Recipes },
-        },
+        // {
+        //     icon: <IoMdDocument style={iconStyle} />,
+        //     label: 'Recipes',
+        //     items: [{ label: 'Recipes', url: '/recipes' }],
+        //     auth: { _type: 'permission', permission: UiPermission.Recipes },
+        // },
         {
             icon: <FaTruckLoading style={iconStyle} />,
             label: 'Warehouse',

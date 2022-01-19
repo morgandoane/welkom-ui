@@ -43,7 +43,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
     const { content, index, setContent, drop } = props;
 
     const { attributes, listeners, setNodeRef, transform, transition } =
-        useSortable({ id: 'content_' + index });
+        useSortable({ id: 'content_' + index, transition: null });
 
     const style = {
         transform: CSS.Transform.toString(transform),

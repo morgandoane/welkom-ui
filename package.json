@@ -35,6 +35,7 @@
     "firebase": "^9.6.1",
     "jsbarcode": "^3.11.4",
     "lottie-react": "^2.1.0",
+    "mailto-link": "^2.0.0",
     "netlify-lambda": "^2.0.15",
     "qrcode": "^1.5.0",
     "react": "^17.0.2",

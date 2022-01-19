@@ -70,11 +70,14 @@ const CompanyPeople = (props: CompanyPeopleProps): ReactElement => {
                                         data: {
                                             given_name: contact.given_name,
                                             family_name: contact.family_name,
-                                            email: contact.email,
-                                            phone: contact.phone,
+                                            email: contact.email || undefined,
+                                            phone: contact.phone || undefined,
                                             email_on_order:
-                                                contact.email_on_order,
-                                            cc_on_order: contact.cc_on_order,
+                                                contact.email_on_order ||
+                                                undefined,
+                                            cc_on_order:
+                                                contact.cc_on_order ||
+                                                undefined,
                                         },
                                     })
                                 }

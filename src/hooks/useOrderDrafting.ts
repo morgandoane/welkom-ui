@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { startsWithNumber } from './../utils/startsWithNumber';
 import { dateFormats } from './../utils/dateFormats';
 import { TinyItem } from './../graphql/schema/Item/Item';
@@ -12,6 +13,7 @@ import { useTinyCompanies } from '../graphql/queries/companies/useTinyCompanies'
 import { OrderQueueContentInput } from './../graphql/schema/OrderQueue/OrderQueueInput';
 import { TinyUnit } from '../graphql/schema/Unit/Unit';
 import { format } from 'date-fns';
+import mailtoLink from 'mailto-link';
 
 const useOrderDraftingData = (): {
     data: {
@@ -97,9 +99,7 @@ const template = (
     if (!body) throw new Error('Please provide a body!');
     if (!subject) throw new Error('Please provide a subject!');
 
-    return `mailto:${to.join(',')}?cc=${cc.join(',')}${
-        bcc.length == 0 ? '' : `$bcc=${bcc.join(',')}}`
-    }&subject=${subject}&body=${body}`;
+    return mailtoLink({ to, cc, bcc, subject, body });
 };
 
 export interface OrderDraft {
@@ -113,11 +113,19 @@ export interface OrderDraft {
     }[];
 }
 
-const br = '%0D%0A';
+const br = '\n';
 
 export const useOrderDrafting = (
     contents: OrderQueueContentInput[]
 ): { data: OrderDraft[]; error?: Error; loading: boolean } => {
+    const { user } = useAuth0();
+
+    const signedBy = user
+        ? user.given_name && user.family_name
+            ? `${user.given_name} ${user.family_name}`
+            : user.email
+        : '';
+
     const {
         data: { companies, locations, units, items },
         error,
@@ -229,19 +237,18 @@ export const useOrderDrafting = (
             const vendor = companies.find((c) => c._id === key);
             const contents = groups[key];
 
-            const emailToSet: string[] = [];
-
-            const subject =
-                data.length === 1 || !data[0]
-                    ? 'PO - Little Dutch Boy Bakeries'
-                    : `PO# ${data[0].items[0].content.order_code}`;
+            const subject = !contents[0]
+                ? 'PO Little Dutch Boy Bakeries'
+                : `Little Dutch Boy PO# ${contents
+                      .map((c) => c.order_code)
+                      .join(', ')}`;
 
             let body =
-                (emailToSet.length === 1 ? emailToSet[0] : 'Hello,') +
+                'Hello,' +
                 `${br}${br}${
                     contents.length == 1
                         ? 'We need - '
-                        : `Please process these ${contents.length} POs for Little Dutch Boy`
+                        : `Please process these ${contents.length} POs for Little Dutch Boy - `
                 }${br}`;
 
             for (const content of contents) {
@@ -249,12 +256,28 @@ export const useOrderDrafting = (
                 body += `${br}${line}`;
             }
 
-            body += `${br}Please confirm.${br}Thanks!${br}${br}`;
+            body += `${br}Please confirm.${br}Thanks,${br}${br}${signedBy}`;
 
             if (vendor && contents.length > 0) {
+                const contacts = vendor.contacts;
+
+                const emailTo = contacts
+                    .filter((c) => c.email && c.email_on_order)
+                    .map((c) => c.email + '');
+
+                const cc = contacts
+                    .filter((c) => c.email && c.cc_on_order)
+                    .map((c) => c.email + '');
+
                 data.push({
                     company: vendor,
-                    link: template([], [], [], subject, body),
+                    link: template(
+                        emailTo,
+                        cc,
+                        ['po@littledutchboy.com'],
+                        subject,
+                        body
+                    ),
                     holdup:
                         contents
                             .map((c) => getLineForContent(c))
