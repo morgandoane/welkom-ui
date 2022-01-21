@@ -38,6 +38,7 @@ export const TinyItemFragment = gql`
         }
         date_modified
         date_created
+        to_base_unit
     }
 `;
 

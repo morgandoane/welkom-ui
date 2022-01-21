@@ -17,7 +17,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                         display: 'flex',
                         alignItems: 'center',
                         flexFlow: 'row',
-                        paddingBottom: 2,
+                        paddingBottom: 0.5,
                         gap: 2,
                     }}
                 >
@@ -26,7 +26,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                 </Box>
                 <Typography
                     sx={{ paddingBottom: 2 }}
-                    variant="body1"
+                    variant="h6"
                     color="textSecondary"
                 >
                     {children[1]}

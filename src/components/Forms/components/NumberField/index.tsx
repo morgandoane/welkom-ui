@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { TextField, TextFieldProps } from '@mui/material';
 import React, { ReactElement } from 'react';
 
 export interface NumberFieldProps {
@@ -6,13 +6,15 @@ export interface NumberFieldProps {
     value: number | null;
     onChange: (val: number | null) => void;
     naked?: boolean;
+    size?: TextFieldProps['size'];
 }
 
 const NumberField = (props: NumberFieldProps): ReactElement => {
-    const { label, value, naked = false, onChange } = props;
+    const { label, value, naked = false, onChange, size = 'small' } = props;
 
     return (
         <TextField
+            size={size}
             fullWidth
             type="number"
             value={value == null ? '' : value}

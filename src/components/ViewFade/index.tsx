@@ -22,7 +22,7 @@ const ViewFade = (props: ViewFadeProps): ReactElement => {
     }, [index]);
 
     return (
-        <Fade timeout={timing} in={position === index}>
+        <Fade timeout={timing} in={position === index} unmountOnExit={false}>
             <Box sx={{ height: '100%' }}>{views[position]}</Box>
         </Fade>
     );

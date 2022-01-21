@@ -1,5 +1,5 @@
 export interface ContentInput {
-    quantity: number;
+    quantity: number | null;
     unit: string;
 }
 

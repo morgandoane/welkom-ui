@@ -34,7 +34,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
     const background: Record<'light' | 'dark', PaletteOptions['background']> = {
         light: {
             default: '#FFFFFF',
-            paper: '#FFFFFF',
+            paper: '#F5F5F5',
             // default: "#FEFDFD",
             // paper: "#FFFFFF",
         },
@@ -103,6 +103,15 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
                     sizeLarge: {
                         height: 56,
                     },
+                    containedInherit:
+                        mode == 'dark'
+                            ? {
+                                  background: '#212121',
+                                  ':hover': {
+                                      background: '#363636',
+                                  },
+                              }
+                            : {},
                 },
             },
 
