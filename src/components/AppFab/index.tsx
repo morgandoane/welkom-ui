@@ -24,6 +24,7 @@ const AppFab = (props: AppFabProps): ReactElement => {
 
     return (
         <Fab
+            size="large"
             disabled={disabled}
             color={color}
             onClick={onClick}

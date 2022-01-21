@@ -28,4 +28,5 @@ export interface TinyItem {
     modified_by: TinyProfile;
     date_modified: Date;
     date_created: Date;
+    to_base_unit: number;
 }

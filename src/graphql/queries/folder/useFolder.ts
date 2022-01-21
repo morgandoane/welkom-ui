@@ -1,3 +1,9 @@
+import { TinyUnitFragment } from './../../schema/Unit/Unit';
+import {
+    RecipeSectionFragment,
+    RecipeStepFragment,
+} from './../../schema/RecipeStep/RecipeStep';
+import { RecipeVersionFragment } from './../../schema/RecipeVersion/RecipeVersion';
 import { TinyItemFragment } from './../items/useTinyItems';
 import { RecipeFragment } from './../../schema/Recipe/Recipe';
 import { getQueryHook } from './../../types';
@@ -10,6 +16,10 @@ export const FolderQuery = gql`
     ${FolderFragment}
     ${RecipeFragment}
     ${TinyItemFragment}
+    ${RecipeVersionFragment}
+    ${RecipeSectionFragment}
+    ${RecipeStepFragment}
+    ${TinyUnitFragment}
     query FolderQuery($id: ObjectId) {
         folder(id: $id) {
             ...FolderFragment

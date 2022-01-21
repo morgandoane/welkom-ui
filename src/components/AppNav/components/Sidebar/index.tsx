@@ -10,8 +10,12 @@ import {
     MenuItem,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
+import {
+    BsFileEarmarkCodeFill,
+    BsFileEarmarkFill,
+    BsFileEarmarkTextFill,
+} from 'react-icons/bs';
 import { FaTruckLoading } from 'react-icons/fa';
-import { IoIosDocument, IoMdDocument } from 'react-icons/io';
 import {
     MdAccountCircle,
     MdChevronRight,
@@ -129,12 +133,12 @@ const Sidebar = (): ReactElement => {
             ],
             auth: { _type: 'role', role: UserRole.Manager },
         },
-        // {
-        //     icon: <IoMdDocument style={iconStyle} />,
-        //     label: 'Recipes',
-        //     items: [{ label: 'Recipes', url: '/recipes' }],
-        //     auth: { _type: 'permission', permission: UiPermission.Recipes },
-        // },
+        {
+            icon: <BsFileEarmarkTextFill style={iconStyle} />,
+            label: 'Recipes',
+            items: [{ label: 'Recipes', url: '/recipes' }],
+            auth: { _type: 'permission', permission: UiPermission.Recipes },
+        },
         {
             icon: <FaTruckLoading style={iconStyle} />,
             label: 'Warehouse',

@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { SxProps, TextField, TextFieldProps, Theme } from '@mui/material';
 import React, { ReactElement } from 'react';
 
 export interface TextFormFieldProps {
@@ -9,6 +9,8 @@ export interface TextFormFieldProps {
     naked?: boolean;
     onBlur?: () => void;
     autoFocus?: boolean;
+    size?: TextFieldProps['size'];
+    sx?: SxProps<Theme>;
 }
 
 const TextFormField = (props: TextFormFieldProps): ReactElement => {
@@ -20,10 +22,13 @@ const TextFormField = (props: TextFormFieldProps): ReactElement => {
         label,
         disabled,
         naked = false,
+        size = 'medium',
+        sx = {},
     } = props;
 
     return (
         <TextField
+            size={size}
             autoFocus={autoFocus}
             onBlur={onBlur}
             disabled={disabled}
@@ -33,7 +38,7 @@ const TextFormField = (props: TextFormFieldProps): ReactElement => {
             label={naked ? undefined : label}
             placeholder={!naked ? undefined : label}
             variant={naked ? 'standard' : undefined}
-            InputProps={naked ? { disableUnderline: true } : undefined}
+            InputProps={naked ? { disableUnderline: true, sx } : { sx }}
         />
     );
 };

@@ -16,7 +16,14 @@ const TabFade = (props: TabFadeProps): ReactElement => {
     const [active, setActive] = React.useState(0);
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexFlow: 'column' }}>
+        <Box
+            sx={{
+                height: '100%',
+                overflow: 'hidden',
+                display: 'flex',
+                flexFlow: 'column',
+            }}
+        >
             <Box
                 sx={{
                     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -35,7 +42,7 @@ const TabFade = (props: TabFadeProps): ReactElement => {
                 </Tabs>
                 <Box>{action}</Box>
             </Box>
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ flex: 1, overflow: 'auto' }}>
                 <ViewFade index={active}>{Object.values(children)}</ViewFade>
             </Box>
         </Box>

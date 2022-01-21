@@ -425,6 +425,10 @@ const RecipeFolderView = (): ReactElement => {
                                                                 : f.folder._id
                                                         }`
                                                     );
+                                                } else {
+                                                    nav(
+                                                        `/recipes/${f.document._id}`
+                                                    );
                                                 }
                                             }}
                                         />

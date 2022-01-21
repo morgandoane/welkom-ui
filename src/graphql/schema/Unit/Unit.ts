@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client';
 import { TinyProfile } from './../Profile/Profile';
 import { Base } from '../Base/Base';
 
@@ -30,3 +31,15 @@ export interface TinyUnit {
     modified_by?: TinyProfile | null;
     date_modified?: Date | null;
 }
+
+export const TinyUnitFragment = gql`
+    fragment TinyUnitFragment on Unit {
+        ...BaseFragment
+        class
+        english
+        spanish
+        english_plural
+        spanish_plural
+        base_per_unit
+    }
+`;

@@ -52,7 +52,14 @@ export const FolderChip = (props: {
                 justifyContent: 'flex-start',
             }}
         >
-            <Box sx={{ display: 'flex', fontSize: '2rem', padding: 2 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    fontSize: '2rem',
+                    padding: 2,
+                    color: palette.text.disabled,
+                }}
+            >
                 <MdFolder />
             </Box>
             <Box sx={{ paddingRight: 2 }}>
