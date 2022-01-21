@@ -1,7 +1,7 @@
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import AppNav from '../../../../../../components/AppNav';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PageTitle from '../../../../../../components/PageTitle';
@@ -13,6 +13,7 @@ import LotDocumentRender from '../../../../../../components/Document/components/
 
 const FulfillmentPrint = (): ReactElement => {
     const { fulfillment_id } = useParams();
+    const nav = useNavigate();
     const { spacing } = useTheme();
 
     const { data, error, loading } = useFulfillment({
@@ -71,6 +72,14 @@ const FulfillmentPrint = (): ReactElement => {
                         footer: (
                             <Box>
                                 <Button
+                                    onClick={() =>
+                                        nav(
+                                            fulfillment.type ===
+                                                FulfillmentType.Receipt
+                                                ? '/warehouse/receiving/'
+                                                : '/warehouse/shipping'
+                                        )
+                                    }
                                     startIcon={<MdChevronLeft />}
                                     size="large"
                                 >

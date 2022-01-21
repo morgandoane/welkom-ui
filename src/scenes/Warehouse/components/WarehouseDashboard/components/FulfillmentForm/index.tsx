@@ -164,10 +164,13 @@ const FulfillmentForm = (props: {
                   id: fulfillment_id,
               },
         skip: !fulfillment_id,
-        onCompleted: ({ fulfillment: { lots, type, location, company } }) => {
+        onCompleted: ({
+            fulfillment: { lots, type, location, company, bol },
+        }) => {
             setState({
                 _type: 'update',
                 bol: bol_id || '',
+                seal: bol.seal || undefined,
                 items: lots.map(({ item, contents }) => ({
                     item: item._id,
                     lots: contents.map(
@@ -414,8 +417,8 @@ const FulfillmentForm = (props: {
                                                                 }}
                                                             />
                                                         </FormRow>
-                                                        {action ==
-                                                            'receive' && (
+
+                                                        {action !== 'ship' && (
                                                             <FormRow gap={4}>
                                                                 <TextFormField
                                                                     label="Seal number"
