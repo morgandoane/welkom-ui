@@ -1,3 +1,9 @@
+import { TinyUnitFragment } from './../../schema/Unit/Unit';
+import {
+    RecipeSectionFragment,
+    RecipeStepFragment,
+} from './../../schema/RecipeStep/RecipeStep';
+import { RecipeVersionFragment } from './../../schema/RecipeVersion/RecipeVersion';
 import { RecipeFragment } from './../../schema/Recipe/Recipe';
 import { BaseFragment } from './../../fragments/BaseFragment';
 import { getMutationHook } from './../../types';
@@ -11,6 +17,10 @@ export const CreateFolder = gql`
     ${FolderFragment}
     ${RecipeFragment}
     ${TinyItemFragment}
+    ${TinyUnitFragment}
+    ${RecipeVersionFragment}
+    ${RecipeSectionFragment}
+    ${RecipeStepFragment}
     mutation CreateFolder($data: CreateFolderInput!) {
         createFolder(data: $data) {
             ...FolderFragment
