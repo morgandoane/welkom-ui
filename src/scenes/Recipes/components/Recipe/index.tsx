@@ -66,7 +66,7 @@ const Recipe = (): ReactElement => {
                                 )}
                                 <PageTitle>
                                     {[
-                                        'Edit ' + recipe.name,
+                                        recipe.name,
                                         `Recipe for ${recipe.item.english}`,
                                     ]}
                                 </PageTitle>

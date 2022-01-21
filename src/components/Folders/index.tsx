@@ -29,7 +29,10 @@ import FolderDocument, {
     FolderDocumentProps,
 } from './components/FolderDocument';
 
+export type FolderView = 'Grid' | 'Table';
+
 export interface FoldersProps<T> {
+    view?: FolderView;
     focused?: Folder;
     folders: (Folder | FolderChild)[];
     documents: T[];
@@ -58,6 +61,7 @@ const Folders = <T,>(props: FoldersProps<T>): ReactElement => {
         focused,
         folders,
         documents,
+        view = 'Grid',
         getDocumentProps,
         onClick,
         onContext,
@@ -245,6 +249,7 @@ const Folders = <T,>(props: FoldersProps<T>): ReactElement => {
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 4, md: 4 }}>
                     {folders.map((folder) => (
                         <FolderBox
+                            view={view}
                             onContext={(event) => {
                                 if (onContext)
                                     onContext(event, {
@@ -287,7 +292,9 @@ const Folders = <T,>(props: FoldersProps<T>): ReactElement => {
                         );
                     })}
                     <DragOverlay>
-                        {dragging ? <FolderChip folder={dragging} /> : null}
+                        {dragging ? (
+                            <FolderChip view={view} folder={dragging} />
+                        ) : null}
                     </DragOverlay>
                 </Grid>
             </DndContext>

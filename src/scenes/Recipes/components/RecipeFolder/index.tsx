@@ -3,10 +3,12 @@ import {
     Box,
     Button,
     capitalize,
+    Dialog,
     Divider,
     ListItemIcon,
     Menu,
     MenuItem,
+    Typography,
     useTheme,
 } from '@mui/material';
 import React, { ReactElement, useContext } from 'react';
@@ -17,6 +19,7 @@ import {
     MdDocumentScanner,
     MdEdit,
     MdFolder,
+    MdTableRows,
 } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import AppNav from '../../../../components/AppNav';
@@ -30,7 +33,7 @@ import {
     FolderChild,
     FolderClass,
 } from '../../../../graphql/schema/Folder/Folder';
-import Folders from '../../../../components/Folders';
+import Folders, { FolderView } from '../../../../components/Folders';
 import {
     CreateFolderArgs,
     useFolderCreation,
@@ -55,6 +58,8 @@ import TextFormField from '../../../../components/Forms/components/TextFormField
 import FormRow from '../../../../components/Forms/components/FormRow';
 import ItemField from '../../../../components/Forms/components/ItemField';
 import { Recipe } from '../../../../graphql/schema/Recipe/Recipe';
+import ButtonToggle from '../../../../components/ButtonToggle';
+import { BsGridFill } from 'react-icons/bs';
 
 const ContextMenu = (props: { add: (type: 'folder' | 'recipe') => void }) => {
     const theme = useTheme();
@@ -92,6 +97,12 @@ const RecipeFolderView = (): ReactElement => {
 
     const [clearDragging, setClearDragging] = React.useState(false);
 
+    const viewFromStorage = localStorage.getItem('recipe_folder_view');
+
+    const [view, setView] = React.useState<FolderView>(
+        viewFromStorage == 'Table' ? 'Table' : 'Grid'
+    );
+
     React.useEffect(() => {
         if (clearDragging) {
             const timeout = setTimeout(() => {
@@ -110,6 +121,11 @@ const RecipeFolderView = (): ReactElement => {
         | ({ _type: 'createRecipe' } & CreateRecipeArgs)
         | ({ _type: 'updateRecipe' } & UpdateRecipeArgs)
     >(null);
+
+    const [deleteRecipe, setDeleteRecipe] = React.useState<{
+        recipe: Recipe;
+        confirmation: string;
+    } | null>(null);
 
     const [folder, setFolder] = React.useState<null | Folder>(null);
 
@@ -244,15 +260,38 @@ const RecipeFolderView = (): ReactElement => {
                 {{
                     header: (
                         <Box>
-                            <Box
-                                sx={{ display: 'flex', alignItems: 'flex-end' }}
-                            >
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Box>
                                     <PageTitle>Recipes</PageTitle>
                                 </Box>
                                 <Box sx={{ flex: 1 }} />
-                                <Box sx={{ paddingBottom: 3 }}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        gap: 2,
+                                        paddingBottom: 1,
+                                    }}
+                                >
+                                    <ButtonToggle
+                                        onChange={(val) => {
+                                            setView(val.id as FolderView);
+                                        }}
+                                        value={{ id: view, label: view }}
+                                        options={[
+                                            {
+                                                id: 'Grid',
+                                                label: 'Grid',
+                                                icon: <BsGridFill />,
+                                            },
+                                            {
+                                                id: 'Table',
+                                                label: 'Table',
+                                                icon: <MdTableRows />,
+                                            },
+                                        ]}
+                                    />
                                     <Button
+                                        sx={{ paddingLeft: 4, paddingRight: 4 }}
                                         onClick={(e) =>
                                             setContext({
                                                 target: e.currentTarget,
@@ -322,6 +361,7 @@ const RecipeFolderView = (): ReactElement => {
                                     <Box sx={{ height: '100%' }}>
                                         <Box p={2} />
                                         <Folders
+                                            view={view}
                                             focused={folder || undefined}
                                             folders={
                                                 folder
@@ -347,6 +387,7 @@ const RecipeFolderView = (): ReactElement => {
                                                 id: recipe._id,
                                                 primary: recipe.name,
                                                 data: recipe,
+                                                view,
                                             })}
                                             onDrag={(target, destination) => {
                                                 if (target._type == 'folder') {
@@ -682,13 +723,89 @@ const RecipeFolderView = (): ReactElement => {
                     </ListItemIcon>
                     Rename
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                    onClick={() => {
+                        if (
+                            rightContext &&
+                            rightContext.data._type == 'recipe'
+                        ) {
+                            setRightContext(null);
+                            setDeleteRecipe({
+                                recipe: rightContext.data.recipe,
+                                confirmation: '',
+                            });
+                        }
+                    }}
+                >
                     <ListItemIcon>
                         <MdDelete />
                     </ListItemIcon>
                     Delete
                 </MenuItem>
             </Menu>
+            <Dialog
+                open={Boolean(deleteRecipe)}
+                PaperProps={{ sx: { padding: 3 } }}
+                onClose={() => setDeleteRecipe(null)}
+            >
+                <PanelHeader onClose={() => setDeleteRecipe(null)}>
+                    Delete Recipe
+                </PanelHeader>
+                <Typography color="error">
+                    <em>Danger zone!</em>
+                </Typography>
+                <Box p={0.5} />
+                <Typography>
+                    To delete this recipe, type{' '}
+                    <em>
+                        {deleteRecipe
+                            ? deleteRecipe.recipe.name
+                            : 'Recipe Name '}
+                    </em>{' '}
+                    below.
+                </Typography>
+                <Box p={1} />
+                <FormRow>
+                    <TextFormField
+                        label="Confirmation"
+                        value={deleteRecipe ? deleteRecipe.confirmation : ''}
+                        onChange={(val) => {
+                            if (deleteRecipe) {
+                                setDeleteRecipe({
+                                    ...deleteRecipe,
+                                    confirmation: val || '',
+                                });
+                            }
+                        }}
+                    />
+                </FormRow>
+                <LoadingButton
+                    loading={updateRecipeLoading}
+                    disabled={
+                        !deleteRecipe ||
+                        deleteRecipe.confirmation !== deleteRecipe.recipe.name
+                    }
+                    color="error"
+                    variant="contained"
+                    onClick={() => {
+                        if (deleteRecipe)
+                            updateRecipe({
+                                refetchQueries: [FolderQuery],
+                                variables: {
+                                    id: deleteRecipe.recipe._id,
+                                    data: {
+                                        deleted: true,
+                                    },
+                                },
+                                onCompleted: () => {
+                                    setDeleteRecipe(null);
+                                },
+                            });
+                    }}
+                >
+                    Delete
+                </LoadingButton>
+            </Dialog>
         </AppNav>
     );
 };

@@ -11,8 +11,10 @@ import { CSS } from '@dnd-kit/utilities';
 import React, { ReactElement } from 'react';
 import { MdFolder } from 'react-icons/md';
 import { Folder, FolderChild } from '../../../../graphql/schema/Folder/Folder';
+import { FolderView } from '../..';
 
 export interface FolderBoxProps {
+    view: FolderView;
     folder: Folder | FolderChild;
     onClick?: (folder: Folder | FolderChild) => void;
     onContext?: (
@@ -22,6 +24,7 @@ export interface FolderBoxProps {
 }
 
 export const FolderChip = (props: {
+    view: FolderView;
     folder: Folder | FolderChild;
     onClick?: (folder: Folder | FolderChild) => void;
     onContext?: (
@@ -29,7 +32,7 @@ export const FolderChip = (props: {
         folder: Folder | FolderChild
     ) => void;
 }) => {
-    const { folder, onClick, onContext } = props;
+    const { folder, view, onClick, onContext } = props;
     const { palette, shape } = useTheme();
 
     return (
@@ -70,7 +73,7 @@ export const FolderChip = (props: {
 };
 
 const FolderBox = (props: FolderBoxProps): ReactElement => {
-    const { folder, onClick, onContext } = props;
+    const { folder, view, onClick, onContext } = props;
 
     const [helper, setHelper] = React.useState(false);
 
@@ -104,11 +107,11 @@ const FolderBox = (props: FolderBoxProps): ReactElement => {
     return (
         <Grid
             item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={4}
-            xl={2}
+            xs={view == 'Table' ? 12 : 12}
+            sm={view == 'Table' ? 12 : 12}
+            md={view == 'Table' ? 12 : 6}
+            lg={view == 'Table' ? 12 : 4}
+            xl={view == 'Table' ? 12 : 2}
             ref={setDropRef}
             style={style}
         >
@@ -131,6 +134,7 @@ const FolderBox = (props: FolderBoxProps): ReactElement => {
                 >
                     <Box ref={setDragRef} {...attributes} {...listeners}>
                         <FolderChip
+                            view={view}
                             onContext={onContext}
                             onClick={onClick}
                             folder={folder}

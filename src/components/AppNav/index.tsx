@@ -15,6 +15,7 @@ import {
 } from 'react-icons/md';
 import { fullScreen } from '../../styles/fullScreen';
 import Message from '../Message';
+import MobileAppNav from './components/MobileAppNav';
 import Sidebar from './components/Sidebar';
 
 export interface AppNavProps {
@@ -40,6 +41,8 @@ const AppNav = (props: AppNavProps): ReactElement => {
     const small = useMediaQuery(theme.breakpoints.down('sm'));
     const medium = useMediaQuery(theme.breakpoints.down('md'));
     const large = useMediaQuery(theme.breakpoints.down('lg'));
+
+    if (small) return <MobileAppNav {...props} />;
 
     return (
         <Box

@@ -3,8 +3,10 @@ import { Box, ButtonBase, Grid, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { BsFillFileEarmarkTextFill } from 'react-icons/bs';
 import { CSS } from '@dnd-kit/utilities';
+import { FolderView } from '../..';
 
 export interface FolderDocumentProps<T> {
+    view: FolderView;
     primary: string;
     tooltip?: string;
     onClick?: (d: T) => void;
@@ -19,7 +21,8 @@ export interface FolderDocumentProps<T> {
 }
 
 export const FolderDocumentChip = <T,>(props: FolderDocumentProps<T>) => {
-    const { primary, secondary, icon, id, onClick, onContext, data } = props;
+    const { primary, secondary, icon, id, view, onClick, onContext, data } =
+        props;
     const { palette, shape } = useTheme();
 
     return (
@@ -61,8 +64,17 @@ export const FolderDocumentChip = <T,>(props: FolderDocumentProps<T>) => {
 };
 
 const FolderDocument = <T,>(props: FolderDocumentProps<T>): ReactElement => {
-    const { primary, secondary, tooltip, id, onClick, onContext, icon, data } =
-        props;
+    const {
+        primary,
+        secondary,
+        tooltip,
+        id,
+        view,
+        onClick,
+        onContext,
+        icon,
+        data,
+    } = props;
 
     const {
         setNodeRef: setDragRef,
@@ -83,7 +95,15 @@ const FolderDocument = <T,>(props: FolderDocumentProps<T>): ReactElement => {
     };
 
     return (
-        <Grid item xs={12} sm={12} md={6} lg={4} xl={2} style={style}>
+        <Grid
+            item
+            xs={view == 'Table' ? 12 : 12}
+            sm={view == 'Table' ? 12 : 12}
+            md={view == 'Table' ? 12 : 6}
+            lg={view == 'Table' ? 12 : 4}
+            xl={view == 'Table' ? 12 : 2}
+            style={style}
+        >
             <Box
                 sx={{
                     ...shape,

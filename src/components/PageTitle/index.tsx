@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import React, { ReactElement, ReactNode } from 'react';
 
 export interface PageTitleProps {
@@ -9,9 +9,12 @@ export interface PageTitleProps {
 const PageTitle = (props: PageTitleProps): ReactElement => {
     const { children, avatar } = props;
 
+    const theme = useTheme();
+    const small = useMediaQuery(theme.breakpoints.down('sm'));
+
     if (children instanceof Array)
         return (
-            <Box>
+            <Box sx={{ padding: small ? 2 : undefined }}>
                 <Box
                     sx={{
                         display: 'flex',
@@ -25,7 +28,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                     {avatar && <Box sx={{ display: 'flex' }}>{avatar}</Box>}
                 </Box>
                 <Typography
-                    sx={{ paddingBottom: 2 }}
+                    sx={{ paddingBottom: small ? 0 : 2 }}
                     variant="h6"
                     color="textSecondary"
                 >
@@ -40,8 +43,9 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                     display: 'flex',
                     alignItems: 'center',
                     flexFlow: 'row',
-                    paddingBottom: 2,
                     gap: 2,
+                    padding: small ? 2 : undefined,
+                    paddingBottom: small ? 0 : 2,
                 }}
             >
                 <Typography variant="crisp">{children}</Typography>
