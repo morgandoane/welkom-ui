@@ -24,7 +24,7 @@ export const RecipeQuery = gql`
     ${RecipeSectionFragment}
     ${RecipeStepFragment}
     ${TinyUnitFragment}
-    query Recipe($id: ObjectId!, $skip: Float!, $take: Float!) {
+    query RecipeQuery($id: ObjectId!, $skip: Float!, $take: Float!) {
         recipe(id: $id) {
             ...RecipeFragment
         }

@@ -30,6 +30,7 @@ const Recipe = (): ReactElement => {
             take,
         },
         skip: !id,
+        fetchPolicy: 'network-only',
     });
 
     const recipe = data ? data.recipe : null;
