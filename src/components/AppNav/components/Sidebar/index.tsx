@@ -10,6 +10,7 @@ import {
     MenuItem,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
+import { AiFillBuild } from 'react-icons/ai';
 import {
     BsFileEarmarkCodeFill,
     BsFileEarmarkFill,
@@ -132,6 +133,18 @@ const Sidebar = (): ReactElement => {
                 { label: 'Profiles', url: '/people/profiles' },
             ],
             auth: { _type: 'role', role: UserRole.Manager },
+        },
+        {
+            icon: <AiFillBuild style={iconStyle} />,
+            label: 'Production',
+            items: [
+                { label: 'Mixing', url: '/production/mixing' },
+                { label: 'Packing', url: '/production/packing' },
+            ],
+            auth: {
+                _type: 'permission',
+                permission: UiPermission.ProductionManager,
+            },
         },
         {
             icon: <BsFileEarmarkTextFill style={iconStyle} />,

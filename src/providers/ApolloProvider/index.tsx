@@ -13,6 +13,7 @@ import Loading from '../../scenes/Loading';
 
 export const BaseUnionFields = [
     'Bol',
+    'BucketLot',
     'Company',
     'Contact',
     'Conversion',
@@ -23,9 +24,9 @@ export const BaseUnionFields = [
     'Itinerary',
     'Location',
     'Lot',
-    'BucketLot',
-    'ProceduralLot',
+    'MixingCard',
     'Order',
+    'ProceduralLot',
     'Recipe',
     'RecipeVersion',
     'Team',

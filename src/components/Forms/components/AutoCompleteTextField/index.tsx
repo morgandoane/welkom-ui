@@ -14,6 +14,9 @@ const AutoCompleteTextField = (
 
     return (
         <TextField
+            label={naked ? undefined : label}
+            placeholder={naked ? label : undefined}
+            variant={naked ? 'standard' : undefined}
             {...{
                 ...params,
                 InputProps: {
@@ -21,10 +24,6 @@ const AutoCompleteTextField = (
                     disableUnderline: naked ? true : undefined,
                 },
             }}
-            label={naked ? undefined : label}
-            placeholder={naked ? label : undefined}
-            fullWidth
-            variant={naked ? 'standard' : undefined}
         />
     );
 };

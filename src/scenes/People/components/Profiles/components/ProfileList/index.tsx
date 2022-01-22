@@ -18,6 +18,7 @@ const ProfileList = (): ReactElement => {
     const [filter, setFilter] = React.useState<ProfileFilter>({
         skip: 0,
         take: 25,
+        skip_sync: false,
     });
 
     const { data, error, loading } = useProfiles({

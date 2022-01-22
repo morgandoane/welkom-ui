@@ -28,7 +28,7 @@ const PageTitle = (props: PageTitleProps): ReactElement => {
                     {avatar && <Box sx={{ display: 'flex' }}>{avatar}</Box>}
                 </Box>
                 <Typography
-                    sx={{ paddingBottom: small ? 0 : 2 }}
+                    sx={{ paddingBottom: small ? 0 : 2, fontWeight: 400 }}
                     variant="h6"
                     color="textSecondary"
                 >

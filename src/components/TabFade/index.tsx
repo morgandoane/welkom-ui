@@ -7,13 +7,15 @@ import { uuid } from 'uuidv4';
 export interface TabFadeProps {
     children: Record<string, ReactElement>;
     action?: ReactElement;
+    start_index?: number;
+    onChange?: (index: number) => void;
 }
 
 const TabFade = (props: TabFadeProps): ReactElement => {
     const theme = useTheme();
-    const { children, action } = props;
+    const { children, action, start_index = 0, onChange } = props;
 
-    const [active, setActive] = React.useState(0);
+    const [active, setActive] = React.useState(start_index);
 
     return (
         <Box
@@ -36,7 +38,12 @@ const TabFade = (props: TabFadeProps): ReactElement => {
                         <Tab
                             key={uuid()}
                             label={key}
-                            onClick={() => setActive(index)}
+                            onClick={() => {
+                                setActive(index);
+                                if (onChange) {
+                                    onChange(index);
+                                }
+                            }}
                         />
                     ))}
                 </Tabs>

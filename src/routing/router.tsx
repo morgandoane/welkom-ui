@@ -6,6 +6,7 @@ import {
     Route,
     Routes,
 } from 'react-router-dom';
+import { Permission } from '../auth/Permission';
 import {
     getUiPermissions,
     UiPermission,
@@ -21,6 +22,7 @@ import Logout from '../scenes/Logout';
 import NoPermissions from '../scenes/NoPermissions';
 import NotFound from '../scenes/NotFound';
 import People from '../scenes/People';
+import Production from '../scenes/Production';
 import Recipes from '../scenes/Recipes';
 import ResetPassword from '../scenes/ResetPassword';
 import Warehouse from '../scenes/Warehouse';
@@ -102,6 +104,20 @@ const routes: {
                 <ManagerRoute>
                     <People />
                 </ManagerRoute>
+            ),
+        },
+    },
+    {
+        auth: {
+            _type: 'permission',
+            permission: UiPermission.ProductionManager,
+        },
+        props: {
+            path: '/production/*',
+            element: (
+                <PermissionRoute permission={UiPermission.ProductionManager}>
+                    <Production />
+                </PermissionRoute>
             ),
         },
     },

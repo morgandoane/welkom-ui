@@ -1,3 +1,4 @@
+import { RecipeVersion } from './../RecipeVersion/RecipeVersion';
 import { RecipeSection } from './../RecipeStep/RecipeStep';
 import { gql } from '@apollo/client';
 import { TinyItem } from './../Item/Item';
@@ -10,7 +11,7 @@ export interface Recipe extends Base {
     item: TinyItem;
     folder?: Folder;
     version_date_groups: DateGroup[];
-    active?: Recipe | null;
+    active?: RecipeVersion | null;
     sections: RecipeSection[];
     parameters: string[];
     note: string;
