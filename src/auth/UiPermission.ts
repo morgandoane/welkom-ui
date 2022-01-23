@@ -8,6 +8,7 @@ export enum UiPermission {
     Library = 'Library',
     Recipes = 'Recipes',
     ProductionManager = 'Production Manager',
+    Mixing = 'Mixing',
 }
 
 export interface UiPermissionData {
@@ -172,6 +173,20 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.GetMixingCards,
             Permission.CreateMixingCard,
             Permission.UpdateMixingCard,
+        ],
+    },
+    {
+        name: UiPermission.Mixing,
+        description: 'Mix batches against recipes..',
+        permissions: [
+            Permission.GetCompanies,
+            Permission.GetConversions,
+            Permission.GetItems,
+            Permission.GetLocations,
+            Permission.GetLots,
+            Permission.GetQualityChecks,
+            Permission.GetRecipes,
+            Permission.GetUnits,
         ],
     },
 ];
