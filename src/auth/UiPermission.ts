@@ -187,6 +187,7 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.GetQualityChecks,
             Permission.GetRecipes,
             Permission.GetUnits,
+            Permission.GetMixingCards,
         ],
     },
 ];
