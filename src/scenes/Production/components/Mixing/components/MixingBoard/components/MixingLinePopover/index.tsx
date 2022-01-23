@@ -194,6 +194,7 @@ const MixingLinePopover = (props: MixingLinePopoverProps): ReactElement => {
                         </Box>
                         <Box p={1} />
                         {version && <RecipeVersionPreview version={version} />}
+                        <Box p={6} />
                     </Box>
                 )}
             </Dialog>

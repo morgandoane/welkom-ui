@@ -16,9 +16,11 @@ import React, { ReactElement } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import {
     MdAdd,
+    MdCheck,
     MdChevronLeft,
     MdCleanHands,
     MdClear,
+    MdDelete,
     MdDragHandle,
 } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -29,6 +31,7 @@ import {
 } from '../../../../../../auth/UiPermission';
 import AppNav from '../../../../../../components/AppNav';
 import ButtonToggle from '../../../../../../components/ButtonToggle';
+import CarefulButton from '../../../../../../components/Forms/CarefulButton';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
 import ItemField from '../../../../../../components/Forms/components/ItemField';
 import LocationField from '../../../../../../components/Forms/components/LocationField';
@@ -388,7 +391,7 @@ const MixingCardForm = (): ReactElement => {
                             </Box>
                         ),
                         footer: (
-                            <Box sx={{ display: 'flex', padding: 4 }}>
+                            <Box sx={{ display: 'flex', padding: 4, gap: 3 }}>
                                 <Tooltip arrow title={holdup || ''}>
                                     <Box>
                                         <LoadingButton
@@ -400,11 +403,53 @@ const MixingCardForm = (): ReactElement => {
                                             variant="contained"
                                             disabled={Boolean(holdup)}
                                             size="large"
+                                            endIcon={<MdCheck />}
                                         >
                                             Publish
                                         </LoadingButton>
                                     </Box>
                                 </Tooltip>
+                                {state._type == 'update' && (
+                                    <Box>
+                                        <CarefulButton
+                                            onClick={() => {
+                                                update({
+                                                    onCompleted: (data) =>
+                                                        setResult({
+                                                            success: true,
+                                                            data,
+                                                        }),
+                                                    onError: (error) =>
+                                                        setResult({
+                                                            success: false,
+                                                            error,
+                                                        }),
+                                                    variables:
+                                                        state._type == 'update'
+                                                            ? {
+                                                                  id: state.id,
+                                                                  data: {
+                                                                      ...state.data,
+                                                                      deleted:
+                                                                          true,
+                                                                  },
+                                                              }
+                                                            : undefined,
+                                                    refetchQueries: [
+                                                        MixingCardsQuery,
+                                                    ],
+                                                });
+                                            }}
+                                            loading={
+                                                createLoading || updateLoading
+                                            }
+                                            size="large"
+                                            endIcon={<MdDelete />}
+                                        >
+                                            Delete mixing card
+                                        </CarefulButton>
+                                    </Box>
+                                )}
                             </Box>
                         ),
                     }}

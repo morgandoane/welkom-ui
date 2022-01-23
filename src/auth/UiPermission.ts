@@ -177,7 +177,7 @@ export const UiPermissions: UiPermissionData[] = [
     },
     {
         name: UiPermission.Mixing,
-        description: 'Mix batches against recipes..',
+        description: 'Mix batches against recipes.',
         permissions: [
             Permission.GetCompanies,
             Permission.GetConversions,
