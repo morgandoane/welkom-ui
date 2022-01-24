@@ -52,7 +52,7 @@ const MixingBoard = (): ReactElement => {
 
     const tabFromStorage = localStorage.getItem('production_mixing_tab');
 
-    const { palette, shape, transitions } = useTheme();
+    const { palette, shape, transitions, typography } = useTheme();
 
     const [help, setHelp] = React.useState(false);
 
@@ -224,12 +224,34 @@ const MixingBoard = (): ReactElement => {
                 {{
                     header: (
                         <Box>
-                            <PageTitle>
-                                {[
-                                    'Mixing Board',
-                                    'Issue baking assignments to mixers',
-                                ]}
-                            </PageTitle>
+                            <PageTitle>Mixing Board</PageTitle>
+                            <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                sx={{
+                                    marginTop: -1,
+                                    paddingBottom: 2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5,
+                                }}
+                            >
+                                {`Managers assign recipes here, mixers head to `}{' '}
+                                <ButtonBase
+                                    onClick={() => {
+                                        window.open(
+                                            'https://mixing.ldbbakery.com',
+                                            '_blank'
+                                        );
+                                    }}
+                                    sx={{
+                                        ...typography.h6,
+                                        color: palette.primary.main,
+                                    }}
+                                >
+                                    mixing.ldbbakery.com
+                                </ButtonBase>
+                            </Typography>
                         </Box>
                     ),
                     content: (
