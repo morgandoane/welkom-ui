@@ -41,6 +41,7 @@ const MixingBoard = (): ReactElement => {
 
     const { error, loading, data } = useMixingCards({
         fetchPolicy: 'network-only',
+        pollInterval: 5000,
     });
 
     const cards = data ? data.mixingCards : [];
@@ -121,72 +122,78 @@ const MixingBoard = (): ReactElement => {
                                 </Box>
                             </Box>
                             <Box>
-                                {card.lines.map((line, lineIndex) => (
-                                    <ButtonBase
-                                        onClick={(e) => {
-                                            setFocus({
-                                                element: e.currentTarget,
-                                                line,
-                                                card,
-                                            });
-                                        }}
-                                        sx={{
-                                            p: 2,
-                                            display: 'flex',
-                                            justifyContent: 'flex-start',
-                                            textAlign: 'left',
-                                            borderBottom:
-                                                lineIndex !==
-                                                card.lines.length - 1
-                                                    ? `1px solid ${palette.divider}`
-                                                    : '',
-                                            width: '100%',
-                                            transition: transitions.create(
-                                                'all',
-                                                { duration: 250 }
-                                            ),
-                                            background:
-                                                palette.background.default,
-                                            ':hover': {
+                                {card.lines.length == 0 ? (
+                                    <Box p={2}>
+                                        <Typography>{`${card.profile.name} has completed their card.`}</Typography>
+                                    </Box>
+                                ) : (
+                                    card.lines.map((line, lineIndex) => (
+                                        <ButtonBase
+                                            onClick={(e) => {
+                                                setFocus({
+                                                    element: e.currentTarget,
+                                                    line,
+                                                    card,
+                                                });
+                                            }}
+                                            sx={{
+                                                p: 2,
+                                                display: 'flex',
+                                                justifyContent: 'flex-start',
+                                                textAlign: 'left',
+                                                borderBottom:
+                                                    lineIndex !==
+                                                    card.lines.length - 1
+                                                        ? `1px solid ${palette.divider}`
+                                                        : '',
+                                                width: '100%',
+                                                transition: transitions.create(
+                                                    'all',
+                                                    { duration: 250 }
+                                                ),
                                                 background:
-                                                    palette.action.hover,
-                                            },
-                                        }}
-                                        key={line._id}
-                                    >
-                                        <Box sx={{ flex: 1 }}>
-                                            <Typography>
-                                                {line.recipe.item.english}
-                                            </Typography>
-                                            <Typography
-                                                variant="caption"
-                                                color="textSecondary"
-                                            >
-                                                {line.recipe.name}
-                                            </Typography>
-                                        </Box>
-                                        <Box>
-                                            <Typography color="textSecondary">
-                                                {line.limit == null ||
-                                                line.limit == undefined
-                                                    ? lineIndex == 0
-                                                        ? '(Going until stopped)'
-                                                        : '(Go until stopped)'
-                                                    : lineIndex == 0
-                                                    ? `(${line.limit} ${
-                                                          line.limit == 1
-                                                              ? 'batch'
-                                                              : 'batches'
-                                                      } left)`
-                                                    : `(${line.limit} ${
-                                                          line.limit == 1
-                                                              ? 'batch'
-                                                              : 'batches'
-                                                      })`}
-                                            </Typography>
-                                        </Box>
-                                    </ButtonBase>
-                                ))}
+                                                    palette.background.default,
+                                                ':hover': {
+                                                    background:
+                                                        palette.action.hover,
+                                                },
+                                            }}
+                                            key={line._id}
+                                        >
+                                            <Box sx={{ flex: 1 }}>
+                                                <Typography>
+                                                    {line.recipe.item.english}
+                                                </Typography>
+                                                <Typography
+                                                    variant="caption"
+                                                    color="textSecondary"
+                                                >
+                                                    {line.recipe.name}
+                                                </Typography>
+                                            </Box>
+                                            <Box>
+                                                <Typography color="textSecondary">
+                                                    {line.limit == null ||
+                                                    line.limit == undefined
+                                                        ? lineIndex == 0
+                                                            ? '(Going until stopped)'
+                                                            : '(Go until stopped)'
+                                                        : lineIndex == 0
+                                                        ? `(${line.limit} ${
+                                                              line.limit == 1
+                                                                  ? 'batch'
+                                                                  : 'batches'
+                                                          } left)`
+                                                        : `(${line.limit} ${
+                                                              line.limit == 1
+                                                                  ? 'batch'
+                                                                  : 'batches'
+                                                          })`}
+                                                </Typography>
+                                            </Box>
+                                        </ButtonBase>
+                                    ))
+                                )}
                             </Box>
                         </Box>
                     ))}
