@@ -69,7 +69,7 @@ const MixingCardForm = (): ReactElement => {
 
     const requiredPermissions = (
         UiPermissions.find(
-            (p) => p.name === UiPermission.ProductionManager
+            (p) => p.name == UiPermission.Mixing
         ) as UiPermissionData
     ).permissions;
 
