@@ -7,7 +7,7 @@ export interface RecipeVersionInput {
     recipe: string;
     sections: RecipeSectionInput[];
     parameters: string[];
-    base_units_produced: number;
+    base_units_produced: number | null;
     note?: string;
 }
 

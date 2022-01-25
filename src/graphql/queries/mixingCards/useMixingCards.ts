@@ -12,6 +12,7 @@ import {
 import { gql } from '@apollo/client';
 import { RecipeSectionFragment } from '../../schema/RecipeStep/RecipeStep';
 import { RecipeFragment } from '../../schema/Recipe/Recipe';
+import { ProductionLineFragment } from '../../schema/ProductionLine/ProductionLine';
 
 export const MixingCardsQuery = gql`
     ${MixingCardFragment}
@@ -23,6 +24,7 @@ export const MixingCardsQuery = gql`
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     ${RecipeFragment}
+    ${ProductionLineFragment}
     query MixingCardsQuery {
         mixingCards {
             ...MixingCardFragment

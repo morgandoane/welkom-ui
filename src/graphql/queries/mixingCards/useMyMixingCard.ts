@@ -14,6 +14,7 @@ import {
 import { RecipeVersionFragment } from '../../schema/RecipeVersion/RecipeVersion';
 import { TinyUnitFragment } from '../../schema/Unit/Unit';
 import { RecipeFragment } from '../../schema/Recipe/Recipe';
+import { ProductionLineFragment } from '../../schema/ProductionLine/ProductionLine';
 
 export const MyMixingCard = gql`
     ${MixingCardFragment}
@@ -25,6 +26,7 @@ export const MyMixingCard = gql`
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     ${RecipeFragment}
+    ${ProductionLineFragment}
     query MyMixingCard {
         myMixingCard {
             ...MixingCardFragment

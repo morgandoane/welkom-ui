@@ -11,11 +11,8 @@ import {
 } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { AiFillBuild } from 'react-icons/ai';
-import {
-    BsFileEarmarkCodeFill,
-    BsFileEarmarkFill,
-    BsFileEarmarkTextFill,
-} from 'react-icons/bs';
+import { BsFileEarmarkTextFill } from 'react-icons/bs';
+import { BiCoinStack } from 'react-icons/bi';
 import { FaTruckLoading } from 'react-icons/fa';
 import {
     MdAccountCircle,
@@ -104,6 +101,15 @@ const Sidebar = (): ReactElement => {
             | { _type: 'permission'; permission: UiPermission }
             | { _type: 'role'; role: UserRole };
     }[] = [
+        // {
+        //     icon: <BiCoinStack style={iconStyle} />,
+        //     label: 'Accounting',
+        //     items: [
+        //         { label: 'Labour', url: '/accounting/labour' },
+        //         { label: 'Pricing', url: '/accounting/pricing' },
+        //     ],
+        //     auth: { _type: 'permission', permission: UiPermission.Library },
+        // },
         {
             icon: <MdFolderOpen style={iconStyle} />,
             label: 'Library',
@@ -139,7 +145,8 @@ const Sidebar = (): ReactElement => {
             label: 'Production',
             items: [
                 { label: 'Mixing', url: '/production/mixing' },
-                { label: 'Packing', url: '/production/packing' },
+                // { label: 'Packing', url: '/production/packing' },
+                { label: 'Batch Reports', url: '/production/batchreports' },
             ],
             auth: {
                 _type: 'permission',

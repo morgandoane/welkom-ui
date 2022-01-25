@@ -15,6 +15,7 @@ import {
 } from '../../schema/RecipeStep/RecipeStep';
 import { RecipeVersionFragment } from '../../schema/RecipeVersion/RecipeVersion';
 import { TinyUnitFragment } from '../../schema/Unit/Unit';
+import { ProductionLineFragment } from '../../schema/ProductionLine/ProductionLine';
 
 export const UpdateMixingCard = gql`
     ${MixingCardFragment}
@@ -26,6 +27,7 @@ export const UpdateMixingCard = gql`
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     ${RecipeFragment}
+    ${ProductionLineFragment}
     mutation UpdateMixingCard($id: ObjectId!, $data: UpdateMixingCardInput!) {
         updateMixingCard(id: $id, data: $data) {
             ...MixingCardFragment

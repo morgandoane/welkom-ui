@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     Dialog,
+    TextField,
     Tooltip,
     Typography,
     useTheme,
@@ -46,6 +47,9 @@ import {
 } from '../../../../graphql/mutations/recipeVersion/useRecipeVersionCreation';
 import { OperationResult } from '../../../../graphql/types';
 import Message from '../../../../components/Message';
+import { UnitClass } from '../../../../graphql/schema/Unit/Unit';
+import { useTinyItems } from '../../../../graphql/queries/items/useTinyItems';
+import { useTinyUnits } from '../../../../graphql/queries/units/useTinyUnits';
 
 const RecipeForm = (): ReactElement => {
     const { id, version_id } = useParams();
@@ -54,6 +58,24 @@ const RecipeForm = (): ReactElement => {
 
     const [prompt, setPrompt] = React.useState(false);
     const [changed, setChanged] = React.useState(false);
+
+    const { data: itemData } = useTinyItems({
+        variables: {
+            filter: {
+                skip: 0,
+                take: 250,
+            },
+        },
+    });
+
+    const { data: unitData } = useTinyUnits({
+        variables: {
+            filter: {
+                skip: 0,
+                take: 250,
+            },
+        },
+    });
 
     const [state, setState] = React.useState<RecipeVersionState>({
         note: '',
@@ -78,6 +100,32 @@ const RecipeForm = (): ReactElement => {
         parameters: [],
     });
 
+    const items = itemData ? itemData.items.items : [];
+    const units = unitData ? unitData.units.items : [];
+    const steps = state.sections.map((sec) => sec.steps).flat();
+    const calculated = steps.reduce((sum, step) => {
+        if ('content' in step) {
+            if (step.content.unit && step.content.quantity) {
+                const unit = units.find((u) => u._id === step.content.unit);
+                const theseItems = items.filter((i) =>
+                    step.content.items.includes(i._id)
+                );
+                if (unit) {
+                    const averageMultiplier =
+                        theseItems.reduce((sum, item) => {
+                            return item.to_base_unit + sum;
+                        }, 0) / theseItems.length;
+                    return (
+                        sum +
+                        step.content.quantity *
+                            averageMultiplier *
+                            unit.base_per_unit
+                    );
+                } else return sum;
+            } else return sum;
+        } else return sum + 1;
+    }, 0);
+
     const [result, setResult] =
         React.useState<null | OperationResult<CreateRecipeVersionRes>>(null);
 
@@ -86,7 +134,10 @@ const RecipeForm = (): ReactElement => {
         onError: (error) => setResult({ success: false, error }),
         refetchQueries: [RecipeQuery, RecipeVersionQuery],
         variables: {
-            data: convertRecipeVersionState(state),
+            data: convertRecipeVersionState({
+                ...state,
+                base_units_produced: calculated,
+            }),
         },
     });
 
@@ -607,39 +658,99 @@ const RecipeForm = (): ReactElement => {
                                         sx={{
                                             display: 'flex',
                                             gap: 2,
-                                            justifyContent: 'flex-end',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'flex-end',
                                         }}
                                     >
-                                        <LoadingButton
-                                            size="large"
-                                            color="inherit"
-                                            variant="contained"
-                                            endIcon={<MdClear />}
-                                            onClick={() => {
-                                                if (changed) setPrompt(true);
-                                                else nav(`/recipes/${id}`);
-                                            }}
-                                        >
-                                            Cancel
-                                        </LoadingButton>
-                                        <Tooltip title={holdup || ''} arrow>
-                                            <Box>
-                                                <LoadingButton
-                                                    disabled={
-                                                        !changed ||
-                                                        Boolean(holdup)
+                                        <Box>
+                                            {recipe && (
+                                                <TextField
+                                                    disabled
+                                                    value={calculated}
+                                                    onChange={(e) =>
+                                                        setState({
+                                                            ...state,
+                                                            base_units_produced:
+                                                                isNaN(
+                                                                    parseFloat(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                )
+                                                                    ? null
+                                                                    : parseFloat(
+                                                                          e
+                                                                              .target
+                                                                              .value
+                                                                      ),
+                                                        })
                                                     }
-                                                    size="large"
-                                                    variant="contained"
-                                                    endIcon={<MdCheck />}
-                                                    onClick={() => {
-                                                        create();
-                                                    }}
-                                                >
-                                                    Publish
-                                                </LoadingButton>
-                                            </Box>
-                                        </Tooltip>
+                                                    type="number"
+                                                    placeholder="Units produced"
+                                                    variant="standard"
+                                                    helperText={
+                                                        <Box
+                                                            sx={{
+                                                                maxWidth: 200,
+                                                            }}
+                                                        >{`How many ${
+                                                            recipe.item
+                                                                .unit_class ==
+                                                            UnitClass.Weight
+                                                                ? 'pounds'
+                                                                : recipe.item
+                                                                      .unit_class ==
+                                                                  UnitClass.Count
+                                                                ? 'count'
+                                                                : recipe.item
+                                                                      .unit_class ==
+                                                                  UnitClass.Time
+                                                                ? 'minutes'
+                                                                : recipe.item
+                                                                      .unit_class ==
+                                                                  UnitClass.Volume
+                                                                ? 'gallons'
+                                                                : 'gallons'
+                                                        } of ${
+                                                            recipe.item.english
+                                                        } does this recipe produce?`}</Box>
+                                                    }
+                                                />
+                                            )}
+                                        </Box>
+                                        <Box sx={{ display: 'flex', gap: 2 }}>
+                                            <LoadingButton
+                                                size="large"
+                                                color="inherit"
+                                                variant="contained"
+                                                endIcon={<MdClear />}
+                                                onClick={() => {
+                                                    if (changed)
+                                                        setPrompt(true);
+                                                    else nav(`/recipes/${id}`);
+                                                }}
+                                            >
+                                                Cancel
+                                            </LoadingButton>
+                                            <Tooltip title={holdup || ''} arrow>
+                                                <Box>
+                                                    <LoadingButton
+                                                        disabled={
+                                                            !changed ||
+                                                            Boolean(holdup)
+                                                        }
+                                                        size="large"
+                                                        variant="contained"
+                                                        endIcon={<MdCheck />}
+                                                        onClick={() => {
+                                                            create();
+                                                        }}
+                                                    >
+                                                        Publish
+                                                    </LoadingButton>
+                                                </Box>
+                                            </Tooltip>
+                                        </Box>
                                     </Box>
                                     <Box p={6} />
                                 </Box>

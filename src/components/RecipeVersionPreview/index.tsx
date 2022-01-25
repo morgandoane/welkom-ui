@@ -1,10 +1,26 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Recipe } from '../../graphql/schema/Recipe/Recipe';
+import {
+    RecipeSection,
+    RecipeStep,
+} from '../../graphql/schema/RecipeStep/RecipeStep';
 import { RecipeVersion } from '../../graphql/schema/RecipeVersion/RecipeVersion';
 
+export interface AugmentedRecipeStep extends RecipeStep {
+    element?: ReactNode;
+}
+
+export interface AugmentedRecipeSection extends RecipeSection {
+    steps: AugmentedRecipeStep[];
+}
+
+export interface AugmentedRecipeVersion extends RecipeVersion {
+    sections: AugmentedRecipeSection[];
+}
+
 export interface RecipeVersionPreviewProps {
-    version: RecipeVersion | Recipe['active'];
+    version: AugmentedRecipeVersion;
 }
 
 const RecipeVersionPreview = (
@@ -18,7 +34,14 @@ const RecipeVersionPreview = (
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', flexFlow: 'column', gap: 3 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexFlow: 'column',
+                    gap: 3,
+                    textAlign: 'left',
+                }}
+            >
                 {version.sections.map((section, sectionIndex) => (
                     <Box
                         key={section._id}
@@ -43,8 +66,8 @@ const RecipeVersionPreview = (
                                     key={step._id}
                                     sx={{
                                         display: 'Flex',
-                                        justifyContent: 'space-between',
                                         p: 2,
+                                        gap: 4,
                                         borderBottom:
                                             stepIndex !==
                                             section.steps.length - 1
@@ -52,15 +75,29 @@ const RecipeVersionPreview = (
                                                 : '',
                                     }}
                                 >
-                                    <Typography variant="body2">
-                                        {step.content
-                                            ? step.content.items
-                                                  .map((i) => i.english)
-                                                  .join(', ')
-                                            : step.instruction}
-                                    </Typography>
-                                    {step.content && (
+                                    <Box
+                                        sx={{
+                                            flex: !step.element ? 1 : undefined,
+                                            minWidth: step.element ? 200 : 0,
+                                        }}
+                                    >
                                         <Typography variant="body2">
+                                            {step.content
+                                                ? step.content.items
+                                                      .map((i) => i.english)
+                                                      .join(', ')
+                                                : step.instruction}
+                                        </Typography>
+                                    </Box>
+                                    {step.content && (
+                                        <Typography
+                                            variant="body2"
+                                            sx={{
+                                                minWidth: step.element
+                                                    ? 200
+                                                    : 0,
+                                            }}
+                                        >
                                             {step.content
                                                 ? `${step.content.quantity} ${
                                                       step.content.unit[
@@ -73,6 +110,7 @@ const RecipeVersionPreview = (
                                                 : step.instruction}
                                         </Typography>
                                     )}
+                                    {step.element}
                                 </Box>
                             ))}
                         </Box>

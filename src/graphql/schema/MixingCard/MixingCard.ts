@@ -1,3 +1,7 @@
+import {
+    ProductionLine,
+    ProductionLineFragment,
+} from './../ProductionLine/ProductionLine';
 import { RecipeVersionFragment } from './../RecipeVersion/RecipeVersion';
 import { gql } from '@apollo/client';
 import { TinyProfile } from './../Profile/Profile';
@@ -9,6 +13,7 @@ export interface MixingCard extends Base {
     location: Location;
     profile: TinyProfile;
     lines: MixingCardLine[];
+    production_line: ProductionLine | null;
 }
 
 export const MixingCardFragment = gql`
@@ -35,6 +40,9 @@ export const MixingCardFragment = gql`
         }
         lines {
             ...MixingCardLineFragment
+        }
+        production_line {
+            ...ProductionLineFragment
         }
     }
 `;

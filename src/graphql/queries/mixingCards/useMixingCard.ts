@@ -14,6 +14,7 @@ import { TinyItemFragment } from '../items/useTinyItems';
 import { getQueryHook } from '../../types';
 import { TinyUnitFragment } from '../../schema/Unit/Unit';
 import { RecipeFragment } from '../../schema/Recipe/Recipe';
+import { ProductionLineFragment } from '../../schema/ProductionLine/ProductionLine';
 
 export const MixingCardQuery = gql`
     ${MixingCardFragment}
@@ -25,6 +26,7 @@ export const MixingCardQuery = gql`
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     ${RecipeFragment}
+    ${ProductionLineFragment}
     query MixingCardQUery($id: ObjectId!) {
         mixingCard(id: $id) {
             ...MixingCardFragment

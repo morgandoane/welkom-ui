@@ -1,28 +1,9 @@
 import { cloneDeep } from '@apollo/client/utilities';
-import { DndContext } from '@dnd-kit/core';
 import { LoadingButton } from '@mui/lab';
-import {
-    Box,
-    Button,
-    ButtonBase,
-    IconButton,
-    MenuItem,
-    TextField,
-    Tooltip,
-    Typography,
-    useTheme,
-} from '@mui/material';
+import { Box, Button, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import {
-    MdAdd,
-    MdCheck,
-    MdChevronLeft,
-    MdCleanHands,
-    MdClear,
-    MdDelete,
-    MdDragHandle,
-} from 'react-icons/md';
+import { MdAdd, MdCheck, MdChevronLeft, MdDelete } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     UiPermission,
@@ -30,16 +11,14 @@ import {
     UiPermissions,
 } from '../../../../../../auth/UiPermission';
 import AppNav from '../../../../../../components/AppNav';
-import ButtonToggle from '../../../../../../components/ButtonToggle';
 import CarefulButton from '../../../../../../components/Forms/CarefulButton';
 import FormRow from '../../../../../../components/Forms/components/FormRow';
-import ItemField from '../../../../../../components/Forms/components/ItemField';
 import LocationField from '../../../../../../components/Forms/components/LocationField';
 import PersonField from '../../../../../../components/Forms/components/PersonField';
+import ProductionLineField from '../../../../../../components/Forms/components/ProductionLineField';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import Message from '../../../../../../components/Message';
 import PageTitle from '../../../../../../components/PageTitle';
-import { RecipeExplorerWrap } from '../../../../../../components/RecipeExplorer';
 import {
     CreateMixingCardArgs,
     CreateMixingCardRes,
@@ -52,7 +31,6 @@ import {
 } from '../../../../../../graphql/mutations/recipeCard/useRecipeCardUpdate';
 import { useMixingCard } from '../../../../../../graphql/queries/mixingCards/useMixingCard';
 import { MixingCardsQuery } from '../../../../../../graphql/queries/mixingCards/useMixingCards';
-import { MixingCardLineInput } from '../../../../../../graphql/schema/MixingCardLine/MixingCardLineInputs';
 import { OperationResult } from '../../../../../../graphql/types';
 import { relocate } from '../../../../../../utils/relocate';
 import MixingCardLineForm from './components/MixingCardLineForm';
@@ -78,6 +56,7 @@ const MixingCardForm = (): ReactElement => {
         data: {
             location: '',
             profile: '',
+            production_line: null,
             lines: [
                 {
                     recipe: '',
@@ -130,6 +109,7 @@ const MixingCardForm = (): ReactElement => {
                 _type: 'update',
                 id: mixingCard._id,
                 data: {
+                    production_line: mixingCard.production_line?._id || null,
                     profile: mixingCard.profile.user_id,
                     location: mixingCard.location._id,
                     lines: mixingCard.lines.map((line) => ({
@@ -252,6 +232,27 @@ const MixingCardForm = (): ReactElement => {
                                                         data: {
                                                             ...state.data,
                                                             location: val || '',
+                                                        },
+                                                    }),
+                                                ]}
+                                            />
+                                        </FormRow>
+                                        <FormRow>
+                                            <ProductionLineField
+                                                value={
+                                                    state.data
+                                                        .production_line || null
+                                                }
+                                                location={
+                                                    state.data.location ||
+                                                    undefined
+                                                }
+                                                onChange={(production_line) => [
+                                                    setState({
+                                                        ...state,
+                                                        data: {
+                                                            ...state.data,
+                                                            production_line,
                                                         },
                                                     }),
                                                 ]}

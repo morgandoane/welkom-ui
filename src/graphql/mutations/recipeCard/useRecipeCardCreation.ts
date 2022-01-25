@@ -1,3 +1,4 @@
+import { ProductionLineFragment } from './../../schema/ProductionLine/ProductionLine';
 import { RecipeFragment } from './../../schema/Recipe/Recipe';
 import { TinyUnitFragment } from './../../schema/Unit/Unit';
 import {
@@ -26,6 +27,7 @@ export const CreateMixingCard = gql`
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     ${RecipeFragment}
+    ${ProductionLineFragment}
     mutation CreateMixingCard($data: CreateMixingCardInput!) {
         createMixingCard(data: $data) {
             ...MixingCardFragment

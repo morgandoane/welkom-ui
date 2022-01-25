@@ -100,7 +100,13 @@ const MixingBoard = (): ReactElement => {
                                     src={card.profile.picture}
                                     alt={card.profile.name}
                                 />
-                                <Box sx={{ flex: 1 }}>
+                                <Box
+                                    sx={{
+                                        flex: 1,
+                                        display: 'flex',
+                                        flexFlow: 'column',
+                                    }}
+                                >
                                     <Typography>
                                         {'Mixer: ' + card.profile.name}
                                     </Typography>
@@ -114,6 +120,14 @@ const MixingBoard = (): ReactElement => {
                                                 card.modified_by
                                             ).name}
                                     </Typography>
+                                    {card.production_line && (
+                                        <Typography
+                                            variant="caption"
+                                            color="textSecondary"
+                                        >
+                                            {card.production_line.name}
+                                        </Typography>
+                                    )}
                                 </Box>
                                 <Box>
                                     <IconButton onClick={() => nav(card._id)}>

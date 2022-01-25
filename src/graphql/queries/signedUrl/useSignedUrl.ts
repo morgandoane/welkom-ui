@@ -1,3 +1,4 @@
+import { getLazyQueryHook } from './../../types';
 import { SignedUrl } from '../../schema/SignedUrl/SignedUrl';
 import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
 import { SignedUrlConfig } from './useSignedUrls';
@@ -22,3 +23,7 @@ export const useSignedUrl = (
     options?: QueryHookOptions<SignedUrlRes, SignedUrlArgs>
 ): QueryResult<SignedUrlRes, SignedUrlArgs> =>
     useQuery(SignedUrlQuery, options);
+
+export const useLazySignedUrl = getLazyQueryHook<SignedUrlRes, SignedUrlArgs>(
+    SignedUrlQuery
+);

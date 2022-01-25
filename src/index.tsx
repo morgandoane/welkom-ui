@@ -9,9 +9,6 @@ import ApolloProvider from './providers/ApolloProvider';
 import { SnackbarProvider } from './providers/SnackbarProvider';
 import { Router } from './routing/router';
 
-import '@fontsource/roboto';
-import '@fontsource/rubik';
-import '@fontsource/jost';
 import { UploadProvider } from './providers/UploadProvider';
 import ErrorProvider from './providers/ErrorProvider';
 import TypefaceProvider from './providers/TypefaceProvider';

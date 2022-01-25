@@ -11,7 +11,7 @@ export interface ColumnBoxProps {
 }
 
 const ColumnBox = (props: ColumnBoxProps): ReactElement => {
-    const { children, animate = true } = props;
+    const { children, animate = false } = props;
 
     const [scrolled, setScrolled] = React.useState(false);
 
