@@ -18,13 +18,20 @@ const ColumnBox = (props: ColumnBoxProps): ReactElement => {
     const { transitions, palette, shadows } = useTheme();
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexFlow: 'column' }}>
+        <Box
+            sx={{
+                height: '100%',
+                display: 'flex',
+                flexFlow: 'column',
+                position: 'relative',
+            }}
+        >
             {children.header && (
                 <Box
                     sx={
                         animate
                             ? {
-                                  zIndex: 10,
+                                  zIndex: 5,
                                   transition: transitions.create('all', {
                                       duration: 250,
                                   }),
@@ -33,6 +40,7 @@ const ColumnBox = (props: ColumnBoxProps): ReactElement => {
                                           ? palette.background.paper
                                           : palette.background.default,
                                   boxShadow: scrolled ? shadows[8] : 'none',
+                                  position: 'relative',
                               }
                             : undefined
                     }

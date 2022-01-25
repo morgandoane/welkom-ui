@@ -128,6 +128,7 @@ const Sidebar = (): ReactElement => {
                 { label: 'Order Queue', url: '/logistics/orderqueue' },
                 { label: 'Orders', url: '/logistics/orders' },
                 { label: 'Statistics', url: '/logistics/statistics' },
+                { label: 'Transportation', url: '/logistics/transportation' },
             ],
             auth: { _type: 'permission', permission: UiPermission.Logistics },
         },
@@ -190,6 +191,8 @@ const Sidebar = (): ReactElement => {
                 flexFlow: 'column',
                 alignItems: 'flex-start',
                 borderRight: `1px solid ${theme.palette.divider}`,
+                zIndex: 35,
+                position: 'inherit',
             }}
         >
             <Box

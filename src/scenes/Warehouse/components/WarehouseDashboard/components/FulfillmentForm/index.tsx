@@ -454,7 +454,9 @@ const FulfillmentForm = (props: {
                                                             !bol ||
                                                             (!bol.code &&
                                                                 !state.bol_code_override) ||
-                                                            !state.seal
+                                                            (!state.seal &&
+                                                                state.type ===
+                                                                    FulfillmentType.Receipt)
                                                         }
                                                         endIcon={
                                                             <MdArrowDownward />

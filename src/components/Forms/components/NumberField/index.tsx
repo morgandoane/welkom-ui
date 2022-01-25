@@ -10,7 +10,7 @@ export interface NumberFieldProps {
 }
 
 const NumberField = (props: NumberFieldProps): ReactElement => {
-    const { label, value, naked = false, onChange, size = 'small' } = props;
+    const { label, value, naked = false, onChange, size = 'medium' } = props;
 
     return (
         <TextField
