@@ -116,6 +116,7 @@ const Sidebar = (): ReactElement => {
             items: [
                 { label: 'Companies', url: '/library/companies' },
                 { label: 'Items', url: '/library/items' },
+                { label: 'Products', url: '/library/products' },
                 { label: 'Quality Checks', url: '/library/qualitychecks' },
                 { label: 'Units', url: '/library/units' },
             ],

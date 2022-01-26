@@ -10,8 +10,9 @@ import { useItem } from '../../../../../../graphql/queries/items/useItem';
 import ItemDetails from './components/ItemDetails';
 import ItemAttachments from './components/ItemAttachments';
 import ItemConversions from './components/ItemConversions';
+import { ItemType } from '../../../../../../graphql/schema/Item/Item';
 
-const ItemView = (): ReactElement => {
+const ItemView = (props: { type: ItemType | null }): ReactElement => {
     const { id } = useParams();
     const nav = useNavigate();
 
@@ -36,9 +37,17 @@ const ItemView = (): ReactElement => {
                                         color="inherit"
                                         startIcon={<MdChevronLeft />}
                                         sx={{ marginBottom: 2 }}
-                                        onClick={() => nav('/library/items')}
+                                        onClick={() =>
+                                            nav(
+                                                `/library/${
+                                                    props.type
+                                                        ? props.type.toLowerCase()
+                                                        : 'item'
+                                                }s`
+                                            )
+                                        }
                                     >
-                                        Items
+                                        {`${props.type ? props.type : 'Item'}s`}
                                     </Button>
                                     <PageTitle>{item.english}</PageTitle>
                                     {item.deleted && (

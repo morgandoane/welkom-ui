@@ -18,6 +18,8 @@ const CreateItemMutation = gql`
             english
             spanish
             unit_class
+            upc
+            type
             files {
                 ...AppFileFragment
             }

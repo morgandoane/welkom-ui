@@ -1,3 +1,4 @@
+import { ItemType } from './Item';
 import { UnitClass } from '../Unit/Unit';
 
 export interface CreateItemInput {
@@ -7,6 +8,8 @@ export interface CreateItemInput {
     to_base_unit: number;
     default_vendor?: string;
     default_unit?: string;
+    type?: ItemType | null;
+    upc?: string | null;
 }
 
 export interface UpdateItemInput {
@@ -17,4 +20,6 @@ export interface UpdateItemInput {
     to_base_unit?: number;
     default_unit?: string;
     unit_class?: UnitClass;
+    type?: ItemType | null;
+    upc?: string | null;
 }

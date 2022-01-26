@@ -25,13 +25,13 @@ import {
     TinyItems,
     useTinyItems,
 } from '../../../../../../graphql/queries/items/useTinyItems';
-import { TinyItem } from '../../../../../../graphql/schema/Item/Item';
+import { ItemType, TinyItem } from '../../../../../../graphql/schema/Item/Item';
 import { ItemFilter } from '../../../../../../graphql/schema/Item/ItemFilter';
 import { UnitClass } from '../../../../../../graphql/schema/Unit/Unit';
 import { OperationResult } from '../../../../../../graphql/types';
 import { dateFormats } from '../../../../../../utils/dateFormats';
 
-const ItemsView = (): ReactElement => {
+const ItemsView = (props: { type: ItemType | null }): ReactElement => {
     const nav = useNavigate();
 
     const skipFromState = localStorage.getItem('library_items_skip');
@@ -44,7 +44,12 @@ const ItemsView = (): ReactElement => {
     const [filter, setFilter] = React.useState<ItemFilter>({
         skip: skipParsed,
         take: 50,
+        type: props.type,
     });
+
+    React.useEffect(() => {
+        setFilter((f) => ({ ...f, type: props.type }));
+    }, [props.type]);
 
     React.useEffect(() => {
         localStorage.setItem('library_items_skip', filter.skip.toString());
@@ -90,7 +95,11 @@ const ItemsView = (): ReactElement => {
         <AppNav loading={loading} error={error}>
             <ColumnBox>
                 {{
-                    header: <PageTitle>Items</PageTitle>,
+                    header: (
+                        <PageTitle>
+                            {(props.type ? props.type : 'Item') + 's'}
+                        </PageTitle>
+                    ),
                     content: (
                         <SmartTable
                             data={items}
@@ -123,8 +132,12 @@ const ItemsView = (): ReactElement => {
                                         setEdits({
                                             english: '',
                                             spanish: '',
-                                            unit_class: UnitClass.Weight,
+                                            unit_class:
+                                                props.type === ItemType.Product
+                                                    ? UnitClass.Count
+                                                    : UnitClass.Weight,
                                             to_base_unit: 1,
+                                            type: props.type,
                                         });
                                     }}
                                 >
@@ -180,7 +193,9 @@ const ItemsView = (): ReactElement => {
                     }
                 }}
             >
-                <PanelHeader onClose={onClose}>Create item</PanelHeader>
+                <PanelHeader onClose={onClose}>
+                    {`New ${props.type || 'Item'}`}
+                </PanelHeader>
                 <FormRow>
                     <TextFormField
                         label="English"
@@ -201,20 +216,22 @@ const ItemsView = (): ReactElement => {
                         }}
                     />
                 </FormRow>
-                <FormRow>
-                    <UnitClassField
-                        label="Measured in"
-                        value={edits ? edits.unit_class : UnitClass.Weight}
-                        onChange={(unit_class) => {
-                            if (edits)
-                                setEdits({
-                                    ...edits,
-                                    unit_class,
-                                    default_unit: undefined,
-                                });
-                        }}
-                    />
-                </FormRow>
+                {props.type !== ItemType.Product && (
+                    <FormRow>
+                        <UnitClassField
+                            label="Measured in"
+                            value={edits ? edits.unit_class : UnitClass.Weight}
+                            onChange={(unit_class) => {
+                                if (edits)
+                                    setEdits({
+                                        ...edits,
+                                        unit_class,
+                                        default_unit: undefined,
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
                 <Collapse
                     in={edits !== null && edits.unit_class == UnitClass.Volume}
                 >
@@ -236,33 +253,52 @@ const ItemsView = (): ReactElement => {
                         />
                     </FormRow>
                 </Collapse>
-                <FormRow>
-                    <UnitField
-                        class={edits ? edits.unit_class : undefined}
-                        label="Default unit"
-                        value={edits ? edits.default_unit || '' : ''}
-                        onChange={(val) => {
-                            if (edits)
-                                setEdits({
-                                    ...edits,
-                                    default_unit: val || '',
-                                });
-                        }}
-                    />
-                </FormRow>
-                <FormRow>
-                    <CompanyField
-                        label="Default vendor"
-                        value={edits ? edits.default_vendor || '' : ''}
-                        onChange={(val) => {
-                            if (edits)
-                                setEdits({
-                                    ...edits,
-                                    default_vendor: val || '',
-                                });
-                        }}
-                    />
-                </FormRow>
+                {props.type === ItemType.Product && (
+                    <FormRow>
+                        <TextFormField
+                            label="UPC"
+                            value={edits ? edits.upc || '' || '' : ''}
+                            onChange={(val) => {
+                                if (edits)
+                                    setEdits({
+                                        ...edits,
+                                        upc: val || '',
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
+                {props.type !== ItemType.Product && (
+                    <FormRow>
+                        <UnitField
+                            class={edits ? edits.unit_class : undefined}
+                            label="Default unit"
+                            value={edits ? edits.default_unit || '' : ''}
+                            onChange={(val) => {
+                                if (edits)
+                                    setEdits({
+                                        ...edits,
+                                        default_unit: val || '',
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
+                {props.type !== ItemType.Product && (
+                    <FormRow>
+                        <CompanyField
+                            label="Default vendor"
+                            value={edits ? edits.default_vendor || '' : ''}
+                            onChange={(val) => {
+                                if (edits)
+                                    setEdits({
+                                        ...edits,
+                                        default_vendor: val || '',
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
                 <LoadingButton
                     variant="contained"
                     loading={createLoading}

@@ -15,7 +15,10 @@ import {
     UpdateItemRes,
     useItemUpdate,
 } from '../../../../../../../../graphql/mutations/item/useItemUpdate';
-import { Item } from '../../../../../../../../graphql/schema/Item/Item';
+import {
+    Item,
+    ItemType,
+} from '../../../../../../../../graphql/schema/Item/Item';
 import { OperationResult } from '../../../../../../../../graphql/types';
 import { dateFormats } from '../../../../../../../../utils/dateFormats';
 import { MdRefresh } from 'react-icons/md';
@@ -97,10 +100,12 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                     spanish: item.spanish,
                                     deleted: false,
                                     unit_class: item.unit_class,
+                                    type: item.type,
                                     default_vendor:
                                         item.default_vendor?._id || undefined,
                                     default_unit:
                                         item.default_unit?._id || undefined,
+                                    to_base_unit: item.to_base_unit,
                                 },
                             },
                         });
@@ -123,6 +128,8 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                     item.default_vendor?._id || undefined,
                                 default_unit:
                                     item.default_unit?._id || undefined,
+                                upc: item.upc,
+                                to_base_unit: item.to_base_unit,
                             },
                         });
                     }}
@@ -159,39 +166,58 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                         }}
                     />
                 </FormRow>
-                <FormRow>
-                    <UnitField
-                        class={state ? state.data.unit_class : undefined}
-                        label="Default unit"
-                        value={state ? state.data.default_unit || '' : ''}
-                        onChange={(val) => {
-                            if (state)
-                                setState({
-                                    ...state,
-                                    data: {
-                                        ...state.data,
-                                        default_unit: val || '',
-                                    },
-                                });
-                        }}
-                    />
-                </FormRow>
-                <FormRow>
-                    <CompanyField
-                        label="Default vendor"
-                        value={state ? state.data.default_vendor || '' : ''}
-                        onChange={(val) => {
-                            if (state)
-                                setState({
-                                    ...state,
-                                    data: {
-                                        ...state.data,
-                                        default_vendor: val || '',
-                                    },
-                                });
-                        }}
-                    />
-                </FormRow>
+                {item && item.type === ItemType.Product && (
+                    <FormRow>
+                        <TextFormField
+                            label="UPC"
+                            value={state ? state.data.upc || '' || '' : ''}
+                            onChange={(val) => {
+                                if (state)
+                                    setState({
+                                        ...state,
+                                        data: { ...state.data, upc: val || '' },
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
+                {item.type !== ItemType.Product && (
+                    <FormRow>
+                        <UnitField
+                            class={state ? state.data.unit_class : undefined}
+                            label="Default unit"
+                            value={state ? state.data.default_unit || '' : ''}
+                            onChange={(val) => {
+                                if (state)
+                                    setState({
+                                        ...state,
+                                        data: {
+                                            ...state.data,
+                                            default_unit: val || '',
+                                        },
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
+                {item.type !== ItemType.Product && (
+                    <FormRow>
+                        <CompanyField
+                            label="Default vendor"
+                            value={state ? state.data.default_vendor || '' : ''}
+                            onChange={(val) => {
+                                if (state)
+                                    setState({
+                                        ...state,
+                                        data: {
+                                            ...state.data,
+                                            default_vendor: val || '',
+                                        },
+                                    });
+                            }}
+                        />
+                    </FormRow>
+                )}
                 <Box sx={{ display: 'flex' }}>
                     <Box>
                         <CarefulButton
@@ -215,6 +241,12 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                         }}
                         variant="contained"
                         loading={loading}
+                        disabled={
+                            !state ||
+                            !state.data.english ||
+                            !state.data.spanish ||
+                            (item.type == ItemType.Product && !state.data.upc)
+                        }
                     >
                         Save
                     </LoadingButton>

@@ -9,6 +9,7 @@ export enum UiPermission {
     Recipes = 'Recipes',
     ProductionManager = 'Production Manager',
     Mixing = 'Mixing',
+    Palletizing = 'Palletizing',
 }
 
 export interface UiPermissionData {
@@ -201,6 +202,26 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.GetRecipes,
             Permission.GetUnits,
             Permission.GetMixingCards,
+            Permission.UpdateMixingCard,
+        ],
+    },
+    {
+        name: UiPermission.Palletizing,
+        description: 'Create and handle pallet lots in the warehouse.',
+        permissions: [
+            Permission.GetBatches,
+            Permission.GetPallets,
+            Permission.CreatePallet,
+            Permission.UpdatePallet,
+            Permission.GetCompanies,
+            Permission.GetItems,
+            Permission.GetLocations,
+            Permission.GetLots,
+            Permission.CreateLot,
+            Permission.UpdateLot,
+            Permission.GetUnits,
+            Permission.GetMixingCards,
+            Permission.CreateMixingCard,
             Permission.UpdateMixingCard,
         ],
     },

@@ -9,6 +9,8 @@ export const TinyItemFragment = gql`
         english
         spanish
         unit_class
+        upc
+        type
         order_queue_qty
         default_unit {
             _id
