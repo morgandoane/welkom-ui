@@ -1,6 +1,6 @@
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import React, { ReactElement } from 'react';
-import { MdChevronLeft } from 'react-icons/md';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     getUiPermissions,
@@ -103,6 +103,23 @@ const FulfillmentDetail = (): ReactElement => {
                                 >
                                     {fulfillment.type}
                                 </PageTitle>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        paddingBottom: 0.5,
+                                    }}
+                                >
+                                    <Typography variant="h6">
+                                        {fulfillment.bol.from.company.name}
+                                    </Typography>
+                                    <MdChevronRight
+                                        style={{ fontSize: '1.5rem' }}
+                                    />
+                                    <Typography variant="h6">
+                                        {fulfillment.bol.to.company.name}
+                                    </Typography>
+                                </Box>
                                 <Typography
                                     variant="body2"
                                     color="textSecondary"
