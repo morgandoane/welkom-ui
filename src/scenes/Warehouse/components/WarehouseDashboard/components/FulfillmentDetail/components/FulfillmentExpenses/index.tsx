@@ -177,8 +177,8 @@ const FulfillmentExpenses = (props: FulfillmentExpensesProps): ReactElement => {
                 onClose={() => setTarget(null)}
                 against={target ? target.against : null}
                 expense={target ? target.expense || null : null}
-                vendor={target?.vendor || ''}
-                customer={target?.customer || ''}
+                vendor={target ? target.vendor : ''}
+                customer={target ? target.customer : ''}
                 refetchQueries={[FulfillmentQuery, ExpensesQuery]}
             />
         </Box>

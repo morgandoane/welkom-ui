@@ -56,6 +56,14 @@ const ExpenseDialog = (props: ExpenseDialogProps): ReactElement => {
         against: against || '',
     });
 
+    React.useEffect(() => {
+        setState((s) => ({
+            ...s,
+            customer: customer || '',
+            vendor: vendor || '',
+        }));
+    }, [vendor, customer]);
+
     const { error, loading: expenseLoading } = useExpense({
         variables:
             against !== null && expense !== null ? { id: expense } : undefined,

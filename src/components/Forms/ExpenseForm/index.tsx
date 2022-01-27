@@ -24,7 +24,7 @@ const ExpenseForm = (props: ExpenseFormProps): ReactElement => {
             <FormRow>
                 <CompanyField
                     label="Who's being paid?"
-                    value={value.vendor || ''}
+                    value={value.vendor || null}
                     onChange={(val) => {
                         onChange({ ...value, vendor: val || '' });
                     }}
@@ -33,7 +33,7 @@ const ExpenseForm = (props: ExpenseFormProps): ReactElement => {
             <FormRow>
                 <CompanyField
                     label="Who's being billed?"
-                    value={value.customer || ''}
+                    value={value.customer || null}
                     onChange={(val) => {
                         onChange({ ...value, customer: val || '' });
                     }}
