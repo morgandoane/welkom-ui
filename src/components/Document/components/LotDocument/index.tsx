@@ -15,10 +15,18 @@ import JsBarcode from 'jsbarcode';
 import QRCode from 'qrcode';
 import { format } from 'date-fns';
 import { dateFormats } from '../../../../utils/dateFormats';
+import { FulfillmentType } from '../../../../graphql/schema/Fulfillment/Fulfillment';
 
 export interface LotDocumentProps {
     children: LotDocument;
 }
+
+export const lotQr = (
+    fulfillment_type: FulfillmentType,
+    bol_id: string,
+    fulfillment_id: string
+) =>
+    `www.ldbbakery.com/warehouse/${fulfillment_type}/${bol_id}/${fulfillment_id}`;
 
 const LotDocumentRender = (props: LotDocumentProps): any => {
     const { children: data } = props;
@@ -42,7 +50,7 @@ const LotDocumentRender = (props: LotDocumentProps): any => {
     const qrCanvas = document.createElement('canvas');
     QRCode.toCanvas(
         qrCanvas,
-        `www.ldbbakery.com/warehouse/receiving/${data.bol_id}/${data.fulfillment_id}`
+        lotQr(data.fulfillment_type, data.bol_id, data.fulfillment_id)
     );
     const qr = qrCanvas.toDataURL();
 

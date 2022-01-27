@@ -1,3 +1,4 @@
+import { FulfillmentType } from './../../graphql/schema/Fulfillment/Fulfillment';
 import { RecipeVersion } from './../../graphql/schema/RecipeVersion/RecipeVersion';
 import { Recipe } from './../../graphql/schema/Recipe/Recipe';
 import { TinyItem } from '../../graphql/schema/Item/Item';
@@ -11,6 +12,7 @@ export interface LotDocument {
     item: TinyItem;
     bol_id: string;
     fulfillment_id: string;
+    fulfillment_type: FulfillmentType;
 }
 
 export interface BolDocument {

@@ -62,6 +62,8 @@ const FulfillmentPrint = (): ReactElement => {
                                                     fulfillment_id:
                                                         fulfillment._id,
                                                     bol_id: fulfillment.bol._id,
+                                                    fulfillment_type:
+                                                        fulfillment.type,
                                                 }}
                                             </LotDocumentRender>
                                         )) as any

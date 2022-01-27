@@ -1,13 +1,9 @@
-import { AvatarGroup, Button, Popover, Typography } from '@mui/material';
+import { AvatarGroup, Button, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { DataGrid } from '@mui/x-data-grid';
-import { addDays, endOfDay, format, startOfDay } from 'date-fns';
-import React, { ReactElement } from 'react';
-import { MdCheck, MdFilter } from 'react-icons/md';
-import { FaFilter } from 'react-icons/fa';
+import React, { ReactElement, ReactNode } from 'react';
+import { MdCheck } from 'react-icons/md';
 import Filters from '../../../../../../components/Filters';
 import CompanyField from '../../../../../../components/Forms/components/CompanyField';
-import DateRangeField from '../../../../../../components/Forms/components/DateRangeField';
 import ItemField from '../../../../../../components/Forms/components/ItemField';
 import SearchField from '../../../../../../components/Forms/components/SearchField';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
@@ -20,17 +16,19 @@ import {
 import { Bol } from '../../../../../../graphql/schema/Bol/Bol';
 import { BolFilter } from '../../../../../../graphql/schema/Bol/BolFilter';
 
-import { dateFormats } from '../../../../../../utils/dateFormats';
 import BolPopover from '../WarehouseCalendar/components/BolPopover';
 import SmartTable from '../../../../../../components/SmartTable';
 import { OperationResult } from '../../../../../../graphql/types';
-import { TinyBolsRes } from '../../../../../../graphql/queries/bols/useTinyBols';
 import { VerificationIcon } from '../../../../../../components/Forms/VerificationForm';
-import { VerificationStatus } from '../../../../../../graphql/schema/Verification/Verification';
-import { FulfillmentType } from '../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import VerificationField from '../../../../../../components/Forms/components/VerificationField';
 import PersonField from '../../../../../../components/Forms/components/PersonField';
 import LocationField from '../../../../../../components/Forms/components/LocationField';
+import usePermissions from '../../../../../../auth/usePermissions';
+import {
+    getUiPermissions,
+    UiPermission,
+} from '../../../../../../auth/UiPermission';
+import { UserRole } from '../../../../../../auth/UserRole';
 
 export interface WarehouseTableProps {
     view: 'shipping' | 'receiving';
@@ -39,6 +37,9 @@ export interface WarehouseTableProps {
 
 const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
     const { view, setLoading } = props;
+
+    const { permissions, roles } = usePermissions();
+    const uiPermissions = getUiPermissions(permissions);
 
     const [clickState, setClickState] = React.useState<null | {
         target: EventTarget & Element;
@@ -72,6 +73,31 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
 
     const bols = data && data && data.success ? data.data.bols.items : [];
     const count = data && data && data.success ? data.data.bols.count : 0;
+
+    const accountingFields = (): Record<string, (bol: Bol) => ReactNode> => {
+        const match = uiPermissions.find(
+            (perm) => perm.name === UiPermission.TrackExpenses
+        );
+        if (
+            !match &&
+            !roles.includes(UserRole.Admin) &&
+            !roles.includes(UserRole.Manager)
+        )
+            return {};
+        else {
+            return {
+                Expense: (bol) => {
+                    const expenses = bol[
+                        view == 'receiving' ? 'receipts' : 'shipments'
+                    ]
+                        .map((f) => f.lots.map((lot) => lot.expenses).flat())
+                        .flat();
+
+                    return expenses.map((e) => `$${e.amount}`).join(', ');
+                },
+            };
+        }
+    };
 
     return (
         <React.Fragment>
@@ -328,6 +354,7 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         </Box>
                                     );
                                 },
+                                ...accountingFields(),
                                 [view == 'receiving'
                                     ? 'Received by'
                                     : 'Shipped by']: (bol) =>

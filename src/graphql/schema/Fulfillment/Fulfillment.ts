@@ -198,6 +198,10 @@ export const FulfillmentFragment = gql`
                     }
                 }
             }
+            expenses {
+                _id
+                amount
+            }
         }
         items {
             _id

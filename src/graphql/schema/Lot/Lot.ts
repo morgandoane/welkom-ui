@@ -17,6 +17,7 @@ export interface Lot extends Base {
     company?: TinyCompany | null;
     contents: LotContent[];
     quality_check_responses: QualityCheckResponse[];
+    expenses: { _id: string; amount: number }[];
 }
 
 export interface TinyLot {
