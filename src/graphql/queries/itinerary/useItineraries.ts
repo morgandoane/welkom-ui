@@ -8,6 +8,7 @@ import { BolFragment } from '../../schema/Bol/Bol';
 import { FulfillmentFragment } from '../../schema/Fulfillment/Fulfillment';
 import { ItineraryFragment } from '../../schema/Itinerary/Itinerary';
 import { VerificationFragment } from '../../schema/Verification/Verification';
+import { TinyOrderFragment } from '../orders/useOrders';
 
 export const ItinerariesQuery = gql`
     ${BaseFragment}
@@ -16,6 +17,7 @@ export const ItinerariesQuery = gql`
     ${FulfillmentFragment}
     ${AppFileFragment}
     ${VerificationFragment}
+    ${TinyOrderFragment}
     query ItinerariesQuery($filter: ItineraryFilter!) {
         itineraries(filter: $filter) {
             count

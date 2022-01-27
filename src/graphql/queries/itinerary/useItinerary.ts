@@ -1,3 +1,4 @@
+import { TinyOrderFragment } from './../orders/useOrders';
 import { FulfillmentFragment } from './../../schema/Fulfillment/Fulfillment';
 import { BaseFragment } from './../../fragments/BaseFragment';
 import {
@@ -17,6 +18,7 @@ export const ItineraryQuery = gql`
     ${FulfillmentFragment}
     ${AppFileFragment}
     ${VerificationFragment}
+    ${TinyOrderFragment}
     query ItineraryQuery($id: ObjectId!) {
         itinerary(id: $id) {
             ...ItineraryFragment

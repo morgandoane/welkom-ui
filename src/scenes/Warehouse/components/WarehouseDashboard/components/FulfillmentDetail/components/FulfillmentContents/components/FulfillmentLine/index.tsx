@@ -21,7 +21,6 @@ import {
 } from '../../../../../../../../../../graphql/schema/Fulfillment/Fulfillment';
 import { UnitClass } from '../../../../../../../../../../graphql/schema/Unit/Unit';
 import { useClickState } from '../../../../../../../../../../hooks/useClickState';
-import { percentage } from '../../../../../../../../../../utils/percentage';
 
 export interface FulfillmentLineProps {
     fulfillment: Fulfillment;

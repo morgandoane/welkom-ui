@@ -11,7 +11,13 @@ import {
 import { setHours, startOfDay } from 'date-fns';
 import React, { ReactElement } from 'react';
 import { BsBoxSeam } from 'react-icons/bs';
-import { MdAdd, MdCheck, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import {
+    MdAdd,
+    MdCheck,
+    MdChevronLeft,
+    MdChevronRight,
+    MdDelete,
+} from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     CreateBolRes,
@@ -21,8 +27,11 @@ import {
     UpdateBolRes,
     useBolUpdate,
 } from '../../../graphql/mutations/bol/useBolUpdate';
-import { useBol } from '../../../graphql/queries/bols/useBol';
-import { useItinerary } from '../../../graphql/queries/itinerary/useItinerary';
+import { BolQuery, useBol } from '../../../graphql/queries/bols/useBol';
+import {
+    ItineraryQuery,
+    useItinerary,
+} from '../../../graphql/queries/itinerary/useItinerary';
 import { OrderQuery, useOrder } from '../../../graphql/queries/orders/Order';
 import { useOrderSetup } from '../../../graphql/queries/orders/useOrderSetup';
 import {
@@ -53,6 +62,7 @@ import UnitField from '../components/UnitField';
 const BolForm = (props: {
     back?: string;
     back_label?: string;
+    from_itinerary?: boolean;
 }): ReactElement => {
     const { id, order_id, itinerary_id } = useParams();
     const nav = useNavigate();
@@ -87,7 +97,7 @@ const BolForm = (props: {
         onError: (error) => {
             setResult({ success: false, error });
         },
-        refetchQueries: [OrderQuery],
+        refetchQueries: [OrderQuery, ItineraryQuery, BolQuery],
     });
 
     const [handleUpdate, { loading: updateLoading }] = useBolUpdate({
@@ -97,7 +107,7 @@ const BolForm = (props: {
         onError: (error) => {
             setResult({ success: false, error });
         },
-        refetchQueries: [OrderQuery],
+        refetchQueries: [OrderQuery, ItineraryQuery, BolQuery],
     });
 
     const submit = () => {
@@ -181,7 +191,7 @@ const BolForm = (props: {
                 state.contents.map((c) => c.item).includes(focusedContent.item)
             ) {
                 const match = items.find((i) => i._id == focusedContent.item);
-                return `BOL already contains ${match?.english || ''}`;
+                // return `BOL already contains ${match?.english || ''}`;
             }
             if (focusedContent.quantity == 0) return 'Please enter a quantity';
             if (focusedContent.unit == '') return 'Please select a unit';
@@ -195,7 +205,6 @@ const BolForm = (props: {
             return 'Please select a company to pickup from';
         if (state.to.company == '')
             return 'Please select a company to dropoff at';
-        if (state.code == '') return 'Please generate a BOL number';
         return null;
     };
 
@@ -219,7 +228,9 @@ const BolForm = (props: {
                     }
                     onComplete={() =>
                         nav(
-                            props.back
+                            props.from_itinerary
+                                ? `/logistics/transportation/${itinerary_id}`
+                                : props.back
                                 ? props.back
                                 : '/logistics/orders/' + order_id
                         )
@@ -246,14 +257,18 @@ const BolForm = (props: {
                                     color="inherit"
                                     onClick={() =>
                                         nav(
-                                            props.back
+                                            props.from_itinerary
+                                                ? `/logistics/transportation/${itinerary_id}`
+                                                : props.back
                                                 ? props.back
                                                 : '/logistics/orders/' +
-                                                      order_id
+                                                  order_id
                                         )
                                     }
                                 >
-                                    {props.back_label || 'Back to order'}
+                                    {props.from_itinerary
+                                        ? 'Itinerary'
+                                        : props.back_label || 'Back to order'}
                                 </Button>
                                 <PageTitle>
                                     {id && id.length > 0
@@ -620,40 +635,66 @@ const BolForm = (props: {
                                         </Button>
                                     </Box>
                                 </Box>
-                            </Box>
-                        ),
-                        footer: (
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    flexFlow: 'row',
-                                    alignItems: 'flex-end',
-                                }}
-                            >
-                                <Box sx={{ padding: 2 }}>
-                                    <Tooltip
-                                        title={bolHoldup || ''}
-                                        arrow
-                                        placement="top"
-                                    >
-                                        <Box>
-                                            <LoadingButton
-                                                onClick={submit}
-                                                variant="contained"
-                                                loading={
-                                                    updateLoading ||
-                                                    createLoading
-                                                }
-                                                disabled={bolHoldup !== null}
-                                                size="large"
-                                                endIcon={<MdCheck />}
-                                            >
-                                                Save BOL
-                                            </LoadingButton>
-                                        </Box>
-                                    </Tooltip>
+                                <Box p={3} />
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        flexFlow: 'row',
+                                        alignItems: 'flex-end',
+                                        gap: 2,
+                                    }}
+                                >
+                                    <Box>
+                                        <Tooltip
+                                            title={bolHoldup || ''}
+                                            arrow
+                                            placement="top"
+                                        >
+                                            <Box>
+                                                <LoadingButton
+                                                    onClick={submit}
+                                                    variant="contained"
+                                                    loading={
+                                                        updateLoading ||
+                                                        createLoading
+                                                    }
+                                                    disabled={
+                                                        bolHoldup !== null
+                                                    }
+                                                    size="large"
+                                                    endIcon={<MdCheck />}
+                                                >
+                                                    Save BOL
+                                                </LoadingButton>
+                                            </Box>
+                                        </Tooltip>
+                                    </Box>
+                                    <Box>
+                                        <CarefulButton
+                                            onClick={() => {
+                                                if (state)
+                                                    handleUpdate({
+                                                        variables: {
+                                                            id: id || '',
+                                                            data: {
+                                                                ...state,
+                                                                deleted: true,
+                                                            },
+                                                        },
+                                                    });
+                                            }}
+                                            loading={
+                                                updateLoading || createLoading
+                                            }
+                                            disabled={bolHoldup !== null}
+                                            size="large"
+                                            endIcon={<MdDelete />}
+                                        >
+                                            Delete BOL
+                                        </CarefulButton>
+                                    </Box>
                                 </Box>
+                                <Box p={6} />
                             </Box>
                         ),
                     }}
@@ -732,7 +773,14 @@ const BolForm = (props: {
                                             focusedContent;
                                         setState({
                                             ...state,
-                                            contents: [...state.contents, rest],
+                                            contents: [
+                                                ...state.contents.filter(
+                                                    (c) =>
+                                                        c.item !==
+                                                        focusedContent.item
+                                                ),
+                                                rest,
+                                            ],
                                         });
                                         setFocusedContent(null);
                                     }

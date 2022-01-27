@@ -1,13 +1,21 @@
+import { VerificationFragment } from './../../schema/Verification/Verification';
 import { BolFragment } from './../../schema/Bol/Bol';
 import { gql } from '@apollo/client';
 import { getMutationHook } from './../../types';
 import { Itinerary, ItineraryFragment } from '../../schema/Itinerary/Itinerary';
 import { BaseFragment } from '../../fragments/BaseFragment';
+import { TinyOrderFragment } from '../../queries/orders/useOrders';
+import { AppFileFragment } from '../../schema/AppFile/AppFile';
+import { FulfillmentFragment } from '../../schema/Fulfillment/Fulfillment';
 
 const CreateItinerary = gql`
     ${BaseFragment}
     ${BolFragment}
     ${ItineraryFragment}
+    ${FulfillmentFragment}
+    ${TinyOrderFragment}
+    ${AppFileFragment}
+    ${VerificationFragment}
     mutation CreateItinerary($data: CreateItineraryInput!) {
         createItinerary(data: $data) {
             ...ItineraryFragment

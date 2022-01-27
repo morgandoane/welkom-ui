@@ -26,7 +26,8 @@ import CodeField from '../components/CodeField';
 import CompanyField from '../components/CompanyField';
 import FormRow from '../components/FormRow';
 
-const ItineraryForm = (): ReactElement => {
+const ItineraryForm = (props: { from_itinerary?: boolean }): ReactElement => {
+    const { from_itinerary } = props;
     const nav = useNavigate();
     const { id, order_id } = useParams();
 
@@ -38,6 +39,7 @@ const ItineraryForm = (): ReactElement => {
         variables: {
             id: order_id || '',
         },
+        skip: !order_id,
     });
 
     const [state, setState] = React.useState<
@@ -45,7 +47,7 @@ const ItineraryForm = (): ReactElement => {
     >({
         code: '',
         carrier: '',
-        orders: [order_id || ''],
+        orders: order_id ? [order_id] : [],
     });
 
     const { data, error, loading } = useItinerary({
@@ -59,7 +61,7 @@ const ItineraryForm = (): ReactElement => {
                 carrier: data.itinerary.carrier
                     ? data.itinerary.carrier._id
                     : '',
-                deleted: false,
+                deleted: data.itinerary.deleted,
             });
         },
     });
@@ -98,17 +100,11 @@ const ItineraryForm = (): ReactElement => {
         } else {
             handleCreate({
                 variables: {
-                    data: state,
+                    data: { ...state, carrier: state.carrier || undefined },
                 },
             });
         }
     };
-
-    React.useEffect(() => {
-        if ('deleted' in state && state.deleted == true) {
-            submit();
-        }
-    }, [state]);
 
     return (
         <AppNav
@@ -123,7 +119,23 @@ const ItineraryForm = (): ReactElement => {
                             ? 'Itinerary saved!'
                             : 'Itinerary updated!'
                     }
-                    onComplete={() => nav('/logistics/orders/' + order_id)}
+                    onComplete={() => {
+                        if (!from_itinerary)
+                            nav('/logistics/orders/' + order_id || '');
+                        else {
+                            if ('createItinerary' in result.data) {
+                                nav(
+                                    '/logistics/transportation/' +
+                                        result.data.createItinerary._id
+                                );
+                            } else {
+                                nav(
+                                    '/logistics/transportation/' +
+                                        result.data.updateItinerary._id
+                                );
+                            }
+                        }
+                    }}
                 />
             ) : result ? (
                 <Message
@@ -144,25 +156,52 @@ const ItineraryForm = (): ReactElement => {
                                     startIcon={<MdChevronLeft />}
                                     variant="text"
                                     color="inherit"
-                                    onClick={() =>
-                                        nav('/logistics/orders/' + order_id)
-                                    }
+                                    onClick={() => {
+                                        if (from_itinerary) {
+                                            if (id)
+                                                nav(
+                                                    '/logistics/transportation/' +
+                                                        id || ''
+                                                );
+                                            else
+                                                nav(
+                                                    '/logistics/transportation'
+                                                );
+                                        } else {
+                                            nav(
+                                                '/logistics/orders/' +
+                                                    order_id || ''
+                                            );
+                                        }
+                                    }}
                                 >
-                                    Back to order
+                                    {from_itinerary
+                                        ? 'Back to itinerary'
+                                        : 'Back to order'}
                                 </Button>
-                                <PageTitle>
-                                    {id && id.length > 0
-                                        ? [
-                                              'Update itinerary',
-                                              'On behalf of order ' +
-                                                  orderData?.order.code || '',
-                                          ]
-                                        : [
-                                              'Create itinerary',
-                                              'On behalf of order ' +
-                                                  orderData?.order.code || '',
-                                          ]}
-                                </PageTitle>
+                                {order_id ? (
+                                    <PageTitle>
+                                        {id && id.length > 0
+                                            ? [
+                                                  'Update itinerary',
+                                                  'On behalf of order ' +
+                                                      orderData?.order.code ||
+                                                      '',
+                                              ]
+                                            : [
+                                                  'Create itinerary',
+                                                  'On behalf of order ' +
+                                                      orderData?.order.code ||
+                                                      '',
+                                              ]}
+                                    </PageTitle>
+                                ) : (
+                                    <PageTitle>
+                                        {id && id.length > 0
+                                            ? 'Update itinerary'
+                                            : 'Create itinerary'}
+                                    </PageTitle>
+                                )}
                             </Box>
                         ),
                         content: (
@@ -203,9 +242,17 @@ const ItineraryForm = (): ReactElement => {
                                     <Box>
                                         <CarefulButton
                                             onClick={() => {
-                                                setState({
-                                                    ...state,
-                                                    deleted: true,
+                                                handleUpdate({
+                                                    variables: {
+                                                        id: id || '',
+                                                        data: {
+                                                            deleted:
+                                                                'deleted' in
+                                                                state
+                                                                    ? !state.deleted
+                                                                    : false,
+                                                        },
+                                                    },
                                                 });
                                             }}
                                             size="large"

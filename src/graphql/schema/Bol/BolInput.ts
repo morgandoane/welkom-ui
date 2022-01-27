@@ -19,4 +19,5 @@ export interface UpdateBolInput {
     from: BolAppointmentInput;
     to: BolAppointmentInput;
     contents: ItemContentInput[];
+    deleted?: boolean;
 }
