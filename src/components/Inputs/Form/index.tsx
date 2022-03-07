@@ -26,16 +26,24 @@ import { useIngredientUpdate } from '../../../graphql/schema/Item/extensions/Ing
 import { usePackage } from '../../../graphql/schema/Item/extensions/Packaging/usePackage';
 import { usePackagingCreation } from '../../../graphql/schema/Item/extensions/Packaging/usePackagingCreation';
 import { usePackagingUpdate } from '../../../graphql/schema/Item/extensions/Packaging/usePackagingUpdate';
+import {
+    ProductQuery,
+    useProduct,
+} from '../../../graphql/schema/Item/extensions/Product/useProduct';
+import { useProductCreation } from '../../../graphql/schema/Item/extensions/Product/useProductCreation';
+import { useProductUpdate } from '../../../graphql/schema/Item/extensions/Product/useProductUpdate';
 import { useLocation } from '../../../graphql/schema/Location/useLocation';
 import { useLocationCreation } from '../../../graphql/schema/Location/useLocationCreation';
 import { LocationsQuery } from '../../../graphql/schema/Location/useLocations';
 import { useLocationUpdate } from '../../../graphql/schema/Location/useLocationUpdate';
+import Product from '../../../scenes/Library/components/Products/components/Product';
 import AppForm from './components/AppForm';
 import CompanyFormRender from './components/forms/Company';
 import DesignFormRender from './components/forms/Design';
 import IngredientFormRender from './components/forms/Ingredient';
 import LocationFormRender from './components/forms/Location';
 import PackagingFormRender from './components/forms/Packaging';
+import ProductFormRender from './components/forms/Product';
 
 const CompanyForm = () => {
     const nav = useNavigate();
@@ -233,6 +241,61 @@ const IngredientForm = () => {
     );
 };
 
+const ProductForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Product"
+            creationHook={useProductCreation}
+            updateHook={useProductUpdate}
+            stateHook={useProduct}
+            stateHandler={({ product: item }) => {
+                return {
+                    id: item._id,
+                    data: {
+                        names: {
+                            english: item.names.english,
+                            spanish: item.names.spanish,
+                        },
+                        deleted: item.deleted,
+                        pallet_configurations: item.pallet_configurations.map(
+                            (config) => ({
+                                name: config.name,
+                                capacity: config.capacity,
+                            })
+                        ),
+                        upc: item.upc,
+                        company: item.company._id,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    base_unit: BaseUnit.Pounds,
+                    per_base_unit: 1,
+                    names: {
+                        english: '',
+                        spanish: '',
+                    },
+                    pallet_configurations: [],
+                    upc: '',
+                    company: '',
+                },
+            }}
+            form={ProductFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/library/products/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/library/products'),
+                onUpdated: (d) =>
+                    nav('/library/products/' + Object.values(d)[0]._id),
+            }}
+            refetch={[ProductQuery]}
+        />
+    );
+};
+
 const DesignForm = () => {
     const nav = useNavigate();
     const { parent, location, category } = useParams();
@@ -282,4 +345,11 @@ const DesignForm = () => {
     );
 };
 
-export { CompanyForm, DesignForm, IngredientForm, LocationForm, PackagingForm };
+export {
+    CompanyForm,
+    DesignForm,
+    IngredientForm,
+    LocationForm,
+    PackagingForm,
+    ProductForm,
+};
