@@ -1,14 +1,72 @@
-import { TinyLocation } from './../../queries/locations/useTinyLocations';
-import { TinyProfile } from './../Profile/Profile';
-import { TinyCompany } from './../Company/Company';
+import { AppFragment } from './../../types';
+import { Identified } from './../Base/Base';
+import { TinyLocation, TinyLocationFragment } from './../Location/Location';
+import { TinyCompany, TinyCompanyFragment } from './../Company/Company';
+import {
+    UploadEnabled,
+    UploadEnabledFragment,
+} from './../UploadEnabled/UploadEnabled';
 import { Permission } from '../../../auth/Permission';
-import { Base } from '../Base/Base';
+import { gql } from '@apollo/client';
+import { TinyProfileFragment } from '../Profile/Profile';
 
-export interface Team extends Base {
+export interface Team extends UploadEnabled {
     name: string;
-    description?: string | null;
     company: TinyCompany;
-    members: TinyProfile[];
-    location?: TinyLocation | null;
+    location: TinyLocation | null;
     permissions: Permission[];
+    members: string[];
 }
+
+export interface TinyTeam extends Identified {
+    name: string;
+    company: TinyCompany;
+    location: TinyLocation | null;
+    permissions: Permission[];
+    members: string[];
+}
+
+export const TeamFragment = new AppFragment(
+    gql`
+        fragment TeamFragment on Team {
+            ...UploadEnabledFragment
+            name
+            company {
+                ...TinyCompanyFragment
+            }
+            location {
+                ...TinyLocationFragment
+            }
+            permissions
+            members {
+                ...TinyProfileFragment
+            }
+        }
+    `,
+    [
+        UploadEnabledFragment,
+        TinyCompanyFragment,
+        TinyLocationFragment,
+        TinyProfileFragment,
+    ]
+);
+
+export const TinyTeamFragment = new AppFragment(
+    gql`
+        fragment TinyTeamFragment on Team {
+            _id
+            name
+            company {
+                ...TinyCompanyFragment
+            }
+            location {
+                ...TinyLocationFragment
+            }
+            permissions
+            members {
+                ...TinyProfileFragment
+            }
+        }
+    `,
+    [TinyCompanyFragment, TinyLocationFragment, TinyProfileFragment]
+);

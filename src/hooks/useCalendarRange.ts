@@ -1,7 +1,7 @@
 import React from 'react';
 import { getMonthRange, getDayRange, getWeekRange } from './useMonthRange';
 import { addDays, getDay } from 'date-fns';
-import { DateRangeInput } from '../graphql/schema/DateRange/DateRange';
+import { DateRange } from '../utils/types/DateRange';
 
 export type CalendarView = 'day' | 'week' | 'month';
 
@@ -9,7 +9,7 @@ export const getCalendarRange = (
     origin: Date,
     index: number,
     view: CalendarView
-): DateRangeInput => {
+): DateRange => {
     const { start: mStart, end: mEnd } =
         view == 'day'
             ? getDayRange(origin, index)
@@ -32,7 +32,7 @@ export const useCalendarRange = (
 ): [
     index: number,
     setIndex: (value: number) => void,
-    range: DateRangeInput,
+    range: DateRange,
     now: Date
 ] => {
     const [now, setNow] = React.useState<Date>(new Date());

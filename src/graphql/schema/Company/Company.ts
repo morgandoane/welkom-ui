@@ -1,22 +1,41 @@
-import { TinyProfile } from './../Profile/Profile';
-import { AppFile } from './../AppFile/AppFile';
-import { Contact, TinyContact } from './../Contact/Contact';
-import { Base } from '../Base/Base';
-import { Location } from '../Location/Location';
+import { Contact, ContactFragment } from './../Contact/Contact';
+import { CompanyFilter } from './../../inputsTypes';
+import { AppFragment, getQueryHook } from './../../types';
+import { gql } from '@apollo/client';
+import { Identified } from './../Base/Base';
+import {
+    UploadEnabled,
+    UploadEnabledFragment,
+} from './../UploadEnabled/UploadEnabled';
 
-export interface Company extends Base {
+export interface Company extends UploadEnabled {
     name: string;
-    locations: Location[];
     contacts: Contact[];
-    files: AppFile[];
 }
 
-export interface TinyCompany {
-    _id: string;
+export interface TinyCompany extends Identified {
     name: string;
-    created_by: TinyProfile;
-    modified_by?: TinyProfile | null;
-    date_created: Date;
-    date_modified?: Date | null;
-    contacts: TinyContact[];
 }
+
+export const CompanyFragment = new AppFragment(
+    gql`
+        fragment CompanyFragment on Company {
+            ...UploadEnabledFragment
+            name
+            contacts {
+                ...ContactFragment
+            }
+        }
+    `,
+    [UploadEnabledFragment, ContactFragment]
+);
+
+export const TinyCompanyFragment = new AppFragment(
+    gql`
+        fragment TinyCompanyFragment on Company {
+            _id
+            name
+        }
+    `,
+    []
+);

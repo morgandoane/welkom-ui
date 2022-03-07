@@ -1,45 +1,46 @@
+import { AppFragment } from './../../types';
+import { NamesFragment } from './../Names/Names';
 import { gql } from '@apollo/client';
-import { TinyProfile } from './../Profile/Profile';
-import { Base } from '../Base/Base';
-
-export enum UnitClass {
-    Count = 'Count',
-    Time = 'Time',
-    Volume = 'Volume',
-    Weight = 'Weight',
-}
+import { UnitClass } from '../../inputsTypes';
+import { NamesPlural } from '../Names/Names';
+import { Base, Identified, BaseFragment } from './../Base/Base';
 
 export interface Unit extends Base {
-    class: UnitClass;
-    english: string;
-    spanish?: string;
-    english_plural?: string;
-    spanish_plural?: string;
-    base_per_unit: number;
+    names: NamesPlural;
+    unit_class: UnitClass;
+    to_base_unit: number;
 }
 
-export interface TinyUnit {
-    _id: string;
-    class: UnitClass;
-    english: string;
-    spanish?: string;
-    english_plural?: string;
-    spanish_plural?: string;
-    base_per_unit: number;
-    created_by: TinyProfile;
-    date_created: Date;
-    modified_by?: TinyProfile | null;
-    date_modified?: Date | null;
+export interface TinyUnit extends Identified {
+    names: NamesPlural;
+    unit_class: UnitClass;
+    to_base_unit: number;
 }
 
-export const TinyUnitFragment = gql`
-    fragment TinyUnitFragment on Unit {
-        ...BaseFragment
-        class
-        english
-        spanish
-        english_plural
-        spanish_plural
-        base_per_unit
-    }
-`;
+export const UnitFragment = new AppFragment(
+    gql`
+        fragment UnitFragment on Unit {
+            ...BaseFragment
+            names {
+                ...NamesFragment
+            }
+            unit_class
+            to_base_unit
+        }
+    `,
+    [BaseFragment, NamesFragment]
+);
+
+export const TinyUnitFragment = new AppFragment(
+    gql`
+        fragment TinyUnitFragment on Unit {
+            _id
+            names {
+                ...NamesFragment
+            }
+            unit_class
+            to_base_unit
+        }
+    `,
+    [NamesFragment]
+);

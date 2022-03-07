@@ -1,34 +1,53 @@
-import { TinyOrder } from './../../queries/orders/useOrders';
-import { TinyCompany } from './../Company/Company';
+import { AppFragment } from './../../types';
+import { TinyCompanyFragment } from './../Company/Company';
+import { Identified } from './../Base/Base';
+import {
+    UploadEnabled,
+    UploadEnabledFragment,
+} from './../UploadEnabled/UploadEnabled';
+import { TinyCompany } from '../Company/Company';
 import { gql } from '@apollo/client';
-import { Base } from '../Base/Base';
-import { Bol } from '../Bol/Bol';
-import { AppFile } from '../AppFile/AppFile';
 
-export interface Itinerary extends Base {
-    code: string;
-    bols: Bol[];
-    carrier?: TinyCompany | null;
-    orders: TinyOrder[];
-    files: AppFile[];
+export interface Itinerary extends UploadEnabled {
+    code: string | null;
+    carrier: TinyCompany | null;
+    commissioned_by: TinyCompany;
 }
 
-export const ItineraryFragment = gql`
-    fragment ItineraryFragment on Itinerary {
-        ...BaseFragment
-        code
-        carrier {
+export interface TinyItinerary extends Identified {
+    code: string | null;
+    carrier: TinyCompany | null;
+    commissioned_by: TinyCompany;
+}
+
+export const ItineraryFragment = new AppFragment(
+    gql`
+        fragment ItineraryFragment on Itinerary {
+            ...UploadEnabledFragment
+            code
+            carrier {
+                ...TinyCompanyFragment
+            }
+            commissioned_by {
+                ...TinyCompanyFragment
+            }
+        }
+    `,
+    [UploadEnabledFragment, TinyCompanyFragment]
+);
+
+export const TinyItineraryFragment = new AppFragment(
+    gql`
+        fragment TinyItineraryFragment on Itinerary {
             _id
-            name
+            code
+            carrier {
+                ...TinyCompanyFragment
+            }
+            commissioned_by {
+                ...TinyCompanyFragment
+            }
         }
-        bols {
-            ...BolFragment
-        }
-        orders {
-            ...TinyOrderFragment
-        }
-        files {
-            ...AppFileFragment
-        }
-    }
-`;
+    `,
+    [TinyCompanyFragment]
+);

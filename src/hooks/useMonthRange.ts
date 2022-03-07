@@ -10,9 +10,9 @@ import {
     endOfDay,
 } from 'date-fns';
 import React from 'react';
-import { DateRangeInput } from './../graphql/schema/DateRange/DateRange';
+import { DateRange } from '../utils/types/DateRange';
 
-export const getMonthRange = (origin: Date, index: number): DateRangeInput => {
+export const getMonthRange = (origin: Date, index: number): DateRange => {
     const indexed = addMonths(origin, index);
 
     const start = startOfMonth(indexed);
@@ -21,7 +21,7 @@ export const getMonthRange = (origin: Date, index: number): DateRangeInput => {
     return { start, end };
 };
 
-export const getWeekRange = (origin: Date, index: number): DateRangeInput => {
+export const getWeekRange = (origin: Date, index: number): DateRange => {
     const indexed = addWeeks(origin, index);
 
     const start = startOfWeek(indexed);
@@ -30,7 +30,7 @@ export const getWeekRange = (origin: Date, index: number): DateRangeInput => {
     return { start, end };
 };
 
-export const getDayRange = (origin: Date, index: number): DateRangeInput => {
+export const getDayRange = (origin: Date, index: number): DateRange => {
     const indexed = addDays(origin, index);
 
     const start = startOfDay(indexed);

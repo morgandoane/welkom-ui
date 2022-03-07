@@ -1,41 +1,44 @@
-import { RecipeVersion } from './../RecipeVersion/RecipeVersion';
-import { RecipeSection } from './../RecipeStep/RecipeStep';
+import { UploadEnabledFragment } from './../UploadEnabled/UploadEnabled';
+import { AppFragment } from './../../types';
+import { Identified } from './../Base/Base';
+import { TinyItem, ItemFragment } from './../Item/Item';
+import { TinyFolder } from './../Folder/Folder';
+import { UploadEnabled } from '../UploadEnabled/UploadEnabled';
 import { gql } from '@apollo/client';
-import { TinyItem } from './../Item/Item';
-import { Base } from '../Base/Base';
-import { Folder } from '../Folder/Folder';
-import { DateGroup } from '../DateGroup/DateGroup';
 
-export interface Recipe extends Base {
+export interface Recipe extends UploadEnabled {
     name: string;
     item: TinyItem;
-    folder?: Folder;
-    version_date_groups: DateGroup[];
-    active?: RecipeVersion | null;
-    sections: RecipeSection[];
-    parameters: string[];
-    note: string;
-    base_units_produced: number;
+    folder: TinyFolder | null;
 }
 
-export const RecipeFragment = gql`
-    fragment RecipeFragment on Recipe {
-        ...BaseFragment
-        name
-        item {
-            ...TinyItemFragment
-        }
-        folder {
+export interface TinyRecipe extends Identified {
+    name: string;
+    item: TinyItem;
+}
+
+export const TinyRecipeFragment = new AppFragment(
+    gql`
+        fragment TinyRecipeFragment on Recipe {
             _id
             name
+            item {
+                ...ItemFragment
+            }
         }
-        version_date_groups {
-            year
-            month
-            count
+    `,
+    [ItemFragment]
+);
+
+export const RecipeFragment = new AppFragment(
+    gql`
+        fragment RecipeFragment on Recipe {
+            ...UploadEnabledFragment
+            name
+            item {
+                ...ItemFragment
+            }
         }
-        active {
-            ...RecipeVersionFragment
-        }
-    }
-`;
+    `,
+    [UploadEnabledFragment, ItemFragment]
+);

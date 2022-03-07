@@ -24,6 +24,7 @@ const ColumnBox = (props: ColumnBoxProps): ReactElement => {
                 display: 'flex',
                 flexFlow: 'column',
                 position: 'relative',
+                flex: 1,
             }}
         >
             {children.header && (

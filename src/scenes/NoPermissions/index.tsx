@@ -5,7 +5,7 @@ import React, { ReactElement } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { getUiPermissions } from '../../auth/UiPermission';
 import usePermissions from '../../auth/usePermissions';
-import Logo from '../../components/Logo';
+import Logo from '../../components/display/Logo';
 import { useIndexRoute } from '../../routing/router';
 
 const NoPermissions = (): ReactElement => {

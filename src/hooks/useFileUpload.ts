@@ -1,10 +1,11 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import React from 'react';
-import { OperationResult } from '../graphql/types';
 import axios, { AxiosResponse } from 'axios';
+import { OperationResult } from '../utils/types/OperationResult';
+import { format } from 'date-fns';
 
 export type UploadTuple<Res = unknown> = [
-    upload: (file: File, endpoint: string) => void,
+    upload: (file: File, endpoint: string, timestamp: Date) => void,
     result: {
         data?: Res;
         loading: boolean;
@@ -25,7 +26,7 @@ export const useFileUpload = <Res = unknown>(
     const [progress, setProgress] = React.useState<number | null>(null);
     const [state, setState] = React.useState<OperationResult<Res>>();
 
-    const upload = (file: File, endpoint: string) => {
+    const upload = (file: File, endpoint: string, timestamp: Date) => {
         axios({
             method: 'PUT',
             url: endpoint,
@@ -33,6 +34,7 @@ export const useFileUpload = <Res = unknown>(
             headers: {
                 'Content-Type': file.type,
                 'x-goog-meta-created_by': user ? user.sub || '' : '',
+                'x-goog-meta-date_modified': timestamp.toISOString(),
             },
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.floor(

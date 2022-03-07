@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Button, useTheme } from '@mui/material';
 import { ReactElement } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import Message from '../../components/Message';
+import Message from '../../components/feedback/Message';
 
 const ErrorFallback = (props: {
     error: Error;

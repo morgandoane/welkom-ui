@@ -1,24 +1,16 @@
 import React, { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { ItemType } from '../../graphql/schema/Item/Item';
 import Companies from './components/Companies';
-import Items from './components/Items';
-import QualityChecks from './components/QualityChecks';
-import Units from './components/Units';
+import Ingredients from './components/Ingredients';
+import Packaging from './components/Packaging';
 
 const Library = (): ReactElement => {
     return (
         <Routes>
-            <Route index element={<Navigate to="companies" />}></Route>
-            <Route path="/companies/*" element={<Companies />} />
-            <Route path="conversions" element={<Companies />}></Route>
-            <Route path="/items/*" element={<Items type={null} />} />
-            <Route
-                path="/products/*"
-                element={<Items type={ItemType.Product} />}
-            />
-            <Route path="/qualitychecks/*" element={<QualityChecks />} />
-            <Route path="/units/*" element={<Units />} />
+            <Route index element={<Navigate to="companies" />} />
+            <Route path="companies/*" element={<Companies />} />
+            <Route path="ingredients/*" element={<Ingredients />} />
+            <Route path="packaging/*" element={<Packaging />} />
         </Routes>
     );
 };

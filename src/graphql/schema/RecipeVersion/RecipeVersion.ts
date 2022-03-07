@@ -1,36 +1,53 @@
-import { TinyItemFragment } from './../../queries/items/useTinyItems';
-import { TinyItem } from './../Item/Item';
+import { AppFragment } from './../../types';
+import { Identified, BaseFragment } from './../Base/Base';
+import {
+    RecipeSection,
+    RecipeSectionFragment,
+} from '../RecipeSection/RecipeSection';
+import { Recipe, TinyRecipeFragment } from '../Recipe/Recipe';
+import { Base } from '../Base/Base';
 import { gql } from '@apollo/client';
-import { RecipeSection } from './../RecipeStep/RecipeStep';
-import { Base } from './../Base/Base';
 
 export interface RecipeVersion extends Base {
-    recipe: {
-        _id: string;
-        name: string;
-        item: TinyItem;
-    };
+    recipe: Recipe;
     sections: RecipeSection[];
     parameters: string[];
-    base_units_produced: number;
-    note?: string;
 }
 
-export const RecipeVersionFragment = gql`
-    fragment RecipeVersionFragment on RecipeVersion {
-        ...BaseFragment
-        recipe {
+export interface TinyRecipeVersion extends Identified {
+    recipe: Recipe;
+    sections: RecipeSection[];
+    parameters: string[];
+}
+
+export const TinyRecipeVersionFragment = new AppFragment(
+    gql`
+        fragment TinyRecipeVersionFragment on RecipeVersion {
             _id
-            name
-            item {
-                ...TinyItemFragment
+            recipe {
+                ...TinyRecipeFragment
             }
+            sections {
+                ...RecipeSectionFragment
+            }
+            parameters
         }
-        sections {
-            ...RecipeSectionFragment
+    `,
+    [TinyRecipeFragment, RecipeSectionFragment]
+);
+
+export const RecipeVersionFragment = new AppFragment(
+    gql`
+        fragment RecipeVersionFragment on RecipeVersion {
+            ...BaseFragment
+            recipe {
+                ...TinyRecipeFragment
+            }
+            sections {
+                ...RecipeSectionFragment
+            }
+            parameters
         }
-        parameters
-        base_units_produced
-        note
-    }
-`;
+    `,
+    [BaseFragment, TinyRecipeFragment, RecipeSectionFragment]
+);

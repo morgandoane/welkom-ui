@@ -1,83 +1,63 @@
-import { TinyItemFragment } from './../../queries/items/useTinyItems';
-import { BaseFragment } from './../../fragments/BaseFragment';
+import { AppFragment } from './../../types';
+import { TinyBatchLot, TinyBatchLotFragment } from './../BatchLot/BatchLot';
+import { TinyCompany, TinyCompanyFragment } from './../Company/Company';
+import { TinyLocation, TinyLocationFragment } from './../Location/Location';
 import {
-    ProductionLine,
-    ProductionLineFragment,
-} from './../ProductionLine/ProductionLine';
-import { TinyProfile } from './../Profile/Profile';
-import { TinyItem } from './../Item/Item';
-import { TinyLocation } from './../../queries/locations/useTinyLocations';
-import { ProceduralLot } from './../Lot/extensions/ProceduralLot/ProceduralLot';
-import {
-    RecipeVersion,
-    RecipeVersionFragment,
+    TinyRecipeVersion,
+    TinyRecipeVersionFragment,
 } from './../RecipeVersion/RecipeVersion';
-import { Base } from './../Base/Base';
-import { TinyLot } from '../Lot/Lot';
+import {
+    TinyProductionLine,
+    TinyProductionLineFragment,
+} from './../ProductionLine/ProductionLine';
+import { UploadEnabled } from './../UploadEnabled/UploadEnabled';
 import { gql } from '@apollo/client';
 
-export interface Batch extends Base {
-    date_completed?: Date;
-    recipe_version: RecipeVersion;
-    lot: ProceduralLot;
-    production_line?: ProductionLine;
-    item: TinyItem;
+export interface Batch extends UploadEnabled {
+    recipe_version: TinyRecipeVersion | null;
+    lot: TinyBatchLot;
     location: TinyLocation;
-}
-
-export const BatchFragment = gql`
-    fragment BatchFragment on Batch {
-        ...BaseFragment
-        date_completed
-        lot {
-            ...ProceduralLotFragment
-        }
-        production_line {
-            ...ProductionLineFragment
-        }
-        location {
-            ...TinyLocationFragment
-        }
-        recipe_version {
-            ...RecipeVersionFragment
-        }
-        item {
-            ...TinyItemFragment
-        }
-    }
-`;
-
-export interface TinyBatch {
-    _id: string;
-    created_by: TinyProfile;
-    date_created: Date;
+    company: TinyCompany;
+    production_line: TinyProductionLine | null;
     date_completed: Date | null;
-    lot: TinyLot;
-    production_line: ProductionLine | null;
-    location: TinyLocation | null;
 }
 
-export const TinyBatchFragment = gql`
-    fragment TinyBatchFragment on Batch {
-        _id
-        created_by {
-            user_id
-            email
-            name
-            picture
-            given_name
-            family_name
+export const BatchFragment = new AppFragment(
+    gql`
+        fragment BatchFragment on Batch {
+            ...UploadEnabledFragment
+            recipe_version {
+                ...TinyRecipeVersionFragment
+            }
+            lot {
+                ...TinyBatchLotFragment
+            }
+            location {
+                ...TinyLocationFragment
+            }
+            company {
+                ...TinyCompanyFragment
+            }
+            production_line {
+                ...TinyProductionLineFragment
+            }
+            date_completed
         }
-        date_created
-        date_completed
-        lot {
-            ...TinyProceduralLotFragment
-        }
-        production_line {
-            ...ProductionLineFragment
-        }
-        location {
-            ...TinyLocationFragment
+    `,
+    [
+        TinyRecipeVersionFragment,
+        TinyBatchLotFragment,
+        TinyLocationFragment,
+        TinyCompanyFragment,
+        TinyProductionLineFragment,
+    ]
+);
+
+export const BatchQuery = gql`
+    ${BatchFragment._document}
+    query BatchQuery($id: ObjectId!) {
+        batch(id: $id) {
+            ...BatchFragment
         }
     }
 `;

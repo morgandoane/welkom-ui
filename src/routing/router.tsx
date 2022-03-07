@@ -6,29 +6,16 @@ import {
     Route,
     Routes,
 } from 'react-router-dom';
-import { Permission } from '../auth/Permission';
-import {
-    getUiPermissions,
-    UiPermission,
-    UiPermissions,
-} from '../auth/UiPermission';
+import { getUiPermissions, UiPermission } from '../auth/UiPermission';
 import usePermissions from '../auth/usePermissions';
 import { UserRole } from '../auth/UserRole';
-import Accounting from '../scenes/Accounting';
+import Designs from '../scenes/Designs';
 import Library from '../scenes/Library';
 import Login from '../scenes/Login';
-import Logistics from '../scenes/Logistics';
 import Logout from '../scenes/Logout';
 import NoPermissions from '../scenes/NoPermissions';
 import NotFound from '../scenes/NotFound';
-import People from '../scenes/People';
-import Production from '../scenes/Production';
-import Recipes from '../scenes/Recipes';
-import ResetPassword from '../scenes/ResetPassword';
-import Warehouse from '../scenes/Warehouse';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
-import ManagerRoute from './components/ManagerRoute';
-import PermissionRoute from './components/PermissionRoute';
 import UnauthenticatedRoute from './components/UnauthenticatedRoute';
 
 const routes: {
@@ -39,87 +26,18 @@ const routes: {
         | null;
 }[] = [
     {
+        props: {
+            path: 'library/*',
+            element: <Library />,
+        },
         auth: { _type: 'permission', permission: UiPermission.Library },
-        props: {
-            path: '/library/*',
-            element: (
-                <PermissionRoute permission={UiPermission.Library}>
-                    <Library />
-                </PermissionRoute>
-            ),
-        },
     },
     {
-        auth: { _type: 'permission', permission: UiPermission.Recipes },
         props: {
-            path: '/recipes/*',
-            element: (
-                <PermissionRoute permission={UiPermission.Recipes}>
-                    <Recipes />
-                </PermissionRoute>
-            ),
+            path: 'design/*',
+            element: <Designs />,
         },
-    },
-    {
-        auth: { _type: 'permission', permission: UiPermission.Logistics },
-        props: {
-            path: '/logistics/*',
-            element: (
-                <AuthenticatedRoute>
-                    <Logistics />
-                </AuthenticatedRoute>
-            ),
-        },
-    },
-    {
-        auth: { _type: 'permission', permission: UiPermission.TrackExpenses },
-        props: {
-            path: '/accounting/*',
-            element: (
-                <AuthenticatedRoute>
-                    <Accounting />
-                </AuthenticatedRoute>
-            ),
-        },
-    },
-    {
-        auth: {
-            _type: 'permission',
-            permission: UiPermission.WarehouseOperator,
-        },
-        props: {
-            path: '/warehouse/*',
-            element: (
-                <AuthenticatedRoute>
-                    <Warehouse />
-                </AuthenticatedRoute>
-            ),
-        },
-    },
-    {
-        auth: { _type: 'role', role: UserRole.Manager },
-        props: {
-            path: '/people/*',
-            element: (
-                <ManagerRoute>
-                    <People />
-                </ManagerRoute>
-            ),
-        },
-    },
-    {
-        auth: {
-            _type: 'permission',
-            permission: UiPermission.ProductionManager,
-        },
-        props: {
-            path: '/production/*',
-            element: (
-                <PermissionRoute permission={UiPermission.ProductionManager}>
-                    <Production />
-                </PermissionRoute>
-            ),
-        },
+        auth: { _type: 'permission', permission: UiPermission.Design },
     },
 ];
 
@@ -175,22 +93,6 @@ export const Router = (): ReactElement => {
                     element={
                         <AuthenticatedRoute>
                             <NoPermissions />
-                        </AuthenticatedRoute>
-                    }
-                />
-                <Route
-                    path="/resetpassword"
-                    element={
-                        <AuthenticatedRoute>
-                            <ResetPassword />
-                        </AuthenticatedRoute>
-                    }
-                />
-                <Route
-                    path="/passwordsuccess"
-                    element={
-                        <AuthenticatedRoute>
-                            <ResetPassword success={true} />
                         </AuthenticatedRoute>
                     }
                 />

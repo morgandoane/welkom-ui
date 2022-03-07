@@ -10,31 +10,9 @@ import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 import { useAuth0 } from '@auth0/auth0-react';
 import Loading from '../../scenes/Loading';
-
-export const BaseUnionFields = [
-    'Batch',
-    'Bol',
-    'BucketLot',
-    'Company',
-    'Contact',
-    'Conversion',
-    'Expense',
-    'Folder',
-    'Fulfillment',
-    'Item',
-    'Itinerary',
-    'Location',
-    'Lot',
-    'MixingCard',
-    'Order',
-    'ProceduralLot',
-    'Recipe',
-    'RecipeVersion',
-    'Team',
-    'Unit',
-    'QualityCheck',
-    'Verification',
-];
+import { BaseUnionFields } from '../../graphql/unionHandling/BaseUnion';
+import { UploadEnabledFields } from '../../graphql/unionHandling/UploadEnabledFragment';
+import { ItemUnionFields } from '../../graphql/unionHandling/ItemUnion';
 
 const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
     const { getAccessTokenSilently, isLoading } = useAuth0();
@@ -62,12 +40,6 @@ const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
                             break;
                         }
                     }
-                // switch (extensions.code) {
-                //     case 'PASSWORD': {
-                //         window.location.replace('/resetpassword');
-                //         break;
-                //     }
-                // }
             });
         if (networkError) console.log(`[Network error]: ${networkError}`);
     });
@@ -77,6 +49,8 @@ const ApolloProvider = (props: { children: ReactElement }): ReactElement => {
         cache: new InMemoryCache({
             possibleTypes: {
                 BaseUnion: BaseUnionFields,
+                ItemUnion: ItemUnionFields,
+                UploadEnabledUnion: UploadEnabledFields,
             },
         }),
         connectToDevTools: true,

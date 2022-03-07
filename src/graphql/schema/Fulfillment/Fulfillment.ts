@@ -1,229 +1,36 @@
-import { BaseFragment } from './../../fragments/BaseFragment';
-import { BolItemContent } from './../Content/Content';
-import { BolSignature } from './../Bol/Bol';
-import { Verified } from './../Verified/Verified';
-import { AppFile } from './../AppFile/AppFile';
+import { AppFragment } from './../../types';
+import { TinyBolFragment } from './../Bol/Bol';
+import { Base, BaseFragment } from './../Base/Base';
+import { FulfillmentContent } from './../FulfillmentContent/FulfillmentContent';
+import { UploadEnabled } from './../UploadEnabled/UploadEnabled';
+import { TinyBol } from '../Bol/Bol';
+import { FulfillmentType } from '../../inputsTypes';
 import { gql } from '@apollo/client';
-import { TinyLocation } from './../../queries/locations/useTinyLocations';
-import { TinyCompany } from './../Company/Company';
-import { TinyItem } from './../Item/Item';
-import { Lot } from '../Lot/Lot';
 
-export enum FulfillmentType {
-    Shipment = 'Shipment',
-    Receipt = 'Receipt',
-}
-
-export interface FulfillmentBol {
-    _id: string;
-    code?: string | null;
-    seal?: string | null;
-    file?: AppFile | null;
-    from: {
-        date: Date;
-        company: TinyCompany;
-    };
-    to: {
-        date: Date;
-        company: TinyCompany;
-    };
-    signatures: BolSignature[];
-    contents: BolItemContent[];
-    itinerary: {
-        _id: string;
-        code: string;
-        carrier: TinyCompany;
-        orders: {
-            _id: string;
-            code: string;
-        }[];
-    };
-}
-
-export interface Fulfillment extends Verified {
+export interface Fulfillment extends UploadEnabled {
     type: FulfillmentType;
-    lots: Lot[];
-    items: TinyItem[];
-    company: TinyCompany;
-    location: TinyLocation;
-    bol: FulfillmentBol;
-    files: AppFile[];
+    bol: TinyBol;
+    contents: FulfillmentContent[];
 }
 
-export interface TinyFulfillment {
-    _id: string;
-    deleted: boolean;
+export interface TinyFulfillment extends Base {
     type: FulfillmentType;
-    items: TinyItem[];
-    location: TinyLocation;
+    bol: TinyBol;
+    contents: FulfillmentContent[];
 }
 
-export const FulfillmentFragment = gql`
-    fragment FulfillmentFragment on Fulfillment {
-        ...BaseFragment
-        files {
-            ...AppFileFragment
-        }
-        verification {
-            ...VerificationFragment
-        }
-        type
-        bol {
-            _id
-            code
-            seal
-            itinerary {
-                _id
-                code
-                carrier {
-                    _id
-                    name
-                }
-                orders {
-                    _id
-                    code
-                }
-            }
-            from {
-                date
-                company {
-                    _id
-                    name
-                }
-            }
-            to {
-                date
-                company {
-                    _id
-                    name
-                }
-            }
-            file {
-                ...AppFileFragment
-            }
-            signatures {
-                profile {
-                    user_id
-                    picture
-                    name
-                    email
-                    given_name
-                    family_name
-                }
-                fulfillment_type
-                confidence
-            }
-            contents {
-                quantity
-                item {
-                    _id
-                    unit_class
-                    english
-                    spanish
-                }
-                unit {
-                    _id
-                    class
-                    english
-                    spanish
-                    english_plural
-                    spanish_plural
-                    base_per_unit
-                }
-            }
-        }
-        lots {
+export const TinyFulfillmentFragment = new AppFragment(
+    gql`
+        fragment TinyFulfillmentFragment on Fulfillment {
             ...BaseFragment
-            code
-            quality_check_responses {
-                qualityCheck {
-                    _id
-                    item {
-                        _id
-                        unit_class
-                        english
-                        spanish
-                    }
-                    prompt {
-                        type
-                        phrase
-                        valid_boolean
-                        valid_range {
-                            min
-                            max
-                        }
-                    }
-                }
-                response
-                passed
-            }
-            item {
-                _id
-                unit_class
-                english
-                spanish
-            }
-            location {
-                _id
-                label
-                address {
-                    city
-                }
-                company {
-                    _id
-                    name
-                }
-            }
-            company {
-                _id
-                name
+            type
+            bol {
+                ...TinyBolFragment
             }
             contents {
-                quantity
-                unit {
-                    _id
-                    class
-                    english
-                    spanish
-                    english_plural
-                    spanish_plural
-                    base_per_unit
-                }
-                lot {
-                    _id
-                    code
-                    company {
-                        _id
-                        name
-                    }
-                }
-            }
-            expenses {
-                _id
-                amount
+                
             }
         }
-        items {
-            _id
-            unit_class
-            english
-            spanish
-        }
-        company {
-            _id
-            name
-        }
-        location {
-            _id
-            label
-            address {
-                city
-            }
-            company {
-                _id
-                name
-            }
-        }
-        _id
-    }
-`;
+    `,
+    []
+);

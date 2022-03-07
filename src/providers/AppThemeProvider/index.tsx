@@ -9,8 +9,6 @@ import {
 
 import type {} from '@mui/x-data-grid/themeAugmentation';
 import { useAuth0 } from '@auth0/auth0-react';
-import { UserMetaData } from '../../graphql/schema/Profile/Profile';
-import { useUserPreferenceUpdate } from '../../graphql/mutations/userPreferences/UpdateUserPreferences';
 
 declare module '@mui/material/styles' {
     interface TypographyVariants {
@@ -34,7 +32,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
     const background: Record<'light' | 'dark', PaletteOptions['background']> = {
         light: {
             default: '#FFFFFF',
-            paper: '#F5F5F5',
+            paper: '#FFFFFF',
             // default: "#FEFDFD",
             // paper: "#FFFFFF",
         },
@@ -87,7 +85,11 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
                 styleOverrides: {
                     root: {
                         textTransform: 'none',
+                        boxShadow: 'none',
                     },
+                },
+                defaultProps: {
+                    color: 'primary',
                 },
             },
             MuiButton: {
@@ -144,38 +146,11 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
                     },
                 },
             },
-            MuiDataGrid: {
-                defaultProps: {
-                    disableColumnFilter: true,
-                    disableColumnMenu: true,
-                    disableColumnSelector: true,
-                    disableSelectionOnClick: true,
-                    disableVirtualization: true,
-                    filterMode: 'server',
-                    pageSize: 50,
-                    paginationMode: 'server',
-                    sortingMode: 'server',
-                },
+            MuiAvatar: {
                 styleOverrides: {
                     root: {
-                        border: 'none',
-                    },
-                    cell: {
-                        border: 'none',
-                        borderBottom:
-                            mode == 'light'
-                                ? '1px solid rgba(0,0,0,0.12)'
-                                : '1px solid rgba(255, 255, 255, 0.12)',
-                    },
-                    columnSeparator: {
-                        display: 'none',
-                    },
-                    columnHeaders: {
-                        background: background[mode]?.paper,
-                        border: 'none',
-                    },
-                    sortIcon: {
-                        display: 'none',
+                        fontSize: '1rem',
+                        fontWeight: 800,
                     },
                 },
             },
@@ -194,14 +169,11 @@ export const Context = React.createContext<AppThemeContext>({
 });
 
 const AppThemeProvider = (props: { children: ReactElement }): ReactElement => {
-    const { user } = useAuth0<UserMetaData>();
     const fromStorage = localStorage.getItem('theme');
     const [mode, setMode] = React.useState<'dark' | 'light'>(
         fromStorage == 'light' ? 'light' : 'dark'
     );
     const theme = getTheme(mode);
-
-    const [update] = useUserPreferenceUpdate();
 
     return (
         <Context.Provider
@@ -210,13 +182,6 @@ const AppThemeProvider = (props: { children: ReactElement }): ReactElement => {
                 setMode: (val) => {
                     localStorage.setItem('theme', val);
                     setMode(val);
-                    update({
-                        variables: {
-                            data: {
-                                prefers_dark_mode: val == 'dark',
-                            },
-                        },
-                    });
                 },
             }}
         >

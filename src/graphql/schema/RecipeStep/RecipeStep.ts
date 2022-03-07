@@ -1,40 +1,27 @@
+import { AppFragment } from './../../types';
+import {
+    RecipeStepContent,
+    RecipeStepContentFragment,
+} from './../RecipeStepContent/RecipeStepContent';
+import { Names, NamesFragment } from './../Names/Names';
+import { Identified } from '../Base/Base';
 import { gql } from '@apollo/client';
-import { ItemPluralContent } from './../Content/Content';
 
-export interface RecipeSection {
-    _id: string;
-    label?: string;
-    steps: RecipeStep[];
+export interface RecipeStep extends Identified {
+    instruction: Names | null;
+    content: RecipeStepContent | null;
 }
 
-export interface RecipeStep {
-    _id: string;
-    instruction?: string;
-    content?: ItemPluralContent;
-}
-
-export const RecipeStepFragment = gql`
-    fragment RecipeStepFragment on RecipeStep {
-        _id
-        instruction
-        content {
-            quantity
-            unit {
-                ...TinyUnitFragment
+export const RecipeStepFragment = new AppFragment(
+    gql`
+        fragment RecipeStepFragment on RecipeStep {
+            instruction {
+                ...NamesFragment
             }
-            items {
-                ...TinyItemFragment
+            content {
+                ...RecipeStepContentFragment
             }
         }
-    }
-`;
-
-export const RecipeSectionFragment = gql`
-    fragment RecipeSectionFragment on RecipeSection {
-        _id
-        label
-        steps {
-            ...RecipeStepFragment
-        }
-    }
-`;
+    `,
+    [NamesFragment, RecipeStepContentFragment]
+);

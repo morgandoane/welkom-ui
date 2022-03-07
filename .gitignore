@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /cert
+/devTools
 /.pnp
 .pnp.js
 

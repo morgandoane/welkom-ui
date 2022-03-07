@@ -1,6 +1,7 @@
 import { Permission } from './Permission';
 
 export enum UiPermission {
+    Design = 'Design',
     TrackExpenses = 'Track Expenses',
     WarehouseOperator = 'Warehouse Operator',
     WarehouseVerification = 'Warehouse Verification',
@@ -26,6 +27,15 @@ export const UiPermissions: UiPermissionData[] = [
             Permission.CreateExpenses,
             Permission.UpdateExpenses,
             Permission.GetExpenses,
+        ],
+    },
+    {
+        name: UiPermission.Design,
+        description: 'Create, update, and manage design data.',
+        permissions: [
+            Permission.GetDesigns,
+            Permission.UpdateDesign,
+            Permission.CreateDesign,
         ],
     },
     {

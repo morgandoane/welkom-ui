@@ -1,70 +1,91 @@
-import { TinyItemFragment } from './../../queries/items/useTinyItems';
-import { QualityCheckResponse } from './../QualityCheckResponse/QualityCheckResponse';
-import { TinyItem } from './../Item/Item';
-import { TinyCompany } from './../Company/Company';
+import { ItemFragment } from './../Item/Item';
+import { AppFragment } from './../../types';
+import { LotContentFragment } from './../LotContent/LotContent';
+import { Identified } from './../Base/Base';
+import { TinyLocation, TinyLocationFragment } from './../Location/Location';
+import { TinyCompany, TinyCompanyFragment } from './../Company/Company';
 import {
-    TinyLocation,
-    TinyLocationFragment,
-} from './../../queries/locations/useTinyLocations';
-import { Base } from '../Base/Base';
-import { LotContent } from '../Content/Content';
+    TinyProductionLine,
+    TinyProductionLineFragment,
+} from './../ProductionLine/ProductionLine';
+import {
+    ExpenseSummary,
+    ExpenseSummaryFragment,
+} from './../ExpenseSummary/ExpenseSummary';
+import { Expensed, ExpensedFragment } from './../Expensed/Expensed';
+import { LotContent } from '../LotContent/LotContent';
+import { TinyItem } from '../Item/Item';
 import { gql } from '@apollo/client';
+import { BaseUnit } from '../../inputsTypes';
 
-export interface Lot extends Base {
+export interface Lot extends Expensed {
     code: string;
     item: TinyItem;
-    location?: TinyLocation | null;
-    company?: TinyCompany | null;
+    production_line: TinyProductionLine | null;
+    company: TinyCompany;
+    location: TinyLocation | null;
     contents: LotContent[];
-    quality_check_responses: QualityCheckResponse[];
-    expenses: { _id: string; amount: number }[];
+    quantity: number;
+    base_unit: BaseUnit;
+    expense_summaries: ExpenseSummary[] | null;
 }
 
-export interface TinyLot {
-    _id: string;
+export interface TinyLot extends Identified {
     code: string;
     item: TinyItem;
+    company: TinyCompany;
 }
 
-export const TinyLotFragment = gql`
-    fragment TinyLotFragment on Lot {
-        _id
-        code
-        item {
-            ...TinyItemFragment
+export const LotFragment = new AppFragment(
+    gql`
+        fragment LotFragment on Lot {
+            ...ExpensedFragment
+            code
+            item {
+                ...ItemFragment
+            }
+            production_line {
+                ...TinyProductionLineFragment
+            }
+            company {
+                ...TinyCompanyFragment
+            }
+            location {
+                ...TinyLocationFragment
+            }
+            contents {
+                ...LotContentFragment
+            }
+            quantity
+            base_unit
+            expense_summaries {
+                ...ExpenseSummaryFragment
+            }
         }
-        company {
+    `,
+    [
+        ExpensedFragment,
+        ItemFragment,
+        TinyProductionLineFragment,
+        TinyCompanyFragment,
+        TinyLocationFragment,
+        LotContentFragment,
+        ExpenseSummaryFragment,
+    ]
+);
+
+export const TinyLotFragment = new AppFragment(
+    gql`
+        fragment TinyLotFragment on Lot {
             _id
-            name
+            code
+            item {
+                ...TinyItemFragment
+            }
+            company {
+                ...TinyCompanyFragment
+            }
         }
-        location {
-            ...TinyLocationFragment
-        }
-    }
-`;
-
-export const TinyProceduralLotFragment = gql`
-    fragment TinyProceduralLotFragment on ProceduralLot {
-        _id
-        code
-        location {
-            ...TinyLocationFragment
-        }
-        item {
-            ...TinyItemFragment
-        }
-    }
-`;
-
-export const TinyBucketLotFragment = gql`
-    fragment TinyBucketLotFragment on BucketLot {
-        _id
-        code
-        location {
-            ...TinyLocationFragment
-        }
-        item {
-            ...TinyItemFragment
-        }
-    }
-`;
+    `,
+    [ItemFragment, TinyCompanyFragment]
+);

@@ -1,11 +1,28 @@
-import { TinyProfile } from './../Profile/Profile';
-import { Profile } from '../Profile/Profile';
+import { AppFragment } from './../../types';
+import { gql } from '@apollo/client';
+import { TinyProfile, TinyProfileFragment } from './../Profile/Profile';
+import { createBaseFragment } from '../../unionHandling/BaseUnion';
 
-export interface Base {
+export interface Identified {
     _id: string;
-    date_created: Date;
-    date_modified?: Date | null;
-    created_by: TinyProfile;
-    modified_by?: TinyProfile | null;
-    deleted: boolean;
 }
+
+export interface Base extends Identified {
+    date_created: Date;
+    created_by: TinyProfile;
+    deleted: boolean;
+    note?: string;
+}
+
+export interface TinyBase extends Identified {
+    date_created: Date;
+}
+
+export const BaseFragment = new AppFragment(
+    gql(String.raw`
+        fragment BaseFragment on BaseUnion {
+        ${createBaseFragment()}
+        }
+`),
+    [TinyProfileFragment]
+);

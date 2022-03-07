@@ -1,7 +1,5 @@
-export interface Coordinate {
-    lat: number;
-    lon: number;
-}
+import { AppFragment } from './../../types';
+import { gql } from '@apollo/client';
 
 export interface Address {
     line_1: string;
@@ -9,6 +7,19 @@ export interface Address {
     city: string;
     state: string;
     postal: string;
-    country?: string;
-    coordinate?: Coordinate;
+    country?: string | null;
 }
+
+export const AddressFragment = new AppFragment(
+    gql`
+        fragment AddressFragment on Address {
+            line_1
+            line_2
+            city
+            state
+            postal
+            country
+        }
+    `,
+    []
+);

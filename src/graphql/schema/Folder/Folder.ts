@@ -1,58 +1,30 @@
-import { Recipe } from './../Recipe/Recipe';
-import { gql } from '@apollo/client';
+import { AppFragment } from './../../types';
+import { Identified, BaseFragment } from './../Base/Base';
+import { FolderClass } from '../../inputsTypes';
 import { Base } from '../Base/Base';
-
-export enum FolderClass {
-    Recipe = 'Recipe',
-}
-
-export interface FolderChild {
-    _id: string;
-    name: string;
-}
+import { gql } from '@apollo/client';
 
 export interface Folder extends Base {
     class: FolderClass;
     name: string;
-    parent: FolderChild | null;
-    folders: FolderChild[];
-    recipes: Recipe[];
-    ancestry: FolderChild[];
+    parent: TinyFolder | null;
 }
 
-export interface TinyFolder {
-    _id: string;
-    class: FolderClass;
+export interface TinyFolder extends Identified {
     name: string;
 }
 
-export const TinyFolderFragment = gql`
-    fragment TinyFolderFragment on Folder {
-        _id
-        class
-        name
-    }
-`;
-
-export const FolderFragment = gql`
-    fragment FolderFragment on Folder {
-        ...BaseFragment
-        name
-        class
-        parent {
-            _id
+export const FolderFragment = new AppFragment(
+    gql`
+        fragment FolderFragment on Folder {
+            ...BaseFragment
+            class
             name
+            parent {
+                _id
+                name
+            }
         }
-        folders {
-            _id
-            name
-        }
-        ancestry {
-            _id
-            name
-        }
-        recipes {
-            ...RecipeFragment
-        }
-    }
-`;
+    `,
+    [BaseFragment]
+);

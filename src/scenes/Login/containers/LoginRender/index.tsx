@@ -13,8 +13,8 @@ import { AiOutlineTeam, AiOutlineNodeIndex } from 'react-icons/ai';
 import { FaTruckLoading } from 'react-icons/fa';
 import { BsGear } from 'react-icons/bs';
 import { VscGraphLeft } from 'react-icons/vsc';
-import ViewFade from '../../../../components/ViewFade';
-import Logo from '../../../../components/Logo';
+import ViewFade from '../../../../components/Layout/ViewFade';
+import Logo from '../../../../components/display/Logo';
 
 export interface LoginRenderProps {
     onClick: () => void;
