@@ -105,6 +105,7 @@ const template = (
 export interface OrderDraft {
     company: TinyCompany;
     link: string;
+    body: string;
     holdup: string | null;
     items: {
         content: OrderQueueContentInput;
@@ -271,6 +272,7 @@ export const useOrderDrafting = (
 
                 data.push({
                     company: vendor,
+                    body,
                     link: template(
                         emailTo,
                         cc,

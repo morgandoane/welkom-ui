@@ -1,12 +1,16 @@
 import {
     Box,
+    Button,
     Collapse,
+    Dialog,
     IconButton,
+    TextField,
     Tooltip,
     Typography,
     useTheme,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
+import { HiOutlineClipboard, HiOutlineClipboardCopy } from 'react-icons/hi';
 import { MdEmail, MdExpandMore } from 'react-icons/md';
 import Anima from '../../../../../../../../components/Anima';
 import { OrderDraft } from '../../../../../../../../hooks/useOrderDrafting';
@@ -20,11 +24,24 @@ const Draft = (props: DraftProps): ReactElement => {
 
     const { palette } = useTheme();
 
+    const [copy, setCopy] = React.useState<null | string>(null);
+    const [copied, setCopied] = React.useState(false);
+
     const [expanded, setExpanded] = React.useState(false);
 
     const onClick = () => {
         if (!draft.holdup) window.open(draft.link, '_blank');
     };
+
+    React.useEffect(() => {
+        if (copied) {
+            const timeout = setTimeout(() => {
+                setCopied(false);
+            }, 1500);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [copied]);
 
     return (
         <Box
@@ -52,6 +69,16 @@ const Draft = (props: DraftProps): ReactElement => {
                         </IconButton>
                     </Box>
                 </Tooltip>
+                <Tooltip arrow title={draft.holdup || 'Copy text'}>
+                    <Box>
+                        <IconButton
+                            disabled={Boolean(draft.holdup)}
+                            onClick={() => setCopy(draft.body)}
+                        >
+                            <HiOutlineClipboardCopy />
+                        </IconButton>
+                    </Box>
+                </Tooltip>
             </Box>
             <Collapse in={expanded}>
                 <Box sx={{ paddingLeft: 6, paddingBottom: 2 }}>
@@ -64,6 +91,59 @@ const Draft = (props: DraftProps): ReactElement => {
                     ))}
                 </Box>
             </Collapse>
+            <Dialog
+                onClose={() => setCopy(null)}
+                open={copy !== null}
+                fullWidth
+                maxWidth="lg"
+                PaperProps={{
+                    sx: {
+                        height: '80vh',
+                        display: 'flex',
+                        flexFlow: 'column',
+                    },
+                }}
+            >
+                <Box
+                    sx={{
+                        p: 2,
+                        borderBottom: `1px solid ${palette.divider}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Typography variant="h6">Email draft</Typography>
+                    <Tooltip arrow open={copied} title="Copied!">
+                        <Button
+                            disabled={!copy}
+                            endIcon={<HiOutlineClipboardCopy />}
+                            onClick={() => {
+                                navigator.clipboard.writeText(copy || '');
+                                setCopied(true);
+                            }}
+                        >
+                            Copy text
+                        </Button>
+                    </Tooltip>
+                </Box>
+                <Box
+                    sx={{
+                        flex: 1,
+                        p: 2,
+                        background: palette.background.default,
+                    }}
+                >
+                    <TextField
+                        fullWidth
+                        variant="standard"
+                        InputProps={{ disableUnderline: true }}
+                        value={copy || ''}
+                        multiline
+                        onChange={(e) => setCopy(e.target.value || '')}
+                    />
+                </Box>
+            </Dialog>
         </Box>
     );
 };
