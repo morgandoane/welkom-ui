@@ -17,16 +17,23 @@ import { dateFormats } from '../../../../utils/dateFormats';
 import AppFab from '../../../Inputs/AppFab';
 import ProfilePhoto from '../../../Inputs/ProfilePhoto';
 
+export interface DetailExtension {
+    primary: string;
+    secondary: string;
+    avatar: ReactElement;
+}
+
 export interface DetailsTabProps<T extends Base | UploadEnabled> {
     data: T;
     entity: string;
     refetchQueries?: DocumentNode[];
+    extensions?: DetailExtension[];
 }
 
 const DetailsTab = <T extends Base | UploadEnabled>(
     props: DetailsTabProps<T>
 ): ReactElement => {
-    const { data, entity, refetchQueries = [] } = props;
+    const { data, entity, refetchQueries = [], extensions = [] } = props;
 
     const nav = useNavigate();
 
@@ -34,7 +41,7 @@ const DetailsTab = <T extends Base | UploadEnabled>(
         <Box>
             <List>
                 <ListItem>
-                    <ListItemAvatar>
+                    <ListItemAvatar sx={{ paddingRight: 2 }}>
                         <Avatar
                             src={data.created_by.picture}
                             alt={
@@ -56,7 +63,7 @@ const DetailsTab = <T extends Base | UploadEnabled>(
                     />
                 </ListItem>
                 <ListItem>
-                    <ListItemAvatar>
+                    <ListItemAvatar sx={{ paddingRight: 2 }}>
                         <MdCalendarToday style={{ fontSize: '40px' }} />
                     </ListItemAvatar>
                     <ListItemText
@@ -67,6 +74,15 @@ const DetailsTab = <T extends Base | UploadEnabled>(
                         secondary="Date created"
                     />
                 </ListItem>
+                {extensions.map(({ primary, secondary, avatar }, i) => (
+                    <ListItem key={'ext_' + i}>
+                        <ListItemAvatar sx={{ paddingRight: 2 }}>
+                            {avatar}
+                        </ListItemAvatar>
+
+                        <ListItemText primary={primary} secondary={secondary} />
+                    </ListItem>
+                ))}
             </List>
             {'photo' in data && (
                 <ProfilePhoto refetchQueries={refetchQueries}>

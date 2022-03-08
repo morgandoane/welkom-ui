@@ -7,28 +7,28 @@ import AppFab from '../../../../../../components/Inputs/AppFab';
 import SearchInput from '../../../../../../components/Inputs/SearchInput';
 import AppNav from '../../../../../../components/Layout/AppNav/components';
 import NavContent from '../../../../../../components/Layout/AppNav/components/NavContent';
-import { ProductFilter } from '../../../../../../graphql/inputsTypes';
-import { TinyProduct } from '../../../../../../graphql/schema/Item/extensions/Product/Product';
-import { useProducts } from '../../../../../../graphql/schema/Item/extensions/Product/useProducts';
+import { MiscItemFilter } from '../../../../../../graphql/inputsTypes';
+import { TinyMiscItem } from '../../../../../../graphql/schema/Item/extensions/Misc/MiscItem';
+import { useMiscItems } from '../../../../../../graphql/schema/Item/extensions/Misc/useMiscItems';
 
-const ProductList = (): ReactElement => {
+const MiscItemList = (): ReactElement => {
     const nav = useNavigate();
 
-    const [filter, setFilter] = React.useState<ProductFilter>({
+    const [filter, setFilter] = React.useState<MiscItemFilter>({
         skip: 0,
         take: 50,
         name: '',
     });
 
-    const [product, setProduct] = React.useState<TinyProduct[]>([]);
+    const [miscitem, setMiscItem] = React.useState<TinyMiscItem[]>([]);
     const [count, setCount] = React.useState(0);
 
-    const { data, error, loading } = useProducts({
+    const { data, error, loading } = useMiscItems({
         variables: { filter },
         fetchPolicy: 'network-only',
         onCompleted: (data) => {
-            setProduct(data.products.items);
-            setCount(data.products.count);
+            setMiscItem(data.miscItems.items);
+            setCount(data.miscItems.count);
         },
     });
 
@@ -46,20 +46,20 @@ const ProductList = (): ReactElement => {
                         >
                             <Box sx={{ display: 'flex', flexFlow: 'column' }}>
                                 <Typography variant="crisp">
-                                    Products
+                                    Misc Items
                                 </Typography>
                             </Box>
                             <AppFab onClick={() => nav('new')} icon={<MdAdd />}>
-                                Product
+                                Misc Item
                             </AppFab>
                         </Box>
                     ),
                     content: (
                         <SmartTable
-                            data={product}
+                            data={miscitem}
                             getProps={(d) => ({
                                 id: d._id,
-                                onClick: (product) => nav(product._id),
+                                onClick: (miscitem) => nav(miscitem._id),
                             })}
                             pagination={{
                                 count,
@@ -73,19 +73,9 @@ const ProductList = (): ReactElement => {
                             controls={{
                                 Name: (
                                     <SearchInput
-                                        placeholder="Name"
                                         value={filter.name || ''}
                                         onChange={(s) =>
                                             setFilter({ ...filter, name: s })
-                                        }
-                                    />
-                                ),
-                                UPC: (
-                                    <SearchInput
-                                        placeholder="UPC"
-                                        value={filter.upc || ''}
-                                        onChange={(s) =>
-                                            setFilter({ ...filter, upc: s })
                                         }
                                     />
                                 ),
@@ -93,7 +83,6 @@ const ProductList = (): ReactElement => {
                         >
                             {{
                                 Name: (d) => d.names.english,
-                                UPC: (d) => d.upc,
                             }}
                         </SmartTable>
                     ),
@@ -103,4 +92,4 @@ const ProductList = (): ReactElement => {
     );
 };
 
-export default ProductList;
+export default MiscItemList;

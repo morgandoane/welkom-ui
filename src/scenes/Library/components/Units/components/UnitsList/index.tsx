@@ -4,31 +4,29 @@ import { MdAdd } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import SmartTable from '../../../../../../components/display/SmartTable';
 import AppFab from '../../../../../../components/Inputs/AppFab';
-import SearchInput from '../../../../../../components/Inputs/SearchInput';
 import AppNav from '../../../../../../components/Layout/AppNav/components';
 import NavContent from '../../../../../../components/Layout/AppNav/components/NavContent';
-import { ProductFilter } from '../../../../../../graphql/inputsTypes';
-import { TinyProduct } from '../../../../../../graphql/schema/Item/extensions/Product/Product';
-import { useProducts } from '../../../../../../graphql/schema/Item/extensions/Product/useProducts';
+import { UnitFilter } from '../../../../../../graphql/inputsTypes';
+import { TinyUnit } from '../../../../../../graphql/schema/Unit/Unit';
+import { useUnits } from '../../../../../../graphql/schema/Unit/useUnits';
 
-const ProductList = (): ReactElement => {
+const UnitsList = (): ReactElement => {
     const nav = useNavigate();
 
-    const [filter, setFilter] = React.useState<ProductFilter>({
+    const [filter, setFilter] = React.useState<UnitFilter>({
         skip: 0,
         take: 50,
-        name: '',
     });
 
-    const [product, setProduct] = React.useState<TinyProduct[]>([]);
+    const [units, setUnits] = React.useState<TinyUnit[]>([]);
     const [count, setCount] = React.useState(0);
 
-    const { data, error, loading } = useProducts({
+    const { data, error, loading } = useUnits({
         variables: { filter },
         fetchPolicy: 'network-only',
         onCompleted: (data) => {
-            setProduct(data.products.items);
-            setCount(data.products.count);
+            setUnits(data.units.items);
+            setCount(data.units.count);
         },
     });
 
@@ -45,21 +43,19 @@ const ProductList = (): ReactElement => {
                             }}
                         >
                             <Box sx={{ display: 'flex', flexFlow: 'column' }}>
-                                <Typography variant="crisp">
-                                    Products
-                                </Typography>
+                                <Typography variant="crisp">Units</Typography>
                             </Box>
                             <AppFab onClick={() => nav('new')} icon={<MdAdd />}>
-                                Product
+                                Unit
                             </AppFab>
                         </Box>
                     ),
                     content: (
                         <SmartTable
-                            data={product}
+                            data={units}
                             getProps={(d) => ({
                                 id: d._id,
-                                onClick: (product) => nav(product._id),
+                                onClick: (unit) => nav(unit._id),
                             })}
                             pagination={{
                                 count,
@@ -70,30 +66,9 @@ const ProductList = (): ReactElement => {
                                         ...d,
                                     }),
                             }}
-                            controls={{
-                                Name: (
-                                    <SearchInput
-                                        placeholder="Name"
-                                        value={filter.name || ''}
-                                        onChange={(s) =>
-                                            setFilter({ ...filter, name: s })
-                                        }
-                                    />
-                                ),
-                                UPC: (
-                                    <SearchInput
-                                        placeholder="UPC"
-                                        value={filter.upc || ''}
-                                        onChange={(s) =>
-                                            setFilter({ ...filter, upc: s })
-                                        }
-                                    />
-                                ),
-                            }}
                         >
                             {{
                                 Name: (d) => d.names.english,
-                                UPC: (d) => d.upc,
                             }}
                         </SmartTable>
                     ),
@@ -103,4 +78,4 @@ const ProductList = (): ReactElement => {
     );
 };
 
-export default ProductList;
+export default UnitsList;

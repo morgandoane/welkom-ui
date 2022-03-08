@@ -37,3 +37,22 @@ export const ItemFragment = new AppFragment(
 `),
     [TinyProfileFragment, PalletConfigurationFragment]
 );
+
+export const TinyItemFragment = new AppFragment(
+    gql`
+        fragment TinyItemFragment on Item {
+            _id
+            names {
+                english
+                spanish
+            }
+            base_unit
+            per_base_unit
+            pallet_configurations {
+                name
+                capacity
+            }
+        }
+    `,
+    []
+);

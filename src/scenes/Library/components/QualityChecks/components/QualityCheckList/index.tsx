@@ -7,28 +7,31 @@ import AppFab from '../../../../../../components/Inputs/AppFab';
 import SearchInput from '../../../../../../components/Inputs/SearchInput';
 import AppNav from '../../../../../../components/Layout/AppNav/components';
 import NavContent from '../../../../../../components/Layout/AppNav/components/NavContent';
-import { ProductFilter } from '../../../../../../graphql/inputsTypes';
-import { TinyProduct } from '../../../../../../graphql/schema/Item/extensions/Product/Product';
-import { useProducts } from '../../../../../../graphql/schema/Item/extensions/Product/useProducts';
+import { QualityCheckFilter } from '../../../../../../graphql/inputsTypes';
+import { TinyQualityCheck } from '../../../../../../graphql/schema/QualityCheck/QualityCheck';
+import { useQualityChecks } from '../../../../../../graphql/schema/QualityCheck/useQualityChecks';
 
-const ProductList = (): ReactElement => {
+const QualityChecksList = (): ReactElement => {
     const nav = useNavigate();
 
-    const [filter, setFilter] = React.useState<ProductFilter>({
+    const [filter, setFilter] = React.useState<QualityCheckFilter>({
         skip: 0,
         take: 50,
-        name: '',
+        prompt: '',
+        item_name: '',
     });
 
-    const [product, setProduct] = React.useState<TinyProduct[]>([]);
+    const [qualitychecks, setQualityChecks] = React.useState<
+        TinyQualityCheck[]
+    >([]);
     const [count, setCount] = React.useState(0);
 
-    const { data, error, loading } = useProducts({
+    const { data, error, loading } = useQualityChecks({
         variables: { filter },
         fetchPolicy: 'network-only',
         onCompleted: (data) => {
-            setProduct(data.products.items);
-            setCount(data.products.count);
+            setQualityChecks(data.qualityChecks.items);
+            setCount(data.qualityChecks.count);
         },
     });
 
@@ -46,20 +49,21 @@ const ProductList = (): ReactElement => {
                         >
                             <Box sx={{ display: 'flex', flexFlow: 'column' }}>
                                 <Typography variant="crisp">
-                                    Products
+                                    Quality Checks
                                 </Typography>
                             </Box>
                             <AppFab onClick={() => nav('new')} icon={<MdAdd />}>
-                                Product
+                                Quality Check
                             </AppFab>
                         </Box>
                     ),
                     content: (
                         <SmartTable
-                            data={product}
+                            data={qualitychecks}
                             getProps={(d) => ({
                                 id: d._id,
-                                onClick: (product) => nav(product._id),
+                                onClick: (qualitycheck) =>
+                                    nav(qualitycheck._id),
                             })}
                             pagination={{
                                 count,
@@ -71,29 +75,33 @@ const ProductList = (): ReactElement => {
                                     }),
                             }}
                             controls={{
-                                Name: (
+                                Item: (
                                     <SearchInput
-                                        placeholder="Name"
-                                        value={filter.name || ''}
-                                        onChange={(s) =>
-                                            setFilter({ ...filter, name: s })
-                                        }
+                                        placeholder="Item"
+                                        value={filter.item_name || ''}
+                                        onChange={(item_name) => {
+                                            setFilter({ ...filter, item_name });
+                                        }}
                                     />
                                 ),
-                                UPC: (
+                                Prompt: (
                                     <SearchInput
-                                        placeholder="UPC"
-                                        value={filter.upc || ''}
-                                        onChange={(s) =>
-                                            setFilter({ ...filter, upc: s })
-                                        }
+                                        placeholder="Prompt"
+                                        value={filter.prompt || ''}
+                                        onChange={(prompt) => {
+                                            setFilter({ ...filter, prompt });
+                                        }}
                                     />
                                 ),
                             }}
                         >
                             {{
-                                Name: (d) => d.names.english,
-                                UPC: (d) => d.upc,
+                                Item: (d) =>
+                                    d.item ? d.item.names.english : 'All items',
+                                Prompt: (d) => d.prompt.english,
+                                ['Asked during']: (d) =>
+                                    d.quality_check_category,
+                                ['Response type']: (d) => d.quality_check_class,
                             }}
                         </SmartTable>
                     ),
@@ -103,4 +111,4 @@ const ProductList = (): ReactElement => {
     );
 };
 
-export default ProductList;
+export default QualityChecksList;

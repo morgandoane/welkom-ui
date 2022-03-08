@@ -1,3 +1,5 @@
+import { UploadEnabledFragment } from './../UploadEnabled/UploadEnabled';
+import { TinyItem, TinyItemFragment } from './../Item/Item';
 import { AppFragment } from './../../types';
 import { NamesFragment } from './../Names/Names';
 import { Identified, BaseFragment } from './../Base/Base';
@@ -20,11 +22,14 @@ export interface QualityCheck extends Base {
     help: Names | null;
     number_range: NumberRange | null;
     options: QualityCheckOption[] | null;
+    item: TinyItem | null;
 }
 
 export interface TinyQualityCheck extends Identified {
+    quality_check_category: QualityCheckCategory;
     quality_check_class: QualityCheckClass;
     prompt: Names;
+    item: TinyItem | null;
 }
 
 export const TinyQualityCheckFragment = new AppFragment(
@@ -32,12 +37,16 @@ export const TinyQualityCheckFragment = new AppFragment(
         fragment TinyQualityCheckFragment on QualityCheck {
             _id
             quality_check_class
+            quality_check_category
+            item {
+                ...TinyItemFragment
+            }
             prompt {
                 ...NamesFragment
             }
         }
     `,
-    [NamesFragment]
+    [NamesFragment, TinyItemFragment]
 );
 
 export const QualityCheckFragment = new AppFragment(
@@ -45,10 +54,22 @@ export const QualityCheckFragment = new AppFragment(
         fragment QualityCheckFragment on QualityCheck {
             ...BaseFragment
             quality_check_class
+            quality_check_category
+            options {
+                value
+                acceptable
+            }
+            number_range {
+                min
+                max
+            }
+            item {
+                ...TinyItemFragment
+            }
             prompt {
                 ...NamesFragment
             }
         }
     `,
-    [BaseFragment, NamesFragment]
+    [BaseFragment, NamesFragment, TinyItemFragment]
 );

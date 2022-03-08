@@ -5,6 +5,9 @@ import {
     DesignCategory,
     DesignLocation,
     IngredientUnitClass,
+    QualityCheckCategory,
+    QualityCheckClass,
+    UnitClass,
 } from '../../../graphql/inputsTypes';
 import { CompaniesQuery } from '../../../graphql/schema/Company/useCompanies';
 import { useCompany } from '../../../graphql/schema/Company/useCompany';
@@ -23,6 +26,10 @@ import {
 } from '../../../graphql/schema/Item/extensions/Ingredient/useIngredient';
 import { useIngredientCreation } from '../../../graphql/schema/Item/extensions/Ingredient/useIngredientCreation';
 import { useIngredientUpdate } from '../../../graphql/schema/Item/extensions/Ingredient/useIngredientUpdate';
+import { useMiscItem } from '../../../graphql/schema/Item/extensions/Misc/useMiscItem';
+import { useMiscItemCreation } from '../../../graphql/schema/Item/extensions/Misc/useMiscItemCreation';
+import { MiscItemsQuery } from '../../../graphql/schema/Item/extensions/Misc/useMiscItems';
+import { useMiscItemUpdate } from '../../../graphql/schema/Item/extensions/Misc/useMiscItemUpdate';
 import { usePackage } from '../../../graphql/schema/Item/extensions/Packaging/usePackage';
 import { usePackagingCreation } from '../../../graphql/schema/Item/extensions/Packaging/usePackagingCreation';
 import { usePackagingUpdate } from '../../../graphql/schema/Item/extensions/Packaging/usePackagingUpdate';
@@ -36,14 +43,27 @@ import { useLocation } from '../../../graphql/schema/Location/useLocation';
 import { useLocationCreation } from '../../../graphql/schema/Location/useLocationCreation';
 import { LocationsQuery } from '../../../graphql/schema/Location/useLocations';
 import { useLocationUpdate } from '../../../graphql/schema/Location/useLocationUpdate';
+import {
+    QualityCheckQuery,
+    useQualityCheck,
+} from '../../../graphql/schema/QualityCheck/useQualityCheck';
+import { useQualityCheckCreation } from '../../../graphql/schema/QualityCheck/useQualityCheckCreation';
+import { useQualityCheckUpdate } from '../../../graphql/schema/QualityCheck/useQualityCheckUpdate';
+import { useUnit } from '../../../graphql/schema/Unit/useUnit';
+import { useUnitCreation } from '../../../graphql/schema/Unit/useUnitCreation';
+import { UnitsQuery } from '../../../graphql/schema/Unit/useUnits';
+import { useUnitUpdate } from '../../../graphql/schema/Unit/useUnitUpdate';
 import Product from '../../../scenes/Library/components/Products/components/Product';
 import AppForm from './components/AppForm';
 import CompanyFormRender from './components/forms/Company';
 import DesignFormRender from './components/forms/Design';
 import IngredientFormRender from './components/forms/Ingredient';
 import LocationFormRender from './components/forms/Location';
+import MiscItemFormRender from './components/forms/MiscItem';
 import PackagingFormRender from './components/forms/Packaging';
 import ProductFormRender from './components/forms/Product';
+import QualityCheckFormRender from './components/forms/QualityCheck';
+import UnitFormRender from './components/forms/Unit';
 
 const CompanyForm = () => {
     const nav = useNavigate();
@@ -187,6 +207,58 @@ const PackagingForm = () => {
     );
 };
 
+const MiscItemForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Misc Item"
+            creationHook={useMiscItemCreation}
+            updateHook={useMiscItemUpdate}
+            stateHook={useMiscItem}
+            stateHandler={({ miscItem: item }) => {
+                return {
+                    id: item._id,
+                    data: {
+                        names: {
+                            english: item.names.english,
+                            spanish: item.names.spanish,
+                        },
+                        per_base_unit: item.per_base_unit,
+                        deleted: item.deleted,
+                        pallet_configurations: item.pallet_configurations.map(
+                            (config) => ({
+                                name: config.name,
+                                capacity: config.capacity,
+                            })
+                        ),
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    base_unit: BaseUnit.Count,
+                    per_base_unit: 1,
+                    names: {
+                        english: '',
+                        spanish: '',
+                    },
+                    pallet_configurations: [],
+                },
+            }}
+            form={MiscItemFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/library/miscitems/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/library/miscitems'),
+                onUpdated: (d) =>
+                    nav('/library/miscitems/' + Object.values(d)[0]._id),
+            }}
+            refetch={[MiscItemsQuery]}
+        />
+    );
+};
+
 const IngredientForm = () => {
     const nav = useNavigate();
 
@@ -296,6 +368,77 @@ const ProductForm = () => {
     );
 };
 
+const QualityCheckForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Quality Check"
+            creationHook={useQualityCheckCreation}
+            updateHook={useQualityCheckUpdate}
+            stateHook={useQualityCheck}
+            stateHandler={({ qualityCheck: qc }) => {
+                return {
+                    id: qc._id,
+                    data: {
+                        item: qc.item ? qc.item._id : null,
+                        deleted: qc.deleted,
+                        quality_check_category: qc.quality_check_category,
+                        quality_check_class: qc.quality_check_class,
+                        required: qc.required,
+                        prompt: {
+                            english: qc.prompt.english,
+                            spanish: qc.prompt.spanish,
+                        },
+                        help: qc.help
+                            ? {
+                                  english: qc.help.english,
+                                  spanish: qc.help.spanish,
+                              }
+                            : null,
+                        number_range: qc.number_range
+                            ? {
+                                  min: qc.number_range.min,
+                                  max: qc.number_range.max,
+                              }
+                            : null,
+                        options: qc.options
+                            ? qc.options.map((op) => ({
+                                  value: op.value,
+                                  acceptable: op.acceptable,
+                              }))
+                            : null,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    item: '',
+                    quality_check_category: QualityCheckCategory.Receipt,
+                    quality_check_class: QualityCheckClass.Text,
+                    required: false,
+                    prompt: {
+                        english: '',
+                        spanish: '',
+                    },
+                    help: null,
+                    number_range: null,
+                    options: null,
+                },
+            }}
+            form={QualityCheckFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/library/qualitychecks/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/library/qualitychecks'),
+                onUpdated: (d) =>
+                    nav('/library/qualitychecks/' + Object.values(d)[0]._id),
+            }}
+            refetch={[QualityCheckQuery]}
+        />
+    );
+};
+
 const DesignForm = () => {
     const nav = useNavigate();
     const { parent, location, category } = useParams();
@@ -345,11 +488,64 @@ const DesignForm = () => {
     );
 };
 
+const UnitForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Unit"
+            creationHook={useUnitCreation}
+            updateHook={useUnitUpdate}
+            stateHook={useUnit}
+            stateHandler={({ unit }) => {
+                return {
+                    id: unit._id,
+                    data: {
+                        names: {
+                            english: unit.names.english,
+                            english_plural: unit.names.english_plural,
+                            spanish: unit.names.spanish,
+                            spanish_plural: unit.names.spanish_plural,
+                        },
+                        unit_class: unit.unit_class,
+                        to_base_unit: unit.to_base_unit,
+                        deleted: unit.deleted,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    names: {
+                        english: '',
+                        english_plural: '',
+                        spanish: '',
+                        spanish_plural: '',
+                    },
+                    unit_class: UnitClass.Weight,
+                    to_base_unit: 1,
+                },
+            }}
+            form={UnitFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/library/units/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/library/units'),
+                onUpdated: (d) =>
+                    nav('/library/units/' + Object.values(d)[0]._id),
+            }}
+            refetch={[UnitsQuery]}
+        />
+    );
+};
+
 export {
     CompanyForm,
     DesignForm,
     IngredientForm,
     LocationForm,
+    MiscItemForm,
     PackagingForm,
     ProductForm,
+    QualityCheckForm,
+    UnitForm,
 };

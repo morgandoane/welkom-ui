@@ -161,6 +161,7 @@ export interface PackagingFilter extends BaseFilter {
 
 export interface ProductFilter extends BaseFilter {
     name?: string;
+    upc?: string;
 }
 
 export type UnitFilter = BaseFilter;
@@ -169,7 +170,10 @@ export type RecipeVersionFilter = BaseFilter;
 
 export type RecipeFilter = BaseFilter;
 
-export type QualityCheckFilter = BaseFilter;
+export interface QualityCheckFilter extends BaseFilter {
+    prompt?: string;
+    item_name?: string;
+}
 
 export type ProfileFilter = BaseFilter;
 
@@ -463,7 +467,7 @@ export interface UpdateProductInput {
 export interface CreateUnitInput {
     names: NamesPluralInput;
     unit_class: UnitClass;
-    to_base_unit: number;
+    to_base_unit: number | null;
 }
 
 export interface NamesPluralInput {
@@ -477,7 +481,7 @@ export interface UpdateUnitInput {
     deleted: boolean;
     names: NamesPluralInput;
     unit_class: UnitClass;
-    to_base_unit: number;
+    to_base_unit: number | null;
 }
 
 export interface CreateRecipeVersionInput {
@@ -525,14 +529,15 @@ export interface CreateQualityCheckInput {
     quality_check_class: QualityCheckClass;
     required: boolean;
     prompt: NamesInput;
-    help: NamesInput;
-    number_range: NumberRangeInput;
-    options: QualityCheckOptionInput[];
+    help: NamesInput | null;
+    number_range: NumberRangeInput | null;
+    options: QualityCheckOptionInput[] | null;
+    item: string | null;
 }
 
 export interface NumberRangeInput {
-    min: number;
-    max: number;
+    min: number | null;
+    max: number | null;
 }
 
 export interface QualityCheckOptionInput {
@@ -546,9 +551,10 @@ export interface UpdateQualityCheckInput {
     quality_check_class: QualityCheckClass;
     required: boolean;
     prompt: NamesInput;
-    help: NamesInput;
-    number_range: NumberRangeInput;
-    options: QualityCheckOptionInput[];
+    help: NamesInput | null;
+    number_range: NumberRangeInput | null;
+    options: QualityCheckOptionInput[] | null;
+    item: string | null;
 }
 
 export interface CreateProfileInput {
