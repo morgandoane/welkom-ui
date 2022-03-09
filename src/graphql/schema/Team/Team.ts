@@ -38,9 +38,7 @@ export const TeamFragment = new AppFragment(
                 ...TinyLocationFragment
             }
             permissions
-            members {
-                ...TinyProfileFragment
-            }
+            members
         }
     `,
     [
@@ -63,9 +61,7 @@ export const TinyTeamFragment = new AppFragment(
                 ...TinyLocationFragment
             }
             permissions
-            members {
-                ...TinyProfileFragment
-            }
+            members
         }
     `,
     [TinyCompanyFragment, TinyLocationFragment, TinyProfileFragment]

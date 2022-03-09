@@ -175,7 +175,9 @@ export interface QualityCheckFilter extends BaseFilter {
     item_name?: string;
 }
 
-export type ProfileFilter = BaseFilter;
+export interface ProfileFilter extends BaseFilter {
+    ids?: string[];
+}
 
 export type TeamFilter = BaseFilter;
 
@@ -561,18 +563,21 @@ export interface CreateProfileInput {
     role: UserRole;
     given_name: string;
     family_name: string;
-    email: string;
-    username: string;
+    email: string | null;
+    username: string | null;
     phone_number: string;
     temporary_password: string;
 }
 
 export interface UpdateProfileInput {
+    role: UserRole;
     given_name: string;
     family_name: string;
-    email: string;
-    username: string;
-    password: string;
+    email?: string | null;
+    username?: string | null;
+    password?: string;
+    deleted?: boolean;
+    blocked?: boolean;
 }
 
 export interface CreateProductionLineInput {
@@ -587,7 +592,7 @@ export interface UpdateProductionLineInput {
 export interface CreateTeamInput {
     name: string;
     company: string;
-    location: string;
+    location: string | null;
     permissions: Permission[];
     members: string[];
 }
@@ -596,7 +601,7 @@ export interface UpdateTeamInput {
     deleted: boolean;
     name: string;
     company: string;
-    location: string;
+    location: string | null;
     permissions: Permission[];
     members: string[];
 }

@@ -6,7 +6,6 @@ import {
     TableRow,
     SxProps,
     Theme,
-    Box,
     useTheme,
 } from '@mui/material';
 import React, { ReactElement, ReactNode } from 'react';
@@ -26,6 +25,7 @@ export interface SmartTableProps<T> {
     controls?: Record<string, ReactNode>;
     pagination?: SmartTablePagination;
     sx?: SxProps<Theme>;
+    variant?: 'standard' | 'card';
 }
 
 const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
@@ -36,15 +36,22 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
         getProps,
         pagination,
         sx,
+        variant = 'standard',
     } = props;
 
-    const { palette } = useTheme();
+    const { palette, transitions, shape } = useTheme();
 
     return (
         <ColumnBox>
             {{
                 content: (
-                    <Table stickyHeader sx={sx}>
+                    <Table
+                        stickyHeader
+                        sx={{
+                            ...(variant == 'card' ? {} : {}),
+                            ...sx,
+                        }}
+                    >
                         <TableHead>
                             <TableRow>
                                 {Object.keys(content).map((key, i) => (
@@ -52,6 +59,17 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
                                         sx={{
                                             background:
                                                 palette.background.paper,
+                                            ...(variant == 'card'
+                                                ? {
+                                                      background:
+                                                          palette.background
+                                                              .default,
+                                                      border: '0px solid',
+                                                      color: palette.text
+                                                          .secondary,
+                                                      paddingBottom: 1,
+                                                  }
+                                                : {}),
                                         }}
                                         key={key + '_' + i}
                                     >
@@ -65,6 +83,25 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
                                 const rowProps = getProps(d);
                                 return (
                                     <TableRow
+                                        sx={
+                                            variant == 'card'
+                                                ? {
+                                                      transition:
+                                                          transitions.create(
+                                                              'background',
+                                                              { duration: 250 }
+                                                          ),
+                                                      ':hover': {
+                                                          '& td': {
+                                                              background:
+                                                                  palette.action
+                                                                      .hover,
+                                                              cursor: 'pointer',
+                                                          },
+                                                      },
+                                                  }
+                                                : undefined
+                                        }
                                         hover={Boolean(rowProps.onClick)}
                                         onClick={() => {
                                             if (rowProps.onClick)
@@ -72,8 +109,35 @@ const SmartTable = <T,>(props: SmartTableProps<T>): ReactElement => {
                                         }}
                                         key={rowProps.id}
                                     >
-                                        {Object.keys(content).map((key) => (
-                                            <TableCell key={key}>
+                                        {Object.keys(content).map((key, i) => (
+                                            <TableCell
+                                                key={key}
+                                                sx={
+                                                    variant == 'card'
+                                                        ? {
+                                                              ...(i == 0
+                                                                  ? {
+                                                                        borderTopLeftRadius: 4,
+                                                                    }
+                                                                  : i ==
+                                                                    Object.keys(
+                                                                        content
+                                                                    ).length -
+                                                                        1
+                                                                  ? {
+                                                                        borderTopRightRadius: 4,
+                                                                    }
+                                                                  : {}),
+                                                              background:
+                                                                  palette
+                                                                      .background
+                                                                      .paper,
+                                                              border: '0px solid',
+                                                              borderBottom: `8px solid ${palette.background.default}`,
+                                                          }
+                                                        : {}
+                                                }
+                                            >
                                                 {content[key](d)}
                                             </TableCell>
                                         ))}

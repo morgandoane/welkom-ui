@@ -15,6 +15,7 @@ import Login from '../scenes/Login';
 import Logout from '../scenes/Logout';
 import NoPermissions from '../scenes/NoPermissions';
 import NotFound from '../scenes/NotFound';
+import People from '../scenes/People';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import UnauthenticatedRoute from './components/UnauthenticatedRoute';
 
@@ -31,6 +32,13 @@ const routes: {
             element: <Library />,
         },
         auth: { _type: 'permission', permission: UiPermission.Library },
+    },
+    {
+        props: {
+            path: 'people/*',
+            element: <People />,
+        },
+        auth: { _type: 'role', role: UserRole.Manager },
     },
     {
         props: {

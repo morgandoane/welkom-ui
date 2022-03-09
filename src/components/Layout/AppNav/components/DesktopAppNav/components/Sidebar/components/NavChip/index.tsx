@@ -48,7 +48,8 @@ const NavChip = (props: NavChipProps): ReactElement => {
         mode == 'dark'
             ? {
                   background: palette.action.hover,
-                  color: palette.text.primary,
+                  color: palette.primary.main,
+                  fontWeight: 900,
               }
             : {
                   background: hexToRgb(palette.primary.main).replace(
@@ -124,7 +125,9 @@ const NavChip = (props: NavChipProps): ReactElement => {
                                     }}
                                     key={label + '_' + index}
                                 >
-                                    <Typography>{label}</Typography>
+                                    <Typography sx={{ fontWeight: 500 }}>
+                                        {label}
+                                    </Typography>
                                 </ButtonBase>
                             ))}
                         </Box>

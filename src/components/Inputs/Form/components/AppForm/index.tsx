@@ -120,7 +120,7 @@ const AppForm = <
             {result ? (
                 <FormMessage
                     entity={entity}
-                    data={result.data}
+                    data={result.success == false ? result.error : result.data}
                     handler={props.handler}
                     type={
                         result.success == false

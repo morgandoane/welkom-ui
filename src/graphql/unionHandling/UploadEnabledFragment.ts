@@ -4,6 +4,7 @@ export const UploadEnabledFields = [
     'Location',
     'Item',
     'Packaging',
+    'Team',
 ];
 
 export const createUploadEnabledFragment = () => {

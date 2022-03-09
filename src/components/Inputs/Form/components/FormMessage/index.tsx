@@ -7,7 +7,7 @@ export interface FormMessageProps<Result> {
     handler: FormHandler<Result>;
     entity?: string;
     type: 'created' | 'deleted' | 'updated' | 'error';
-    data: Result | undefined | null;
+    data: Result | Error | undefined | null;
     reset: () => void;
 }
 
@@ -17,7 +17,7 @@ const FormMessage = <Result,>(
     const { handler, entity = 'Data', type, data, reset } = props;
 
     const onComplete = () => {
-        if (data) {
+        if (data && !(data instanceof Error)) {
             if (typeof handler == 'function') {
                 handler(data);
             } else {
@@ -71,7 +71,11 @@ const FormMessage = <Result,>(
             return (
                 <Message
                     type="Error"
-                    message={`Problem sending ${entity.toLowerCase()} to server.`}
+                    message={
+                        data instanceof Error
+                            ? data.message
+                            : `Problem sending ${entity.toLowerCase()} to server.`
+                    }
                     action={<Button onClick={reset}>Reset</Button>}
                 />
             );

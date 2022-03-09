@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { UserRole } from '../../../auth/UserRole';
 import {
     BaseUnit,
     DesignCategory,
@@ -44,17 +45,29 @@ import { useLocationCreation } from '../../../graphql/schema/Location/useLocatio
 import { LocationsQuery } from '../../../graphql/schema/Location/useLocations';
 import { useLocationUpdate } from '../../../graphql/schema/Location/useLocationUpdate';
 import {
+    ProfileQuery,
+    useProfile,
+} from '../../../graphql/schema/Profile/useProfile';
+import { useProfileCreation } from '../../../graphql/schema/Profile/useProfileCreation';
+import { ProfilesQuery } from '../../../graphql/schema/Profile/useProfiles';
+import { useProfileUpdate } from '../../../graphql/schema/Profile/useProfileUpdate';
+import {
     QualityCheckQuery,
     useQualityCheck,
 } from '../../../graphql/schema/QualityCheck/useQualityCheck';
 import { useQualityCheckCreation } from '../../../graphql/schema/QualityCheck/useQualityCheckCreation';
 import { useQualityCheckUpdate } from '../../../graphql/schema/QualityCheck/useQualityCheckUpdate';
+import { useTeam } from '../../../graphql/schema/Team/useTeam';
+import { useTeamCreation } from '../../../graphql/schema/Team/useTeamCreation';
+import { TeamsQuery } from '../../../graphql/schema/Team/useTeams';
+import { useTeamUpdate } from '../../../graphql/schema/Team/useTeamUpdate';
 import { useUnit } from '../../../graphql/schema/Unit/useUnit';
 import { useUnitCreation } from '../../../graphql/schema/Unit/useUnitCreation';
 import { UnitsQuery } from '../../../graphql/schema/Unit/useUnits';
 import { useUnitUpdate } from '../../../graphql/schema/Unit/useUnitUpdate';
 import Product from '../../../scenes/Library/components/Products/components/Product';
 import AppForm from './components/AppForm';
+import AccountFormRender from './components/forms/Account';
 import CompanyFormRender from './components/forms/Company';
 import DesignFormRender from './components/forms/Design';
 import IngredientFormRender from './components/forms/Ingredient';
@@ -63,6 +76,7 @@ import MiscItemFormRender from './components/forms/MiscItem';
 import PackagingFormRender from './components/forms/Packaging';
 import ProductFormRender from './components/forms/Product';
 import QualityCheckFormRender from './components/forms/QualityCheck';
+import TeamFormRender from './components/forms/Team';
 import UnitFormRender from './components/forms/Unit';
 
 const CompanyForm = () => {
@@ -538,7 +552,97 @@ const UnitForm = () => {
     );
 };
 
+const TeamForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Team"
+            creationHook={useTeamCreation}
+            updateHook={useTeamUpdate}
+            stateHook={useTeam}
+            stateHandler={({ team }) => {
+                return {
+                    id: team._id,
+                    data: {
+                        name: team.name,
+                        deleted: team.deleted,
+                        company: team.company._id,
+                        location: team.location ? team.location._id : null,
+                        permissions: team.permissions,
+                        members: team.members,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    name: '',
+                    company: '',
+                    location: null,
+                    permissions: [],
+                    members: [],
+                },
+            }}
+            form={TeamFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/people/teams/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/people/teams'),
+                onUpdated: (d) =>
+                    nav('/people/teams/' + Object.values(d)[0]._id),
+            }}
+            refetch={[TeamsQuery]}
+        />
+    );
+};
+
+const AccountForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Account"
+            creationHook={useProfileCreation}
+            updateHook={useProfileUpdate}
+            stateHook={useProfile}
+            stateHandler={({ profile }) => {
+                return {
+                    id: profile.user_id,
+                    data: {
+                        role: profile.roles[0],
+                        given_name: profile.given_name || '',
+                        family_name: profile.family_name || '',
+                        email: profile.email,
+                        username: profile.username || null,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    given_name: '',
+                    family_name: '',
+                    email: null,
+                    username: '',
+                    role: UserRole.User,
+                    phone_number: '',
+                    temporary_password: '',
+                },
+            }}
+            form={AccountFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/people/accounts/' + Object.values(d)[0].user_id),
+                onDeleted: (d) => nav('/people/accounts'),
+                onUpdated: (d) =>
+                    nav('/people/accounts/' + Object.values(d)[0].user_id),
+            }}
+            refetch={[ProfilesQuery, ProfileQuery]}
+        />
+    );
+};
+
 export {
+    AccountForm,
     CompanyForm,
     DesignForm,
     IngredientForm,
@@ -547,5 +651,6 @@ export {
     PackagingForm,
     ProductForm,
     QualityCheckForm,
+    TeamForm,
     UnitForm,
 };

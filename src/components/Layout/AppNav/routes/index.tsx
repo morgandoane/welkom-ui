@@ -47,7 +47,7 @@ const AppNavRoutes: Record<string, AppNavRoute> = {
     People: {
         icon: <PersonPinTwoToneIcon sx={{ ...iconStyles }} />,
         children: [
-            ['Profiles', '/people/profiles'],
+            ['Profiles', '/people/accounts'],
             ['Teams', '/people/teams'],
         ],
         auth: { type: 'role', role: UserRole.Manager },
@@ -112,13 +112,25 @@ export const useNavRoutes = (): Record<string, AppNavRoute> => {
                     uiPermissions
                         .map((u) => u.name)
                         .includes(props.auth.permission) ||
-                    roles.includes(UserRole.Admin)
+                    roles.includes(UserRole.Admin) ||
+                    roles.includes(UserRole.Manager)
                 ) {
                     stack[item] = props;
                 }
             } else {
-                if (roles.includes(props.auth.role)) {
-                    stack[item] = props;
+                switch (props.auth.role) {
+                    case UserRole.Admin: {
+                        if (roles.includes(UserRole.Admin)) stack[item] = props;
+                        break;
+                    }
+                    case UserRole.Manager: {
+                        if (
+                            roles.includes(UserRole.Admin) ||
+                            roles.includes(UserRole.Manager)
+                        )
+                            stack[item] = props;
+                        break;
+                    }
                 }
             }
         }
