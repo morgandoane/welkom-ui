@@ -5,13 +5,11 @@ import { gql } from '@apollo/client';
 import { MiscItemFilter } from '../../../../inputsTypes';
 import { getFilterQueryHook } from '../../../../types';
 import { Pagination } from '../../../../../utils/types/Pagination';
-import { PalletConfigurationFragment } from '../../../PalletConfiguration/PalletConfiguration';
 
 export const MiscItemsQuery = gql`
     ${TinyMiscItemFragment._document}
     ${ItemFragment._document}
     ${TinyProfileFragment._document}
-    ${PalletConfigurationFragment._document}
     query MiscItemsQuery($filter: MiscItemFilter!) {
         miscItems(filter: $filter) {
             count

@@ -3,6 +3,8 @@ import {
     InputAdornment,
     TextField,
     TextFieldProps,
+    SxProps,
+    Theme,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { MdClear, MdSearch } from 'react-icons/md';
@@ -11,6 +13,7 @@ export interface SearchInputProps
     extends Omit<TextFieldProps, 'onChange' | 'value'> {
     value: string;
     onChange: (value: string) => void;
+    sx?: SxProps<Theme>;
 }
 
 const threshold = 500;
@@ -45,6 +48,7 @@ const SearchInput = (props: SearchInputProps): ReactElement => {
                 </InputAdornment>
             ) : undefined,
         },
+        sx = {},
         ...rest
     } = props;
 
@@ -66,6 +70,8 @@ const SearchInput = (props: SearchInputProps): ReactElement => {
 
     return (
         <TextField
+            sx={sx}
+            fullWidth
             placeholder={placeholder}
             variant={variant}
             value={value}

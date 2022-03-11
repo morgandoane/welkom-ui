@@ -21,9 +21,6 @@ export const createItemFragment = () => {
         created_by {
             ...TinyProfileFragment
         }
-        pallet_configurations {
-            ...PalletConfigurationFragment
-        }
         deleted
         note
         files {

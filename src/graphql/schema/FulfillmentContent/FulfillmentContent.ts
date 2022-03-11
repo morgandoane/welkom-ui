@@ -4,16 +4,11 @@ import { TinyUnitFragment } from './../Unit/Unit';
 import { gql } from '@apollo/client';
 import { LotContent } from '../LotContent/LotContent';
 import {
-    PalletConfiguration,
-    PalletConfigurationFragment,
-} from '../PalletConfiguration/PalletConfiguration';
-import {
     QualityCheckResponse,
     QualityCheckResponseFragment,
 } from '../QualityCheckResponse/QualityCheckResponse';
 
 export interface FulfillmentContent extends LotContent {
-    pallet_configuration: PalletConfiguration;
     quality_check_responses: QualityCheckResponse[];
 }
 
@@ -29,18 +24,10 @@ export const FulfillmentContentFragment = new AppFragment(
             client_unit {
                 ...TinyUnitFragment
             }
-            pallet_configuration {
-                ...PalletConfigurationFragment
-            }
             quality_check_responses {
                 ...QualityCheckResponseFragment
             }
         }
     `,
-    [
-        TinyLotFragment,
-        TinyUnitFragment,
-        PalletConfigurationFragment,
-        QualityCheckResponseFragment,
-    ]
+    [TinyLotFragment, TinyUnitFragment, QualityCheckResponseFragment]
 );

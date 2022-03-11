@@ -5,13 +5,11 @@ import { gql } from '@apollo/client';
 import { PackagingFilter } from '../../../../inputsTypes';
 import { getFilterQueryHook } from '../../../../types';
 import { Pagination } from '../../../../../utils/types/Pagination';
-import { PalletConfigurationFragment } from '../../../PalletConfiguration/PalletConfiguration';
 
 export const PackagingQuery = gql`
     ${TinyPackagingFragment._document}
     ${ItemFragment._document}
     ${TinyProfileFragment._document}
-    ${PalletConfigurationFragment._document}
     query PackagingQuery($filter: PackagingFilter!) {
         packagings(filter: $filter) {
             count

@@ -16,6 +16,7 @@ import Logout from '../scenes/Logout';
 import NoPermissions from '../scenes/NoPermissions';
 import NotFound from '../scenes/NotFound';
 import People from '../scenes/People';
+import SupplyChain from '../scenes/SupplyChain';
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import UnauthenticatedRoute from './components/UnauthenticatedRoute';
 
@@ -46,6 +47,13 @@ const routes: {
             element: <Designs />,
         },
         auth: { _type: 'permission', permission: UiPermission.Design },
+    },
+    {
+        props: {
+            path: 'supplychain/*',
+            element: <SupplyChain />,
+        },
+        auth: { _type: 'permission', permission: UiPermission.Library },
     },
 ];
 

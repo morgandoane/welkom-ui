@@ -26,7 +26,6 @@ import FormRow from '../../../../../Layout/FormRow';
 import BackButton from '../../../../BackButton';
 import CarefullButton from '../../../../CarefulButton';
 import { EntityFormProps } from '../../AppForm';
-import PalletConfiguration from '../PalletConfiguration';
 
 const IngredientFormRender = (
     props: EntityFormProps<CreateIngredientArgs, UpdateIngredientArgs>
@@ -38,12 +37,6 @@ const IngredientFormRender = (
 
     const getHoldup = (): string | null => {
         if (!value.data.names.english) return 'Please enter a english name.';
-        if (value.data.pallet_configurations.length == 0)
-            return 'Please provide a pallet configuration.';
-        if (value.data.pallet_configurations.some((c) => !c.name))
-            return 'Please enter a name for each pallet configuration.';
-        if (value.data.pallet_configurations.some((c) => !c.capacity))
-            return 'Please enter a capacity for each pallet configuration.';
         return null;
     };
 
@@ -224,29 +217,6 @@ const IngredientFormRender = (
                                     />
                                 </FormRow>
                             </Collapse>
-                            <FormRow>
-                                <PalletConfiguration
-                                    value={value.data.pallet_configurations}
-                                    onChange={(pallet_configurations) => {
-                                        if (value._type == 'create')
-                                            onChange({
-                                                ...value,
-                                                data: {
-                                                    ...value.data,
-                                                    pallet_configurations,
-                                                },
-                                            });
-                                        else
-                                            onChange({
-                                                ...value,
-                                                data: {
-                                                    ...value.data,
-                                                    pallet_configurations,
-                                                },
-                                            });
-                                    }}
-                                />
-                            </FormRow>
                         </Box>
                         <Box p={1} />
                         <FormRow>

@@ -9,6 +9,11 @@ import {
 
 import type {} from '@mui/x-data-grid/themeAugmentation';
 import { useAuth0 } from '@auth0/auth0-react';
+import { TypeBackground } from '@mui/material/styles/createPalette';
+
+export interface CustomBackground extends TypeBackground {
+    secondary: React.CSSProperties['color'];
+}
 
 declare module '@mui/material/styles' {
     interface TypographyVariants {
@@ -19,10 +24,39 @@ declare module '@mui/material/styles' {
     interface TypographyVariantsOptions {
         crisp?: React.CSSProperties;
     }
+
+    interface TypographyVariants {
+        crisp: React.CSSProperties;
+    }
+
+    // allow configuration using `createTheme`
+    interface TypographyVariantsOptions {
+        crisp?: React.CSSProperties;
+    }
+
+    interface Theme {
+        status: {
+            danger: React.CSSProperties['color'];
+        };
+    }
+
+    interface Palette {
+        tonal: string;
+    }
+    interface PaletteOptions {
+        tonal: string;
+    }
 }
 
 // Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
+    interface TypographyPropsVariantOverrides {
+        crisp: true;
+    }
+}
+
+// Update the Typography's variant prop options
+declare module '@mui/material/' {
     interface TypographyPropsVariantOverrides {
         crisp: true;
     }
@@ -33,8 +67,6 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
         light: {
             default: '#FFFFFF',
             paper: '#FFFFFF',
-            // default: "#FEFDFD",
-            // paper: "#FFFFFF",
         },
         dark: {
             default: '#141414',
@@ -48,6 +80,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
             primary: {
                 main: '#2C52F5',
             },
+            tonal: mode == 'dark' ? '#212121' : '#F0F0F0',
             background: background[mode],
             success: {
                 main: '#2E8C41',

@@ -188,12 +188,6 @@ const PackagingForm = () => {
                             spanish: item.names.spanish,
                         },
                         deleted: item.deleted,
-                        pallet_configurations: item.pallet_configurations.map(
-                            (config) => ({
-                                name: config.name,
-                                capacity: config.capacity,
-                            })
-                        ),
                     },
                 };
             }}
@@ -205,7 +199,6 @@ const PackagingForm = () => {
                         english: '',
                         spanish: '',
                     },
-                    pallet_configurations: [],
                 },
             }}
             form={PackagingFormRender}
@@ -240,12 +233,6 @@ const MiscItemForm = () => {
                         },
                         per_base_unit: item.per_base_unit,
                         deleted: item.deleted,
-                        pallet_configurations: item.pallet_configurations.map(
-                            (config) => ({
-                                name: config.name,
-                                capacity: config.capacity,
-                            })
-                        ),
                     },
                 };
             }}
@@ -257,7 +244,6 @@ const MiscItemForm = () => {
                         english: '',
                         spanish: '',
                     },
-                    pallet_configurations: [],
                 },
             }}
             form={MiscItemFormRender}
@@ -293,12 +279,6 @@ const IngredientForm = () => {
                         unit_class: item.unit_class,
                         per_base_unit: 1,
                         deleted: item.deleted,
-                        pallet_configurations: item.pallet_configurations.map(
-                            (config) => ({
-                                name: config.name,
-                                capacity: config.capacity,
-                            })
-                        ),
                     },
                 };
             }}
@@ -311,7 +291,6 @@ const IngredientForm = () => {
                         english: '',
                         spanish: '',
                     },
-                    pallet_configurations: [],
                 },
             }}
             form={IngredientFormRender}
@@ -345,12 +324,7 @@ const ProductForm = () => {
                             spanish: item.names.spanish,
                         },
                         deleted: item.deleted,
-                        pallet_configurations: item.pallet_configurations.map(
-                            (config) => ({
-                                name: config.name,
-                                capacity: config.capacity,
-                            })
-                        ),
+
                         upc: item.upc,
                         company: item.company._id,
                     },
@@ -364,7 +338,7 @@ const ProductForm = () => {
                         english: '',
                         spanish: '',
                     },
-                    pallet_configurations: [],
+
                     upc: '',
                     company: '',
                 },

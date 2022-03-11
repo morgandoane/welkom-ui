@@ -31,6 +31,14 @@ export enum UnitClass {
     Count = 'Count',
 }
 
+export interface OrderFilter extends BaseFilter {
+    po?: string;
+    customer?: string;
+    vendor?: string;
+    item?: string;
+    date_range?: DateRange;
+}
+
 export type HoldFilter = BaseFilter;
 
 export enum FolderClass {
@@ -153,6 +161,10 @@ export interface MiscItemFilter extends BaseFilter {
     name?: string;
 }
 
+export interface ItemFilter extends BaseFilter {
+    name?: string;
+}
+
 export type OrganizationFilter = BaseFilter;
 
 export interface PackagingFilter extends BaseFilter {
@@ -225,12 +237,6 @@ export interface BolContentInput {
     item: string;
     client_quantity: number;
     client_unit: string;
-    pallet_configuration: PalletConfigurationInput;
-}
-
-export interface PalletConfigurationInput {
-    capacity: number | null;
-    name: string;
 }
 
 export interface AppointmentInput {
@@ -299,7 +305,6 @@ export interface FulfillmentLotFinder {
     item: string;
     client_quantity: number;
     client_unit: string;
-    pallet_configuration: PalletConfigurationInput;
     quality_check_responses: QualityCheckResponseInput[];
 }
 
@@ -323,7 +328,6 @@ export interface CreateIngredientInput {
     names: NamesInput;
     base_unit: BaseUnit;
     per_base_unit: number | null;
-    pallet_configurations: PalletConfigurationInput[];
 }
 
 export interface NamesInput {
@@ -335,7 +339,6 @@ export interface UpdateIngredientInput {
     deleted: boolean;
     names: NamesInput;
     unit_class: IngredientUnitClass;
-    pallet_configurations: PalletConfigurationInput[];
     per_base_unit: number | null;
 }
 
@@ -415,13 +418,11 @@ export interface CreateMiscItemInput {
     names: NamesInput;
     base_unit: BaseUnit;
     per_base_unit: number | null;
-    pallet_configurations: PalletConfigurationInput[];
 }
 
 export interface UpdateMiscItemInput {
     deleted: boolean;
     names: NamesInput;
-    pallet_configurations: PalletConfigurationInput[];
     per_base_unit: number | null;
 }
 
@@ -440,20 +441,17 @@ export interface CreatePackagingInput {
     names: NamesInput;
     base_unit: BaseUnit;
     per_base_unit: number | null;
-    pallet_configurations: PalletConfigurationInput[];
 }
 
 export interface UpdatePackagingInput {
     deleted: boolean;
     names: NamesInput;
-    pallet_configurations: PalletConfigurationInput[];
 }
 
 export interface CreateProductInput {
     names: NamesInput;
     base_unit: BaseUnit;
     per_base_unit: number | null;
-    pallet_configurations: PalletConfigurationInput[];
     upc: string;
     company: string;
 }
@@ -461,7 +459,6 @@ export interface CreateProductInput {
 export interface UpdateProductInput {
     deleted: boolean;
     names: NamesInput;
-    pallet_configurations: PalletConfigurationInput[];
     upc: string;
     company: string;
 }

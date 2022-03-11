@@ -14,7 +14,6 @@ import BackButton from '../../../../BackButton';
 import CarefullButton from '../../../../CarefulButton';
 import CompanySelection from '../../../../CompanySelection';
 import { EntityFormProps } from '../../AppForm';
-import PalletConfiguration from '../PalletConfiguration';
 
 const ProductFormRender = (
     props: EntityFormProps<CreateProductArgs, UpdateProductArgs>
@@ -27,12 +26,6 @@ const ProductFormRender = (
     const getHoldup = (): string | null => {
         if (!value.data.names.english) return 'Please enter a product name.';
         if (!value.data.upc) return 'Please enter a upc.';
-        if (value.data.pallet_configurations.length == 0)
-            return 'Please provide a pallet configuration.';
-        if (value.data.pallet_configurations.some((c) => !c.name))
-            return 'Please enter a name for each pallet configuration.';
-        if (value.data.pallet_configurations.some((c) => !c.capacity))
-            return 'Please enter a capacity for each pallet configuration.';
         return null;
     };
 
@@ -162,29 +155,6 @@ const ProductFormRender = (
                                                 data: {
                                                     ...value.data,
                                                     company: val,
-                                                },
-                                            });
-                                    }}
-                                />
-                            </FormRow>
-                            <FormRow>
-                                <PalletConfiguration
-                                    value={value.data.pallet_configurations}
-                                    onChange={(pallet_configurations) => {
-                                        if (value._type == 'create')
-                                            onChange({
-                                                ...value,
-                                                data: {
-                                                    ...value.data,
-                                                    pallet_configurations,
-                                                },
-                                            });
-                                        else
-                                            onChange({
-                                                ...value,
-                                                data: {
-                                                    ...value.data,
-                                                    pallet_configurations,
                                                 },
                                             });
                                     }}
