@@ -21,6 +21,8 @@ import { MdAdd } from 'react-icons/md';
 import Message from '../../../../../../components/feedback/Message';
 import SearchInput from '../../../../../../components/Inputs/SearchInput';
 import { TinyCompanyFragment } from '../../../../../../graphql/schema/Company/Company';
+import { useInternalCompany } from '../../../../../../graphql/schema/Company/useInternalCompany';
+import { ContactFragment } from '../../../../../../graphql/schema/Contact/Contact';
 import {
     TinyIngredient,
     TinyIngredientFragment,
@@ -51,6 +53,7 @@ const ItemDrawerQuery = gql`
     ${TinyCompanyFragment._document}
     ${ItemFragment._document}
     ${TinyProfileFragment._document}
+    ${ContactFragment._document}
     query ItemDrawerQuery($search: String!) {
         ingredients(filter: { skip: 0, take: 100, name: $search }) {
             count
@@ -91,10 +94,11 @@ export interface ItemDrawerQueryArgs {
 }
 
 const ItemDrawer = (props: {
+    disabled?: boolean;
     queue: OrderQueueLineInput[];
     setQueue: (queue: OrderQueueLineInput[]) => void;
 }): ReactElement => {
-    const { queue, setQueue } = props;
+    const { queue, setQueue, disabled = false } = props;
     const [open, setOpen] = React.useState(false);
 
     const { palette, shape, breakpoints } = useTheme();
@@ -123,6 +127,12 @@ const ItemDrawer = (props: {
         },
     });
 
+    const {
+        company,
+        error: companyError,
+        loading: companyLoading,
+    } = useInternalCompany();
+
     const items = {
         Ingredients: data ? data.ingredients.items : [],
         Packaging: data ? data.packagings.items : [],
@@ -140,7 +150,7 @@ const ItemDrawer = (props: {
         const defaultLine: OrderQueueLineInput = {
             item: item._id,
             po: null,
-            customer: null,
+            customer: company ? company._id : null,
             vendor: null,
             destination: null,
             unit: null,
@@ -148,7 +158,21 @@ const ItemDrawer = (props: {
             date: null,
             time: null,
         };
-        if (queuePrefs && queuePrefs.items.map((i) => i.item == item._id)) {
+        const pref = queuePrefs
+            ? queuePrefs.items.find((i) => i.item == item._id)
+            : undefined;
+        if (pref) {
+            const { item, quantity, unit, vendor, time, destination } = pref;
+            const value: OrderQueueLineInput = {
+                ...defaultLine,
+                item,
+                quantity,
+                unit,
+                vendor,
+                time,
+                destination,
+            };
+            setQueue([...queue, value]);
         } else {
             setQueue([...queue, defaultLine]);
         }
@@ -157,6 +181,7 @@ const ItemDrawer = (props: {
     return (
         <React.Fragment>
             <LoadingButton
+                disabled={disabled}
                 color="primary"
                 variant="contained"
                 size="large"
@@ -240,11 +265,15 @@ const ItemDrawer = (props: {
                         >
                             <LinearProgress />
                         </Box>
-                    ) : error || preferenceError ? (
+                    ) : error || preferenceError || companyError ? (
                         <Message
                             type="Error"
                             message={
-                                error ? error.message : preferenceError?.message
+                                error
+                                    ? error.message
+                                    : preferenceError
+                                    ? preferenceError.message
+                                    : companyError?.message
                             }
                         />
                     ) : (

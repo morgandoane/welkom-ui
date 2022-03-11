@@ -1,3 +1,4 @@
+import { ContactFragment } from './../Contact/Contact';
 import { LocationFilter } from '../../inputsTypes';
 import { Pagination } from '../../../utils/types/Pagination';
 import { getFilterQueryHook } from '../../types';
@@ -10,6 +11,7 @@ export const LocationsQuery = gql`
     ${TinyLocationFragment._document}
     ${TinyCompanyFragment._document}
     ${AddressFragment._document}
+    ${ContactFragment._document}
     query LocationsQuery($filter: LocationFilter!) {
         locations(filter: $filter) {
             count

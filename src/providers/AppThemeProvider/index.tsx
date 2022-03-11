@@ -80,7 +80,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
             primary: {
                 main: '#2C52F5',
             },
-            tonal: mode == 'dark' ? '#212121' : '#F0F0F0',
+            tonal: mode == 'dark' ? '#1A1A1A' : '#FDFDFD',
             background: background[mode],
             success: {
                 main: '#2E8C41',

@@ -71,7 +71,7 @@ const AppNavRoutes: Record<string, AppNavRoute> = {
     ['Supply Chain']: {
         icon: <AssignmentReturnTwoToneIcon sx={{ ...iconStyles }} />,
         children: [
-            ['Transportation', '/supplychain/transportation'],
+            ['Order Queue', '/supplychain/orderqueue'],
             ['Statistics', '/supplychain/statistics'],
         ],
         auth: { type: 'permission', permission: UiPermission.Logistics },

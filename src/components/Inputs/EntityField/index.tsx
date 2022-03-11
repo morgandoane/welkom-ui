@@ -1,4 +1,5 @@
 import { QueryResult } from '@apollo/client';
+import { useTheme } from '@mui/material/';
 import MenuItem from '@mui/material/MenuItem';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import React, { ReactElement } from 'react';
@@ -23,13 +24,24 @@ const EntityField = <T, Args, Res>(
 
     const items = data ? getData(data) : [];
 
+    const { palette } = useTheme();
+
     return (
         <TextField
+            sx={value == '' ? { color: palette.text.secondary } : {}}
+            inputProps={{
+                sx: value == '' ? { color: palette.text.disabled } : {},
+            }}
+            value={value || rest.placeholder || 'Company'}
+            onChange={(e) => onChange(e.target.value || '')}
             error={Boolean(error)}
             helperText={error ? error.message : undefined}
             select
             {...rest}
         >
+            <MenuItem disabled value={rest.placeholder || 'Company'}>
+                {rest.placeholder || 'Company'}
+            </MenuItem>
             {items.map((item) => {
                 const { id, label, disabled } = getProps(item);
                 return (

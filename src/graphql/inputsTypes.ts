@@ -66,6 +66,7 @@ export interface BolFilter extends BaseFilter {
 
 export interface CompanyFilter extends BaseFilter {
     name?: string;
+    internal?: boolean;
 }
 
 export interface ExpenseFilter extends BaseFilter {

@@ -15,6 +15,7 @@ export interface Company extends UploadEnabled {
 
 export interface TinyCompany extends Identified {
     name: string;
+    contacts: Contact[];
 }
 
 export const CompanyFragment = new AppFragment(
@@ -35,6 +36,9 @@ export const TinyCompanyFragment = new AppFragment(
         fragment TinyCompanyFragment on Company {
             _id
             name
+            contacts {
+                ...ContactFragment
+            }
         }
     `,
     []

@@ -5,6 +5,7 @@ class ItemPreference {
     item!: string;
     tally!: number;
     vendor!: string;
+    destination!: string;
     quantity!: number;
     unit!: string;
     time!: number | null;
@@ -24,6 +25,7 @@ export const OrderQueuePreferenceFragment = new AppFragment(
                 quantity
                 unit
                 time
+                destination
             }
         }
     `,

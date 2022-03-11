@@ -6,12 +6,14 @@ import { gql } from '@apollo/client';
 import { ProductFilter } from '../../../../inputsTypes';
 import { getFilterQueryHook } from '../../../../types';
 import { Pagination } from '../../../../../utils/types/Pagination';
+import { ContactFragment } from '../../../Contact/Contact';
 
 export const ProductQuery = gql`
     ${TinyProductFragment._document}
     ${ItemFragment._document}
     ${TinyProfileFragment._document}
     ${TinyCompanyFragment._document}
+    ${ContactFragment._document}
     query ProductQuery($filter: ProductFilter!) {
         products(filter: $filter) {
             count
