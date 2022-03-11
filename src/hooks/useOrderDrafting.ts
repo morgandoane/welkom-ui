@@ -273,13 +273,7 @@ export const useOrderDrafting = (
                 data.push({
                     company: vendor,
                     body,
-                    link: template(
-                        emailTo,
-                        cc,
-                        ['po@littledutchboy.com'],
-                        subject,
-                        body
-                    ),
+                    link: template(emailTo, cc, [], subject, body),
                     holdup:
                         contents
                             .map((c) => getLineForContent(c))
