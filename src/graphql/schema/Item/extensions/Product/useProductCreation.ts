@@ -5,12 +5,14 @@ import { getMutationHook } from '../../../../types';
 import { TinyProfileFragment } from '../../../Profile/Profile';
 import { ItemFragment } from '../../Item';
 import { TinyCompanyFragment } from '../../../Company/Company';
+import { ContactFragment } from '../../../Contact/Contact';
 
 export const CreateProductMutation = gql`
     ${ProductFragment._document}
     ${TinyProfileFragment._document}
     ${ItemFragment._document}
     ${TinyCompanyFragment._document}
+    ${ContactFragment._document}
     mutation CreateProductMutation($data: CreateProductInput!) {
         createProduct(data: $data) {
             ...ProductFragment

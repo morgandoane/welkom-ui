@@ -1,8 +1,9 @@
 import { QueryResult } from '@apollo/client';
-import { useTheme } from '@mui/material/';
+import { IconButton, InputAdornment, useTheme } from '@mui/material/';
 import MenuItem from '@mui/material/MenuItem';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import React, { ReactElement } from 'react';
+import { MdClear } from 'react-icons/md';
 
 export interface EntityFieldProps<T, Args, Res>
     extends Omit<TextFieldProps, 'value' | 'onChange'> {
@@ -28,7 +29,20 @@ const EntityField = <T, Args, Res>(
 
     return (
         <TextField
-            sx={value == '' ? { color: palette.text.secondary } : {}}
+            sx={
+                value == ''
+                    ? {
+                          color: palette.text.secondary,
+                          '.MuiSelect-icon': {
+                              display: 'none',
+                          },
+                      }
+                    : {
+                          '.MuiSelect-icon': {
+                              display: 'none',
+                          },
+                      }
+            }
             inputProps={{
                 sx: value == '' ? { color: palette.text.disabled } : {},
             }}

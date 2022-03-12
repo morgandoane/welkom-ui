@@ -44,6 +44,10 @@ import { useLocation } from '../../../graphql/schema/Location/useLocation';
 import { useLocationCreation } from '../../../graphql/schema/Location/useLocationCreation';
 import { LocationsQuery } from '../../../graphql/schema/Location/useLocations';
 import { useLocationUpdate } from '../../../graphql/schema/Location/useLocationUpdate';
+import { OrderQuery, useOrder } from '../../../graphql/schema/Order/useOrder';
+import { useOrderCreation } from '../../../graphql/schema/Order/useOrderCreation';
+import { OrdersQuery } from '../../../graphql/schema/Order/useOrders';
+import { useOrderUpdate } from '../../../graphql/schema/Order/useOrderUpdate';
 import {
     ProfileQuery,
     useProfile,
@@ -73,6 +77,7 @@ import DesignFormRender from './components/forms/Design';
 import IngredientFormRender from './components/forms/Ingredient';
 import LocationFormRender from './components/forms/Location';
 import MiscItemFormRender from './components/forms/MiscItem';
+import OrderFormRender from './components/forms/Order';
 import PackagingFormRender from './components/forms/Packaging';
 import ProductFormRender from './components/forms/Product';
 import QualityCheckFormRender from './components/forms/QualityCheck';
@@ -113,6 +118,47 @@ const CompanyForm = () => {
                     nav('/library/companies/' + Object.values(d)[0]._id),
             }}
             refetch={[CompaniesQuery]}
+        />
+    );
+};
+
+const OrderForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Order"
+            creationHook={useOrderCreation}
+            updateHook={useOrderUpdate}
+            stateHook={useOrder}
+            stateHandler={({ order }) => {
+                return {
+                    id: order._id,
+                    data: {
+                        po: order.po,
+                        customer: order.customer._id,
+                        vendor: order.vendor._id,
+                        deleted: order.deleted,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    po: '',
+                    customer: '',
+                    vendor: '',
+                    appointments: [],
+                },
+            }}
+            form={OrderFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/supplychain/orders/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/supplychain/orders'),
+                onUpdated: (d) =>
+                    nav('/supplychain/orders/' + Object.values(d)[0]._id),
+            }}
+            refetch={[OrdersQuery]}
         />
     );
 };

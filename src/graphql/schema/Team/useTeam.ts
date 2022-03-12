@@ -1,3 +1,4 @@
+import { ContactFragment } from './../Contact/Contact';
 import { Team, TeamFragment } from './Team';
 import { getAtomicQueryHook } from '../../types';
 import { gql } from '@apollo/client';
@@ -14,6 +15,7 @@ export const TeamQuery = gql`
     ${TinyCompanyFragment._document}
     ${TinyLocationFragment._document}
     ${AddressFragment._document}
+    ${ContactFragment._document}
     query TeamQuery($id: ObjectId!) {
         team(id: $id) {
             ...TeamFragment

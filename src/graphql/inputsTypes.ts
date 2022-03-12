@@ -31,14 +31,6 @@ export enum UnitClass {
     Count = 'Count',
 }
 
-export interface OrderFilter extends BaseFilter {
-    po?: string;
-    customer?: string;
-    vendor?: string;
-    item?: string;
-    date_range?: DateRange;
-}
-
 export type HoldFilter = BaseFilter;
 
 export enum FolderClass {

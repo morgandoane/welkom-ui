@@ -7,6 +7,7 @@ import { UploadEnabledFragment } from '../UploadEnabled/UploadEnabled';
 import { AddressFragment } from '../Address/Address';
 import { TinyCompanyFragment } from '../Company/Company';
 import { TinyLocationFragment } from '../Location/Location';
+import { ContactFragment } from '../Contact/Contact';
 
 export const UpdateTeamMutation = gql`
     ${TeamFragment._document}
@@ -15,6 +16,7 @@ export const UpdateTeamMutation = gql`
     ${TinyCompanyFragment._document}
     ${TinyLocationFragment._document}
     ${AddressFragment._document}
+    ${ContactFragment._document}
     mutation UpdateTeamMutation($id: ObjectId!, $data: UpdateTeamInput!) {
         updateTeam(id: $id, data: $data) {
             ...TeamFragment
