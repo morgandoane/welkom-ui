@@ -110,7 +110,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                         }}
                     >
                         <TextField
-                            sx={{ width: 100 }}
+                            sx={{ width: 80 }}
                             placeholder="Qty"
                             type="number"
                             {...selectprops}

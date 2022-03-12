@@ -14,7 +14,7 @@ const Logo = (props: { height?: number; width?: number }): ReactElement => {
                 style={{
                     height: height,
                     width: width,
-                    transition: transitions.create('all', { duration: 200 }),
+                    transition: transitions.create('all', { duration: 300 }),
                 }}
             />
         );
@@ -24,7 +24,7 @@ const Logo = (props: { height?: number; width?: number }): ReactElement => {
                 style={{
                     height: height,
                     width: width,
-                    transition: transitions.create('all', { duration: 200 }),
+                    transition: transitions.create('all', { duration: 300 }),
                 }}
             />
         );

@@ -19,10 +19,17 @@ import { AppNavRoute } from '../../../../../../routes';
 export interface NavChipProps {
     label: string;
     data: AppNavRoute;
+    open: boolean;
+    setOpen: (open: boolean) => void;
 }
 
 const NavChip = (props: NavChipProps): ReactElement => {
-    const { label, data: route } = props;
+    const {
+        label,
+        data: route,
+        open: parentOpen,
+        setOpen: setParentOpen,
+    } = props;
     const nav = useNavigate();
 
     const { mode } = useThemeContext();
@@ -32,6 +39,14 @@ const NavChip = (props: NavChipProps): ReactElement => {
         .some((link) => window.location.pathname.includes(link));
 
     const [open, setOpen] = React.useState(parentActive);
+
+    React.useEffect(() => {
+        if (open) setParentOpen(true);
+    }, [open]);
+
+    React.useEffect(() => {
+        if (!parentOpen) setOpen(false);
+    }, [parentOpen]);
 
     const { palette, shape, spacing, breakpoints } = useTheme();
     const small = useMediaQuery(breakpoints.down('sm'));
@@ -78,16 +93,30 @@ const NavChip = (props: NavChipProps): ReactElement => {
             >
                 <Box sx={{ display: 'flex' }}>{route.icon}</Box>
                 <Box sx={{ width: spacing(1.5) }} />
-                <Typography sx={{ fontWeight: 500 }}>{label}</Typography>
-                <Box sx={{ width: spacing(small ? 12 : 3) }} />
-                <Box sx={{ flex: 1 }} />
-                {route.children.length > 1 && (
-                    <Anima in={open} type="rotate">
-                        <Box sx={{ display: 'flex', fontSize: '1.5rem' }}>
-                            <MdExpandMore />
-                        </Box>
-                    </Anima>
-                )}
+                <Collapse in={open || parentOpen} orientation="horizontal">
+                    <Box sx={{ display: 'flex' }}>
+                        <Typography
+                            sx={{
+                                fontWeight: 500,
+                                textAlign: 'left',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {label}
+                        </Typography>
+                        <Box sx={{ width: spacing(small ? 12 : 3) }} />
+                        <Box sx={{ flex: 1 }} />
+                        {route.children.length > 1 && (
+                            <Anima in={open} type="rotate">
+                                <Box
+                                    sx={{ display: 'flex', fontSize: '1.5rem' }}
+                                >
+                                    <MdExpandMore />
+                                </Box>
+                            </Anima>
+                        )}
+                    </Box>
+                </Collapse>
             </ButtonBase>
             <Box sx={{ width: '100%' }}>
                 {route.children.length > 1 && (
