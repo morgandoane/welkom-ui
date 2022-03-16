@@ -228,7 +228,7 @@ export interface CreateBolInput {
 
 export interface BolContentInput {
     item: string;
-    client_quantity: number;
+    client_quantity: number | null;
     client_unit: string;
 }
 

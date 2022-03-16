@@ -7,7 +7,7 @@ export enum CodeType {
     PO = 'PO',
 }
 
-const CodeQuery = gql`
+export const CodeQuery = gql`
     query CodeQuery($type: CodeType!) {
         code(type: $type)
     }

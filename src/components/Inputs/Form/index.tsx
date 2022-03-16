@@ -138,6 +138,16 @@ const OrderForm = () => {
                         po: order.po,
                         customer: order.customer._id,
                         vendor: order.vendor._id,
+                        appointments: order.appointments.map((apt) => ({
+                            contents: apt.contents.map((c) => ({
+                                item: c.item._id,
+                                client_quantity: c.client_quantity,
+                                client_unit: c.client_unit._id,
+                            })),
+                            date: apt.date,
+                            location: apt.location._id,
+                            time: apt.time,
+                        })),
                         deleted: order.deleted,
                     },
                 };
@@ -668,6 +678,7 @@ export {
     IngredientForm,
     LocationForm,
     MiscItemForm,
+    OrderForm,
     PackagingForm,
     ProductForm,
     QualityCheckForm,

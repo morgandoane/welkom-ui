@@ -12,6 +12,7 @@ import { useUnits } from '../graphql/schema/Unit/useUnits';
 import { useLocations } from '../graphql/schema/Location/useLocations';
 import { useItems } from '../graphql/schema/Item/useItems';
 import { OrderQueueLineInput } from '../graphql/schema/OrderQueueLine/OrderQueueLineInput';
+import { getTime } from '../utils/getTime';
 
 const useOrderDraftingData = (): {
     data: {
@@ -196,16 +197,7 @@ export const useOrderDrafting = (
                 } of ${tinyItem.names.english} delivered to ${
                     tinyLocation.label || tinyLocation?.address?.city || 'us'
                 } on ${format(new Date(date), dateFormats.condensedDate)}${
-                    time !== null
-                        ? ' by ' +
-                          `${time % 60}"${
-                              time - (time % 60) == 0
-                                  ? '00'
-                                  : (time - (time % 60) + '').length == 1
-                                  ? '0' + (time - (time % 60))
-                                  : time - (time % 60)
-                          }`
-                        : ''
+                    time !== null ? ` by ${getTime(time)}` : ''
                 }${br}PO# ${po}${br}`,
                 holdup: null,
             };

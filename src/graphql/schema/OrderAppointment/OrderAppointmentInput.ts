@@ -2,7 +2,7 @@ import { BolContentInput } from '../../inputsTypes';
 
 export interface OrderAppointmentInput {
     contents: BolContentInput[];
-    date: Date;
-    deleted: boolean;
+    date: Date | null;
     location: string | null;
+    time: number | null;
 }

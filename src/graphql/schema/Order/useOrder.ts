@@ -1,3 +1,8 @@
+import { NamesPluralFragment } from './../Names/Names';
+import { TinyUnitFragment } from './../Unit/Unit';
+import { ItemFragment } from './../Item/Item';
+import { TinyProfileFragment } from './../Profile/Profile';
+import { UploadEnabledFragment } from './../UploadEnabled/UploadEnabled';
 import { getAtomicQueryHook } from '../../types';
 import { gql } from '@apollo/client';
 import { OrderFragment, Order } from './Order';
@@ -9,6 +14,12 @@ import { TinyLocationFragment } from '../Location/Location';
 import { AddressFragment } from '../Address/Address';
 
 export const OrderQuery = gql`
+    ${UploadEnabledFragment._document}
+    ${TinyProfileFragment._document}
+    ${ItemFragment._document}
+    ${TinyUnitFragment._document}
+    ${NamesPluralFragment._document}
+    ${TinyProfileFragment._document}
     ${OrderFragment._document}
     ${TinyCompanyFragment._document}
     ${OrderAppointmentFragment._document}

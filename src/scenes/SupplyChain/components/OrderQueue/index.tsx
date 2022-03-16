@@ -39,6 +39,7 @@ const OrderQueue = (): ReactElement => {
                     time: d.time,
                 }))
             ),
+        fetchPolicy: 'network-only',
     });
 
     const [update, { error: updateError, loading: updateLoading }] =

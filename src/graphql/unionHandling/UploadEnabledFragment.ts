@@ -2,6 +2,7 @@ export const UploadEnabledFields = [
     'Company',
     'Design',
     'Location',
+    'Order',
     'Item',
     'Packaging',
     'Team',

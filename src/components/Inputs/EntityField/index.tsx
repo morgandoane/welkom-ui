@@ -46,15 +46,21 @@ const EntityField = <T, Args, Res>(
             inputProps={{
                 sx: value == '' ? { color: palette.text.disabled } : {},
             }}
-            value={value || rest.placeholder || 'Company'}
+            value={value || rest.placeholder || 'Select'}
             onChange={(e) => onChange(e.target.value || '')}
-            error={Boolean(error)}
-            helperText={error ? error.message : undefined}
+            error={Boolean(error) || (!loading && items.length == 0)}
+            helperText={
+                error
+                    ? error.message
+                    : !loading && items.length == 0
+                    ? 'No data'
+                    : undefined
+            }
             select
             {...rest}
         >
-            <MenuItem disabled value={rest.placeholder || 'Company'}>
-                {rest.placeholder || 'Company'}
+            <MenuItem disabled value={rest.placeholder || 'Select'}>
+                {rest.placeholder || 'Select'}
             </MenuItem>
             {items.map((item) => {
                 const { id, label, disabled } = getProps(item);

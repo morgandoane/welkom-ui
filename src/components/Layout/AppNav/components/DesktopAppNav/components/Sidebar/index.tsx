@@ -43,7 +43,7 @@ const Sidebar = (): ReactElement => {
                 alignItems: 'flex-start',
                 display: 'flex',
                 flexShrink: 1,
-                background: palette.background.paper,
+                background: palette.background.default,
                 flexFlow: 'column',
                 padding: 2.5,
                 gap: 0.25,

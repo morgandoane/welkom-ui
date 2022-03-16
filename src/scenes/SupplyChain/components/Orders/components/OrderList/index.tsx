@@ -191,7 +191,7 @@ const OrdersList = (): ReactElement => {
                                         }
                                     />
                                 ),
-                                ['Delivery dates']: (
+                                ['Deliveries']: (
                                     <DateControl
                                         value={filter.date_range || null}
                                         onChange={(val) =>
@@ -260,33 +260,36 @@ const OrdersList = (): ReactElement => {
                                 PO: (d) => d.po,
                                 Customer: (d) => d.customer.name,
                                 Vendor: (d) => d.vendor.name,
-                                ['Delivery dates']: (d) => {
-                                    const dates: Date[] = [];
+                                ['Deliveries']: (d) => {
+                                    if (d.appointments.length > 1)
+                                        return `${d.appointments.length} deliveries`;
 
-                                    for (const apt of d.appointments) {
-                                        const date = apt.date;
-                                        dates.push(new Date(date));
-                                    }
-
-                                    if (dates.length == 1)
-                                        return format(
-                                            dates[0],
-                                            dateFormats.condensedDate
-                                        );
-
-                                    return ``;
+                                    return d.appointments
+                                        .map(
+                                            (apt) =>
+                                                `${format(
+                                                    new Date(apt.date),
+                                                    dateFormats.condensedDate
+                                                )} - ${apt.location.label}`
+                                        )
+                                        .join('');
                                 },
                                 Items: (d) =>
-                                    d.appointments
-                                        .map((app) =>
-                                            app.contents
-                                                .map(
-                                                    (c) => c.item.names.english
+                                    [
+                                        ...new Set(
+                                            d.appointments
+                                                .map((app) =>
+                                                    app.contents
+                                                        .map(
+                                                            (c) =>
+                                                                c.item.names
+                                                                    .english
+                                                        )
+                                                        .flat()
                                                 )
                                                 .flat()
-                                        )
-                                        .flat()
-                                        .join(', '),
+                                        ),
+                                    ].join(', '),
                             }}
                         </SmartTable>
                     ),

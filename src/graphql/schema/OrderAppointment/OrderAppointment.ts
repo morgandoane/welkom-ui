@@ -10,6 +10,7 @@ export interface OrderAppointment extends Identified {
     date: Date;
     location: TinyLocation;
     deleted: boolean;
+    time: number | null;
 }
 
 export const OrderAppointmentFragment = new AppFragment(
@@ -22,6 +23,7 @@ export const OrderAppointmentFragment = new AppFragment(
             location {
                 ...TinyLocationFragment
             }
+            time
             deleted
         }
     `,
