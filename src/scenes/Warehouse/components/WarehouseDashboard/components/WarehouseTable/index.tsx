@@ -29,6 +29,8 @@ import {
     UiPermission,
 } from '../../../../../../auth/UiPermission';
 import { UserRole } from '../../../../../../auth/UserRole';
+import { format } from 'date-fns';
+import { dateFormats } from '../../../../../../utils/dateFormats';
 
 export interface WarehouseTableProps {
     view: 'shipping' | 'receiving';
@@ -365,6 +367,23 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                                     ? 'receipts'
                                                     : 'shipments'
                                             ].map((r) => r.created_by.name)
+                                        ),
+                                    ].join(', '),
+                                [view == 'receiving'
+                                    ? 'Date received'
+                                    : 'Date shipped']: (bol) =>
+                                    [
+                                        ...new Set(
+                                            bol[
+                                                view == 'receiving'
+                                                    ? 'receipts'
+                                                    : 'shipments'
+                                            ].map((r) =>
+                                                format(
+                                                    new Date(r.date_created),
+                                                    dateFormats.condensedDate
+                                                )
+                                            )
                                         ),
                                     ].join(', '),
                             }}
