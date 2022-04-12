@@ -73,6 +73,7 @@ const AppNavRoutes: Record<string, AppNavRoute> = {
         children: [
             ['Order Queue', '/supplychain/orderqueue'],
             ['Orders', '/supplychain/orders'],
+            ['Itineraries', '/supplychain/itineraries'],
             ['Statistics', '/supplychain/statistics'],
         ],
         auth: { type: 'permission', permission: UiPermission.Logistics },

@@ -6,8 +6,8 @@ import { Identified } from '../Base/Base';
 
 export interface Appointment extends Identified {
     date: Date;
-    time_sensitive: boolean;
-    company: TinyCompany | null;
+    time: number | null;
+    company: TinyCompany;
     location: TinyLocation | null;
 }
 
@@ -16,7 +16,7 @@ export const AppointmentFragment = new AppFragment(
         fragment AppointmentFragment on Appointment {
             _id
             date
-            time_sensitive
+            time
             company {
                 ...TinyCompanyFragment
             }

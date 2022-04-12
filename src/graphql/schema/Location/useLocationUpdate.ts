@@ -6,6 +6,7 @@ import { gql } from '@apollo/client';
 import { getMutationHook } from '../../types';
 import { TinyProfileFragment } from '../Profile/Profile';
 import { UploadEnabledFragment } from '../UploadEnabled/UploadEnabled';
+import { ContactFragment } from '../Contact/Contact';
 
 export const UpdateLocationMutation = gql`
     ${LocationFragment._document}
@@ -13,6 +14,7 @@ export const UpdateLocationMutation = gql`
     ${TinyProfileFragment._document}
     ${TinyCompanyFragment._document}
     ${AddressFragment._document}
+    ${ContactFragment._document}
     mutation UpdateLocationMutation(
         $id: ObjectId!
         $data: UpdateLocationInput!

@@ -40,6 +40,13 @@ import {
 } from '../../../graphql/schema/Item/extensions/Product/useProduct';
 import { useProductCreation } from '../../../graphql/schema/Item/extensions/Product/useProductCreation';
 import { useProductUpdate } from '../../../graphql/schema/Item/extensions/Product/useProductUpdate';
+import { ItinerariesQuery } from '../../../graphql/schema/Itinerary/useItineraries';
+import {
+    ItineraryQuery,
+    useItinerary,
+} from '../../../graphql/schema/Itinerary/useItinerary';
+import { useItineraryCreation } from '../../../graphql/schema/Itinerary/useItineraryCreation';
+import { useItineraryUpdate } from '../../../graphql/schema/Itinerary/useItineraryUpdate';
 import { useLocation } from '../../../graphql/schema/Location/useLocation';
 import { useLocationCreation } from '../../../graphql/schema/Location/useLocationCreation';
 import { LocationsQuery } from '../../../graphql/schema/Location/useLocations';
@@ -75,6 +82,7 @@ import AccountFormRender from './components/forms/Account';
 import CompanyFormRender from './components/forms/Company';
 import DesignFormRender from './components/forms/Design';
 import IngredientFormRender from './components/forms/Ingredient';
+import ItineraryFormRender from './components/forms/Itinerary';
 import LocationFormRender from './components/forms/Location';
 import MiscItemFormRender from './components/forms/MiscItem';
 import OrderFormRender from './components/forms/Order';
@@ -671,6 +679,47 @@ const AccountForm = () => {
     );
 };
 
+const ItineraryForm = () => {
+    const nav = useNavigate();
+
+    return (
+        <AppForm
+            entity="Itinerary"
+            creationHook={useItineraryCreation}
+            updateHook={useItineraryUpdate}
+            stateHook={useItinerary}
+            stateHandler={({ itinerary }) => {
+                return {
+                    id: itinerary._id,
+                    data: {
+                        code: itinerary.code,
+                        deleted: itinerary.deleted,
+                        carrier: itinerary.carrier
+                            ? itinerary.carrier._id
+                            : null,
+                    },
+                };
+            }}
+            defaultState={{
+                data: {
+                    code: '',
+                    carrier: null,
+                    order_link: null,
+                },
+            }}
+            form={ItineraryFormRender}
+            handler={{
+                onCreated: (d) =>
+                    nav('/supplychain/itineraries/' + Object.values(d)[0]._id),
+                onDeleted: (d) => nav('/supplychain/itineraries'),
+                onUpdated: (d) =>
+                    nav('/supplychain/itineraries/' + Object.values(d)[0]._id),
+            }}
+            refetch={[ItinerariesQuery, ItineraryQuery]}
+        />
+    );
+};
+
 export {
     AccountForm,
     CompanyForm,
@@ -684,4 +733,5 @@ export {
     QualityCheckForm,
     TeamForm,
     UnitForm,
+    ItineraryForm,
 };

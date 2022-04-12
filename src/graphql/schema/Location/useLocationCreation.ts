@@ -6,6 +6,7 @@ import { TinyProfileFragment } from '../Profile/Profile';
 import { UploadEnabledFragment } from '../UploadEnabled/UploadEnabled';
 import { TinyCompanyFragment } from '../Company/Company';
 import { AddressFragment } from '../Address/Address';
+import { ContactFragment } from '../Contact/Contact';
 
 export const CreateLocationMutation = gql`
     ${LocationFragment._document}
@@ -13,6 +14,7 @@ export const CreateLocationMutation = gql`
     ${TinyProfileFragment._document}
     ${TinyCompanyFragment._document}
     ${AddressFragment._document}
+    ${ContactFragment._document}
     mutation CreateLocationMutation($data: CreateLocationInput!) {
         createLocation(data: $data) {
             ...LocationFragment

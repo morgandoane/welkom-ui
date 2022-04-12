@@ -1,9 +1,11 @@
 export const UploadEnabledFields = [
+    'Bol',
     'Company',
     'Design',
     'Location',
     'Order',
     'Item',
+    'Itinerary',
     'Packaging',
     'Team',
 ];

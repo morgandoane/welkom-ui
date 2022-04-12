@@ -1,6 +1,7 @@
+import { AppointmentFragment } from './../Appointment/Appointment';
+import { BolAppointmentFragment } from './../BolAppointment/BolAppointment';
 import { AppFragment } from './../../types';
 import { Identified } from './../Base/Base';
-import { TinyItinerary, TinyItineraryFragment } from './../Itinerary/Itinerary';
 import { Appointment } from '../Appointment/Appointment';
 import { BolContent, BolContentFragment } from './../BolContent/BolContent';
 import {
@@ -10,7 +11,6 @@ import {
 import { gql } from '@apollo/client';
 
 export interface Bol extends UploadEnabled {
-    itinerary: TinyItinerary;
     code: string | null;
     contents: BolContent[];
     from: Appointment;
@@ -18,7 +18,6 @@ export interface Bol extends UploadEnabled {
 }
 
 export interface TinyBol extends Identified {
-    itinerary: TinyItinerary;
     code: string | null;
     contents: BolContent[];
     from: Appointment;
@@ -29,34 +28,41 @@ export const BolFragment = new AppFragment(
     gql`
         fragment BolFragment on Bol {
             ...UploadEnabledFragment
-            itinerary {
-                ...TinyItineraryFragment
-            }
             code
             contents {
                 ...BolContentFragment
             }
-            from
-            to
+            from {
+                ...AppointmentFragment
+            }
+            to {
+                ...BolAppointmentFragment
+            }
         }
     `,
-    [UploadEnabledFragment, TinyItineraryFragment, BolContentFragment]
+    [
+        UploadEnabledFragment,
+        BolContentFragment,
+        AppointmentFragment,
+        BolAppointmentFragment,
+    ]
 );
 
 export const TinyBolFragment = new AppFragment(
     gql`
         fragment TinyBolFragment on Bol {
             _id
-            itinerary {
-                ...TinyItineraryFragment
-            }
             code
             contents {
                 ...BolContentFragment
             }
-            from
-            to
+            from {
+                ...AppointmentFragment
+            }
+            to {
+                ...BolAppointmentFragment
+            }
         }
     `,
-    [UploadEnabledFragment, TinyItineraryFragment, BolContentFragment]
+    [BolContentFragment, AppointmentFragment, BolAppointmentFragment]
 );

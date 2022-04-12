@@ -1,3 +1,5 @@
+import { ItineraryStatus } from './ItineraryStatus';
+import { BolAppointmentFragment } from './../BolAppointment/BolAppointment';
 import { AppFragment } from './../../types';
 import { TinyCompanyFragment } from './../Company/Company';
 import { Identified } from './../Base/Base';
@@ -7,17 +9,31 @@ import {
 } from './../UploadEnabled/UploadEnabled';
 import { TinyCompany } from '../Company/Company';
 import { gql } from '@apollo/client';
+import { BolContent, BolContentFragment } from '../BolContent/BolContent';
+import { Appointment, AppointmentFragment } from '../Appointment/Appointment';
+import { TinyOrder, TinyOrderFragment } from '../Order/Order';
+
+export interface TinyItineraryBol extends Identified {
+    code: string | null;
+    contents: BolContent[];
+    from: Appointment;
+    to: Appointment;
+}
 
 export interface Itinerary extends UploadEnabled {
     code: string | null;
     carrier: TinyCompany | null;
-    commissioned_by: TinyCompany;
+    bols: TinyItineraryBol[];
+    order_link: TinyOrder | null;
+    status: ItineraryStatus;
 }
 
 export interface TinyItinerary extends Identified {
     code: string | null;
     carrier: TinyCompany | null;
-    commissioned_by: TinyCompany;
+    bols: TinyItineraryBol[];
+    order_link: TinyOrder | null;
+    status: ItineraryStatus;
 }
 
 export const ItineraryFragment = new AppFragment(
@@ -25,15 +41,36 @@ export const ItineraryFragment = new AppFragment(
         fragment ItineraryFragment on Itinerary {
             ...UploadEnabledFragment
             code
+            status
+            order_link {
+                ...TinyOrderFragment
+            }
             carrier {
                 ...TinyCompanyFragment
             }
-            commissioned_by {
-                ...TinyCompanyFragment
+            bols {
+                _id
+                code
+                contents {
+                    ...BolContentFragment
+                }
+                from {
+                    ...AppointmentFragment
+                }
+                to {
+                    ...BolAppointmentFragment
+                }
             }
         }
     `,
-    [UploadEnabledFragment, TinyCompanyFragment]
+    [
+        UploadEnabledFragment,
+        TinyCompanyFragment,
+        BolContentFragment,
+        AppointmentFragment,
+        BolAppointmentFragment,
+        TinyOrderFragment,
+    ]
 );
 
 export const TinyItineraryFragment = new AppFragment(
@@ -41,13 +78,33 @@ export const TinyItineraryFragment = new AppFragment(
         fragment TinyItineraryFragment on Itinerary {
             _id
             code
+            status
+            order_link {
+                ...TinyOrderFragment
+            }
             carrier {
                 ...TinyCompanyFragment
             }
-            commissioned_by {
-                ...TinyCompanyFragment
+            bols {
+                _id
+                code
+                contents {
+                    ...BolContentFragment
+                }
+                from {
+                    ...AppointmentFragment
+                }
+                to {
+                    ...BolAppointmentFragment
+                }
             }
         }
     `,
-    [TinyCompanyFragment]
+    [
+        TinyCompanyFragment,
+        BolContentFragment,
+        AppointmentFragment,
+        BolAppointmentFragment,
+        TinyOrderFragment,
+    ]
 );

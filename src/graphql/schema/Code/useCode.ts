@@ -1,9 +1,9 @@
 import { gql, useQuery } from '@apollo/client';
 
 export enum CodeType {
-    BOL = 'B',
-    ITIN = 'I',
-    LOT = 'L',
+    BOL = 'BOL',
+    ITIN = 'ITIN',
+    LOT = 'LOT',
     PO = 'PO',
 }
 

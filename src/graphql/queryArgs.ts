@@ -7,7 +7,6 @@ import {
     FolderFilter,
     FulfillmentFilter,
     IngredientFilter,
-    ItineraryFilter,
     LocationFilter,
     LotFilter,
     MiscItemFilter,
@@ -84,10 +83,6 @@ export interface IngredientsQueryArgs {
 
 export interface IngredientQueryArgs {
     id: string;
-}
-
-export interface ItinerariesQueryArgs {
-    filter: ItineraryFilter;
 }
 
 export interface ItineraryQueryArgs {

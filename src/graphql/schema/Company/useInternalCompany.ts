@@ -1,7 +1,9 @@
 import { TinyCompany } from './Company';
 import { useCompanies } from './useCompanies';
 
-export const useInternalCompany = (): {
+export const useInternalCompany = (options?: {
+    onCompleted?: (company: TinyCompany) => void;
+}): {
     error?: Error;
     loading: boolean;
     company: TinyCompany | null;
@@ -9,6 +11,12 @@ export const useInternalCompany = (): {
     const { data, error, loading } = useCompanies({
         variables: {
             filter: { skip: 0, take: 1, internal: true },
+        },
+        onCompleted: (d) => {
+            if (d.companies.items[0])
+                if (options && options.onCompleted) {
+                    options.onCompleted(d.companies.items[0]);
+                }
         },
     });
 

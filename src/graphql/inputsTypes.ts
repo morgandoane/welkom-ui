@@ -132,12 +132,6 @@ export interface IngredientFilter extends BaseFilter {
     name?: string;
 }
 
-export interface ItineraryFilter extends BaseFilter {
-    carrier?: string;
-    commissioned_by?: string;
-    code?: string;
-}
-
 export interface LocationFilter extends BaseFilter {
     company?: string;
     label?: string;
@@ -333,19 +327,6 @@ export interface UpdateIngredientInput {
     names: NamesInput;
     unit_class: IngredientUnitClass;
     per_base_unit: number | null;
-}
-
-export interface CreateItineraryInput {
-    code: string;
-    carrier: string;
-    commissioned_by: string;
-}
-
-export interface UpdateItineraryInput {
-    deleted: boolean;
-    code: string;
-    carrier: string;
-    commissioned_by: string;
 }
 
 export interface CreateLocationInput {

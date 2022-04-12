@@ -15,8 +15,6 @@ import {
     UpdateFulfillmentInput,
     CreateIngredientInput,
     UpdateIngredientInput,
-    CreateItineraryInput,
-    UpdateItineraryInput,
     CreateLocationInput,
     UpdateLocationInput,
     CreateLotInput,
@@ -103,13 +101,7 @@ export interface UpdateIngredientArgs {
     data: UpdateIngredientInput;
     id: string;
 }
-export interface CreateItineraryArgs {
-    data: CreateItineraryInput;
-}
-export interface UpdateItineraryArgs {
-    data: UpdateItineraryInput;
-    id: string;
-}
+
 export interface CreateLocationArgs {
     data: CreateLocationInput;
 }
