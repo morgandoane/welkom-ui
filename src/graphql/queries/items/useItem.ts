@@ -38,6 +38,10 @@ export const ItemQuery = gql`
                 _id
                 name
             }
+            category {
+                _id
+                label
+            }
         }
     }
 `;

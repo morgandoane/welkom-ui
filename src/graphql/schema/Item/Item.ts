@@ -5,6 +5,7 @@ import { Conversion } from './../Conversion/Conversion';
 import { AppFile } from '../AppFile/AppFile';
 import { Base } from '../Base/Base';
 import { UnitClass } from '../Unit/Unit';
+import { ItemCategory } from '../../queries/itemCategories/ItemCategory';
 
 export enum ItemType {
     Product = 'Product',
@@ -22,6 +23,7 @@ export interface Item extends Base {
     default_unit?: TinyUnit | null;
     upc: string | null;
     to_base_unit: number;
+    category: ItemCategory | null;
 }
 
 export interface TinyItem {
@@ -39,4 +41,5 @@ export interface TinyItem {
     date_created: Date;
     to_base_unit: number;
     upc: string | null;
+    category: ItemCategory | null;
 }

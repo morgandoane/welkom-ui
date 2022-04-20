@@ -7,13 +7,22 @@ export interface NumberFieldProps {
     onChange: (val: number | null) => void;
     naked?: boolean;
     size?: TextFieldProps['size'];
+    maxWidth?: string | number;
 }
 
 const NumberField = (props: NumberFieldProps): ReactElement => {
-    const { label, value, naked = false, onChange, size = 'medium' } = props;
+    const {
+        label,
+        value,
+        naked = false,
+        onChange,
+        size = 'medium',
+        maxWidth = 100,
+    } = props;
 
     return (
         <TextField
+            sx={{ maxWidth }}
             size={size}
             fullWidth
             type="number"

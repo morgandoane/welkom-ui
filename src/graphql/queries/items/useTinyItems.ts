@@ -12,6 +12,10 @@ export const TinyItemFragment = gql`
         upc
         type
         order_queue_qty
+        category {
+            _id
+            label
+        }
         default_unit {
             _id
             class

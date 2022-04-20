@@ -6,6 +6,7 @@ import { BolStatus } from './Bol';
 export interface BolFilter extends BaseFilter {
     order?: string;
     order_code?: string;
+    lot_code?: string;
     code?: string;
     status?: BolStatus;
     from_location?: string;

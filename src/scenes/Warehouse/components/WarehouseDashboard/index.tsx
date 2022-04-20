@@ -1,6 +1,8 @@
-import { Box, capitalize } from '@mui/material';
+import { Box, Button, capitalize } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { MdCalendarToday, MdTableRows } from 'react-icons/md';
+import { RiShieldFlashFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 import AppNav from '../../../../components/AppNav';
 import ButtonToggle from '../../../../components/ButtonToggle';
 import ColumnBox from '../../../../components/Layout/ColumnBox';
@@ -17,6 +19,8 @@ export interface WarehouseDashboardProps {
 const WarehouseDashboard = (props: WarehouseDashboardProps): ReactElement => {
     const { view } = props;
 
+    const nav = useNavigate();
+
     const [{ mode }, setMode] = useMemory<{ mode: 'Calendar' | 'Table' }>(
         'warehouse',
         { mode: 'Table' }
@@ -32,7 +36,24 @@ const WarehouseDashboard = (props: WarehouseDashboardProps): ReactElement => {
                         <Box sx={{ display: 'flex' }}>
                             <PageTitle>{capitalize(view)}</PageTitle>
                             <Box sx={{ flex: 1 }} />
-                            <Box>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 2,
+                                }}
+                            >
+                                {/* {view == 'receiving' && (
+                                    <Button
+                                        onClick={() => nav('flash')}
+                                        startIcon={<RiShieldFlashFill />}
+                                        color="inherit"
+                                        size="large"
+                                        sx={{ width: 260 }}
+                                    >
+                                        Flash Receipt
+                                    </Button>
+                                )} */}
                                 <ButtonToggle
                                     options={[
                                         {

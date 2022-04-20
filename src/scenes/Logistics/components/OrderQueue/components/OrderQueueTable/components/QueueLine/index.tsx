@@ -3,11 +3,15 @@ import {
     Collapse,
     Dialog,
     IconButton,
+    MenuItem,
     Popover,
     Switch,
     TableCell,
     TableRow,
+    TextField,
+    TextFieldProps,
     Typography,
+    useTheme,
 } from '@mui/material';
 import React, { ReactElement } from 'react';
 import { OrderQueueContentInput } from '../../../../../../../../graphql/schema/OrderQueue/OrderQueueInput';
@@ -30,6 +34,7 @@ import { useTinyLocations } from '../../../../../../../../graphql/queries/locati
 import { useTinyItems } from '../../../../../../../../graphql/queries/items/useTinyItems';
 import { useTinyUnits } from '../../../../../../../../graphql/queries/units/useTinyUnits';
 import TimeField from '../../../../../../../../components/Forms/components/TimeField';
+import { useCode } from '../../../../../../../../graphql/queries/code/useCode';
 
 export interface QueueLineProps {
     content: OrderQueueContentInput;
@@ -42,8 +47,22 @@ export interface QueueLineProps {
 const QueueLine = (props: QueueLineProps): ReactElement => {
     const { content, index, setContent, drop } = props;
 
+    const { palette } = useTheme();
+
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({ id: 'content_' + index, transition: null });
+
+    useCode({
+        variables: {
+            type: CodeType.PO,
+        },
+        onCompleted: ({ code }) => {
+            if (!content.order_code)
+                setContent({ ...content, order_code: code.value });
+        },
+        fetchPolicy: 'network-only',
+        skip: Boolean(content.order_code),
+    });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -91,133 +110,187 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
     const items = itemData ? itemData.items.items : [];
     const units = unitData ? unitData.units.items : [];
 
-    const item = items.find((c) => c._id === content.item) || null;
-    const unit = units.find((c) => c._id === content.unit) || null;
-    const vendor = companies.find((c) => c._id === content.vendor) || null;
-    const destination =
-        locations.find((c) => c._id === content.location) || null;
-    const vendorLocation =
-        locations.find((c) => c._id === content.vendor_location) || null;
-
-    const [clickState, setClickState] = React.useState<
-        | (Element &
-              EventTarget & { _type: 'vendor' | 'content' | 'destination' })
-        | null
-    >(null);
+    const fieldProps: TextFieldProps = {
+        variant: 'standard',
+        InputProps: { disableUnderline: true },
+        size: 'small',
+        sx: { '& .MuiSelect-icon': { display: 'none' } },
+    };
 
     return (
         <TableRow ref={setNodeRef} style={style}>
-            <TableCell {...listeners} {...attributes} sx={{ width: 40 }}>
+            <TableCell
+                {...listeners}
+                {...attributes}
+                sx={{ width: 20, background: palette.background.paper }}
+            >
                 <Box
                     sx={{
                         display: 'flex',
-                        fontSize: '2rem',
+                        fontSize: '1.25rem',
                         cursor: transform ? 'grabbing' : 'grab',
                     }}
                 >
                     <MdDragHandle />
                 </Box>
             </TableCell>
-            <TableCell>
-                <CodeField
-                    naked
-                    type={CodeType.PO}
-                    value={content.order_code || ''}
-                    onChange={(val) => {
-                        setContent({ ...content, order_code: val });
-                    }}
-                    disabled={false}
-                />
-            </TableCell>
-            <TableCell>
-                <Button
-                    onClick={(event) => {
-                        setClickState({
-                            ...event.currentTarget,
-                            _type: 'vendor',
+            <TableCell sx={{ background: palette.background.paper }}>
+                <TextField
+                    placeholder="Item"
+                    {...fieldProps}
+                    select
+                    value={content.item || 'Item'}
+                    onChange={(e) => {
+                        setContent({
+                            ...content,
+                            item:
+                                e.target.value == 'Item'
+                                    ? undefined
+                                    : e.target.value,
                         });
                     }}
-                    variant="text"
-                    color={!content.vendor ? 'warning' : 'inherit'}
-                    sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
-                >
-                    {vendor ? (
-                        <Box>
-                            <Typography>{vendor.name}</Typography>
-                            <Typography variant="caption" color="textSecondary">
-                                {vendorLocation
-                                    ? vendorLocation.label ||
-                                      vendorLocation.address?.city
-                                    : ''}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        'Select a vendor'
-                    )}
-                </Button>
-            </TableCell>
-
-            <TableCell>
-                <Button
-                    onClick={(event) => {
-                        setClickState({
-                            ...event.currentTarget,
-                            _type: 'content',
-                        });
+                    InputProps={{
+                        ...fieldProps.InputProps,
+                        sx: {
+                            ...(fieldProps.InputProps?.sx || {}),
+                            color: !content.item
+                                ? palette.text.disabled
+                                : undefined,
+                        },
                     }}
-                    variant="text"
-                    color={
-                        !content.item || !content.unit || !content.quantity
-                            ? 'warning'
-                            : 'inherit'
-                    }
-                    sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
                 >
-                    {item && unit && content.quantity ? (
-                        <Box>
-                            <Typography>{item.english}</Typography>
-                            <Typography variant="caption" color="textSecondary">
-                                {`${content.quantity} ${
+                    <MenuItem value="Item" disabled>
+                        Item
+                    </MenuItem>
+                    {items.map((i) => (
+                        <MenuItem key={i._id} value={i._id}>
+                            {i.english}
+                        </MenuItem>
+                    ))}
+                </TextField>
+            </TableCell>
+            <TableCell sx={{ background: palette.background.paper }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ width: 80 }}>
+                        <TextField
+                            placeholder="Qty"
+                            type="number"
+                            value={content.quantity}
+                            onChange={(e) => {
+                                if (!e.target.value)
+                                    setContent({
+                                        ...content,
+                                        quantity: undefined,
+                                    });
+                                else {
+                                    const quantity = parseFloat(e.target.value);
+                                    setContent({ ...content, quantity });
+                                }
+                            }}
+                            {...fieldProps}
+                        />
+                    </Box>
+                    <TextField
+                        placeholder="Unit"
+                        {...fieldProps}
+                        select
+                        value={content.unit || 'Unit'}
+                        onChange={(e) => {
+                            setContent({
+                                ...content,
+                                unit:
+                                    e.target.value == 'Unit'
+                                        ? undefined
+                                        : e.target.value,
+                            });
+                        }}
+                        InputProps={{
+                            ...fieldProps.InputProps,
+                            sx: {
+                                ...(fieldProps.InputProps?.sx || {}),
+                                color: !content.unit
+                                    ? palette.text.disabled
+                                    : undefined,
+                            },
+                        }}
+                    >
+                        <MenuItem value="Unit" disabled>
+                            Unit
+                        </MenuItem>
+                        {units.map((unit) => (
+                            <MenuItem key={unit._id} value={unit._id}>
+                                {
                                     unit[
                                         content.quantity == 1
                                             ? 'english'
                                             : 'english_plural'
                                     ]
-                                }`}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        'Specify contents'
-                    )}
-                </Button>
+                                }
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Box>
             </TableCell>
-
-            <TableCell>
-                <Button
-                    onClick={(event) => {
-                        setClickState({
-                            ...event.currentTarget,
-                            _type: 'destination',
+            <TableCell sx={{ background: palette.tonal }}>
+                <TextField
+                    placeholder="Vendor"
+                    {...fieldProps}
+                    InputProps={{
+                        ...fieldProps.InputProps,
+                        sx: {
+                            ...(fieldProps.InputProps?.sx || {}),
+                            color: !content.vendor
+                                ? palette.text.disabled
+                                : undefined,
+                        },
+                    }}
+                    select
+                    value={content.vendor || 'Vendor'}
+                    onChange={(e) => {
+                        setContent({
+                            ...content,
+                            vendor:
+                                e.target.value == 'Vendor'
+                                    ? undefined
+                                    : e.target.value,
                         });
                     }}
-                    variant="text"
-                    color={!content.location ? 'warning' : 'inherit'}
-                    sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
                 >
-                    {destination ? (
-                        <Box>
-                            <Typography>
-                                {destination.label ||
-                                    destination.address?.city ||
-                                    'Unknown location'}
-                            </Typography>
-                        </Box>
-                    ) : (
-                        'Select a destination'
-                    )}
-                </Button>
+                    <MenuItem value="Vendor" disabled>
+                        Vendor
+                    </MenuItem>
+                    {companies.map((i) => (
+                        <MenuItem key={i._id} value={i._id}>
+                            {i.name}
+                        </MenuItem>
+                    ))}
+                </TextField>
             </TableCell>
-            <TableCell sx={{ width: 120 }}>
+            <TableCell sx={{ background: palette.tonal }}>
+                <CodeField
+                    naked
+                    disabled={false}
+                    type={CodeType.PO}
+                    value={content.order_code || ''}
+                    onChange={(order_code) => {
+                        setContent({ ...content, order_code });
+                    }}
+                />
+            </TableCell>
+            <TableCell sx={{ background: palette.tonal }}>
+                <LocationField
+                    mine
+                    naked
+                    value={content.location || ''}
+                    onChange={(val) => {
+                        setContent({
+                            ...content,
+                            location: val || undefined,
+                        });
+                    }}
+                />
+            </TableCell>
+            <TableCell sx={{ background: palette.tonal }}>
                 <DateField
                     naked
                     value={content.date || null}
@@ -226,7 +299,7 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                     }}
                 />
             </TableCell>
-            <TableCell sx={{ width: 120 }}>
+            <TableCell sx={{ width: 120, background: palette.tonal }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Switch
                         checked={content.time_sensitive}
@@ -252,98 +325,11 @@ const QueueLine = (props: QueueLineProps): ReactElement => {
                     </Collapse>
                 </Box>
             </TableCell>
-            <TableCell>
+            <TableCell sx={{ background: palette.tonal }}>
                 <IconButton onClick={() => drop()}>
                     <MdDelete />
                 </IconButton>
             </TableCell>
-            <ResponsiveDialog
-                open={Boolean(clickState)}
-                onClose={() => setClickState(null)}
-            >
-                <Box>
-                    {!clickState ? (
-                        ''
-                    ) : clickState._type == 'content' ? (
-                        <Box>
-                            <FormRow>
-                                <ItemField
-                                    value={content.item || ''}
-                                    onChange={(val) => {
-                                        setContent({
-                                            ...content,
-                                            item: val || undefined,
-                                        });
-                                    }}
-                                />
-                            </FormRow>
-                            <FormRow>
-                                <NumberField
-                                    value={
-                                        content.quantity == undefined
-                                            ? null
-                                            : content.quantity
-                                    }
-                                    label="Quantity"
-                                    onChange={(val) => {
-                                        setContent({
-                                            ...content,
-                                            quantity: val || undefined,
-                                        });
-                                    }}
-                                />
-                                <UnitField
-                                    value={content.unit || ''}
-                                    onChange={(val) => {
-                                        setContent({
-                                            ...content,
-                                            unit: val || undefined,
-                                        });
-                                    }}
-                                />
-                            </FormRow>
-                        </Box>
-                    ) : clickState._type == 'vendor' ? (
-                        <Box>
-                            <FormRow>
-                                <CompanyField
-                                    value={content.vendor || ''}
-                                    onChange={(val) => {
-                                        setContent({
-                                            ...content,
-                                            vendor: val || undefined,
-                                            vendor_location: undefined,
-                                        });
-                                    }}
-                                />
-                            </FormRow>
-                            <LocationField
-                                company={content.vendor || ''}
-                                value={content.vendor_location || ''}
-                                onChange={(val) => {
-                                    setContent({
-                                        ...content,
-                                        vendor_location: val || '',
-                                    });
-                                }}
-                            />
-                        </Box>
-                    ) : (
-                        <Box>
-                            <LocationField
-                                mine
-                                value={content.location || ''}
-                                onChange={(val) => {
-                                    setContent({
-                                        ...content,
-                                        location: val || undefined,
-                                    });
-                                }}
-                            />
-                        </Box>
-                    )}
-                </Box>
-            </ResponsiveDialog>
         </TableRow>
     );
 };

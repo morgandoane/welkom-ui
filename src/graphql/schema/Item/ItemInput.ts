@@ -10,6 +10,7 @@ export interface CreateItemInput {
     default_unit?: string;
     type?: ItemType | null;
     upc?: string | null;
+    category?: string | null;
 }
 
 export interface UpdateItemInput {
@@ -22,4 +23,5 @@ export interface UpdateItemInput {
     unit_class?: UnitClass;
     type?: ItemType | null;
     upc?: string | null;
+    category?: string | null;
 }

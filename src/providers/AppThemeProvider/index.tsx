@@ -21,6 +21,13 @@ declare module '@mui/material/styles' {
     interface TypographyVariantsOptions {
         crisp?: React.CSSProperties;
     }
+
+    interface Palette {
+        tonal: string;
+    }
+    interface PaletteOptions {
+        tonal: string;
+    }
 }
 
 // Update the Typography's variant prop options
@@ -50,6 +57,7 @@ export const getTheme = (mode: 'light' | 'dark'): Theme => {
             primary: {
                 main: '#2C52F5',
             },
+            tonal: mode == 'dark' ? '#1A1A1A' : '#FDFDFD',
             background: background[mode],
             success: {
                 main: '#2E8C41',

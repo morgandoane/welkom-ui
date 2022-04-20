@@ -24,6 +24,7 @@ import { dateFormats } from '../../../../../../../../utils/dateFormats';
 import { MdRefresh } from 'react-icons/md';
 import UnitField from '../../../../../../../../components/Forms/components/UnitField';
 import CompanyField from '../../../../../../../../components/Forms/components/CompanyField';
+import ItemCategoryField from '../../../../../../../../components/Forms/components/ItemCategoryField';
 
 export interface ItemDetailsProps {
     item: Item;
@@ -57,6 +58,12 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
             <Details gap={4}>
                 {[
                     { key: 'Name', value: item.english },
+                    {
+                        key: 'Category',
+                        value: item.category
+                            ? item.category.label
+                            : 'Uncategorized',
+                    },
                     { key: 'Created by', value: item.created_by.name },
                     {
                         key: 'Date created',
@@ -130,6 +137,9 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                     item.default_unit?._id || undefined,
                                 upc: item.upc,
                                 to_base_unit: item.to_base_unit,
+                                category: item.category
+                                    ? item.category._id
+                                    : null,
                             },
                         });
                     }}
@@ -164,6 +174,24 @@ const ItemDetails = (props: ItemDetailsProps): ReactElement => {
                                     data: { ...state.data, english: val || '' },
                                 });
                         }}
+                    />
+                </FormRow>
+                <FormRow>
+                    <ItemCategoryField
+                        onChange={(category) => {
+                            if (state)
+                                setState({
+                                    ...state,
+                                    data: { ...state.data, category },
+                                });
+                        }}
+                        value={
+                            state
+                                ? state.data.category === null
+                                    ? null
+                                    : state.data.category || null
+                                : null
+                        }
                     />
                 </FormRow>
                 {item && item.type === ItemType.Product && (

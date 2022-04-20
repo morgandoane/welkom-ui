@@ -69,26 +69,30 @@ const OrderQueueTable = (props: OrderQueueTableProps): ReactElement => {
                         sx={{ background: palette.background.paper }}
                     ></TableCell>
                     <TableCell sx={{ background: palette.background.paper }}>
-                        PO
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Vendor
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Contents
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Destination
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Date
-                    </TableCell>
-                    <TableCell sx={{ background: palette.background.paper }}>
-                        Time
+                        Item
                     </TableCell>
                     <TableCell
-                        sx={{ background: palette.background.paper }}
-                    ></TableCell>
+                        sx={{
+                            background: palette.background.paper,
+                            width: 180,
+                        }}
+                    >
+                        Quantity
+                    </TableCell>
+                    <TableCell sx={{ background: palette.tonal }}>
+                        Vendor
+                    </TableCell>
+                    <TableCell sx={{ background: palette.tonal }}>PO</TableCell>
+                    <TableCell sx={{ background: palette.tonal }}>
+                        Destination
+                    </TableCell>
+                    <TableCell sx={{ background: palette.tonal }}>
+                        Date
+                    </TableCell>
+                    <TableCell sx={{ background: palette.tonal }}>
+                        Time
+                    </TableCell>
+                    <TableCell sx={{ background: palette.tonal }}></TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>

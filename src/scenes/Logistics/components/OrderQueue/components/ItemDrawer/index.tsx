@@ -1,9 +1,11 @@
 import {
     Box,
+    Chip,
     InputAdornment,
     List,
     ListItem,
     ListItemText,
+    Stack,
     TextField,
     useTheme,
 } from '@mui/material';
@@ -12,8 +14,10 @@ import { MdSearch } from 'react-icons/md';
 import ColumnBox from '../../../../../../components/Layout/ColumnBox';
 import PanelHeader from '../../../../../../components/PanelComponents/PanelHeader';
 import SideDrawer from '../../../../../../components/SideDrawer';
+import { useItemCategories } from '../../../../../../graphql/queries/itemCategories/useItemCategories';
 import { useTinyItems } from '../../../../../../graphql/queries/items/useTinyItems';
 import { TinyItem } from '../../../../../../graphql/schema/Item/Item';
+import { ItemFilter } from '../../../../../../graphql/schema/Item/ItemFilter';
 import { OrderQueueContentInput } from '../../../../../../graphql/schema/OrderQueue/OrderQueueInput';
 
 export interface ItemDrawerProps {
@@ -29,12 +33,14 @@ const ItemDrawer = (props: ItemDrawerProps): ReactElement => {
 
     const [search, setSearch] = React.useState('');
 
+    const [filter, setFilter] = React.useState<ItemFilter>({
+        skip: 0,
+        take: 200,
+    });
+
     const { data } = useTinyItems({
         variables: {
-            filter: {
-                skip: 0,
-                take: 200,
-            },
+            filter,
         },
     });
 
@@ -43,6 +49,10 @@ const ItemDrawer = (props: ItemDrawerProps): ReactElement => {
     const filtered = items.filter((item) =>
         item.english.toLowerCase().includes(search.toLowerCase())
     );
+
+    const { data: catData } = useItemCategories();
+
+    const cats = catData ? catData.itemCategories : [];
 
     return (
         <SideDrawer disable_padding open={open} onClose={onClose}>
@@ -57,6 +67,35 @@ const ItemDrawer = (props: ItemDrawerProps): ReactElement => {
                             }}
                         >
                             <PanelHeader>Add items</PanelHeader>
+                            <Stack
+                                sx={{ paddingBottom: 2 }}
+                                direction="row"
+                                spacing={1}
+                            >
+                                {cats.map((cat) => (
+                                    <Chip
+                                        label={cat.label}
+                                        key={'chip_' + cat._id}
+                                        color={
+                                            filter.category === cat._id
+                                                ? 'primary'
+                                                : undefined
+                                        }
+                                        onClick={() => {
+                                            if (filter.category === cat._id)
+                                                setFilter({
+                                                    ...filter,
+                                                    category: undefined,
+                                                });
+                                            else
+                                                setFilter({
+                                                    ...filter,
+                                                    category: cat._id,
+                                                });
+                                        }}
+                                    />
+                                ))}
+                            </Stack>
                             <TextField
                                 InputProps={{
                                     disableUnderline: true,

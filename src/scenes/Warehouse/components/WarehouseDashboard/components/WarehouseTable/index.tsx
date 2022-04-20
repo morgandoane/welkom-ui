@@ -141,6 +141,19 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         }}
                                     />
                                 ),
+                                Lots: (
+                                    <SearchField
+                                        label="Lot #"
+                                        naked
+                                        value={filter.lot_code || ''}
+                                        onChange={(val) => {
+                                            setFilter({
+                                                ...filter,
+                                                lot_code: val,
+                                            });
+                                        }}
+                                    />
+                                ),
                                 BOL: (
                                     <SearchField
                                         label="BOL Number"
@@ -285,6 +298,10 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                 PO: (bol) =>
                                     bol.orders.map((o) => o.code).join(', '),
                                 BOL: (bol) => bol.code || '',
+                                Items: (bol) =>
+                                    bol.contents
+                                        .map((c) => c.item.english)
+                                        .join(', '),
                                 Vendor: (bol) => (
                                     <Box>
                                         <Typography variant="body2">
@@ -303,23 +320,29 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         )}
                                     </Box>
                                 ),
-                                Customer: (bol) => (
-                                    <Box>
-                                        <Typography variant="body2">
-                                            {bol.to.company.name}
-                                        </Typography>
-                                    </Box>
-                                ),
                                 Destination: (bol) =>
                                     bol.to.location
                                         ? bol.to.location.label ||
                                           bol.to.location.address?.city ||
                                           'unkown location'
                                         : '',
-                                Items: (bol) =>
-                                    bol.contents
-                                        .map((c) => c.item.english)
-                                        .join(', '),
+                                Lots: (bol) => {
+                                    const fulfillments =
+                                        bol[
+                                            view == 'receiving'
+                                                ? 'receipts'
+                                                : 'shipments'
+                                        ];
+
+                                    const lots = fulfillments
+                                        .map((f) => f.lots)
+                                        .flat()
+                                        .map((l) => l.contents)
+                                        .flat()
+                                        .map((c) => c.lot.code);
+
+                                    return lots.join(', ');
+                                },
                                 Verified: (bol) => {
                                     const fulfillments =
                                         bol[
@@ -356,7 +379,7 @@ const WarehouseTable = (props: WarehouseTableProps): ReactElement => {
                                         </Box>
                                     );
                                 },
-                                ...accountingFields(),
+                                // ...accountingFields(),
                                 [view == 'receiving'
                                     ? 'Received by'
                                     : 'Shipped by']: (bol) =>

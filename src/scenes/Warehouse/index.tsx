@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import BolForm from '../../components/Forms/BolForm';
+import FlashFulfillment from './components/FlashFulfillment';
 import WarehouseDashboard from './components/WarehouseDashboard';
 import FulfillmentDetail from './components/WarehouseDashboard/components/FulfillmentDetail';
 import FulfillmentForm from './components/WarehouseDashboard/components/FulfillmentForm';
@@ -14,6 +15,7 @@ const Warehouse = (): ReactElement => {
                 path="receiving"
                 element={<WarehouseDashboard view="receiving" />}
             />
+            {/* <Route path="receiving/flash" element={<FlashFulfillment />} /> */}
             <Route
                 path="shipping"
                 element={<WarehouseDashboard view="shipping" />}
