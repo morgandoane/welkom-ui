@@ -1,11 +1,10 @@
-import { AppFileFragment } from '../../schema/AppFile/AppFile';
-import { BaseFragment } from '../../fragments/BaseFragment';
 import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
-import { Item } from '../../schema/Item/Item';
+import { Item, ItemFragment } from '../../schema/Item/Item';
+import { BaseFragment } from '../../schema/Base/Base';
 
 export const ItemQuery = gql`
     ${BaseFragment}
-    ${AppFileFragment}
+    ${ItemFragment}
     query ItemQuery($id: ObjectId!) {
         item(id: $id) {
             ...ItemFragment

@@ -1,9 +1,15 @@
-import { TinyCompany } from './../../schema/Company/Company';
+import {
+    TinyCompany,
+    TinyCompanyFragment,
+} from './../../schema/Company/Company';
 import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
 import { PaginationResult } from '../../schema/Pagination/Pagination';
 import { CompanyFilter } from '../../schema/Company/inputs/CompanyFilter';
+import { TinyBaseFragment } from '../../schema/Base/Base';
 
 export const TinyCompanies = gql`
+    ${TinyBaseFragment}
+    ${TinyCompanyFragment}
     query TinyCompanies($filter: CompanyFilter!) {
         companies(filter: $filter) {
             count

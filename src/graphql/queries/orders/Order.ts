@@ -1,24 +1,11 @@
-import { TinyOrderFragment } from './useOrders';
-import { VerificationFragment } from './../../schema/Verification/Verification';
-import { FulfillmentFragment } from './../../schema/Fulfillment/Fulfillment';
-import { BolFragment } from './../../schema/Bol/Bol';
-import { ItineraryFragment } from './../../schema/Itinerary/Itinerary';
-import { AppFileFragment } from './../../schema/AppFile/AppFile';
-import { OrderFragment } from './OrderFragment';
 import { getQueryHook } from './../../types';
-import { Order } from './../../schema/Order/Order';
-import { BaseFragment } from './../../fragments/BaseFragment';
+import { Order, OrderFragment } from './../../schema/Order/Order';
 import { gql } from '@apollo/client';
+import { BaseFragment } from '../../schema/Base/Base';
 
 export const OrderQuery = gql`
     ${BaseFragment}
     ${OrderFragment}
-    ${BolFragment}
-    ${AppFileFragment}
-    ${ItineraryFragment}
-    ${FulfillmentFragment}
-    ${VerificationFragment}
-    ${TinyOrderFragment}
     query OrderQuery($id: ObjectId!) {
         order(id: $id) {
             ...OrderFragment

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
-import { TinyBol } from '../../queries/bols/useTinyBols';
 import { Base, TinyBase } from '../Base/Base';
+import { TinyBol } from '../Bol/Bol';
 import { Expense } from '../Expense/Expense';
 import { ItineraryDocumentation } from './ItineraryDocumentation';
 

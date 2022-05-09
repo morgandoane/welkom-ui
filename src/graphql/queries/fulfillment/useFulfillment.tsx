@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
-import { BaseFragment } from '../../fragments/BaseFragment';
 import { AppFileFragment } from '../../schema/AppFile/AppFile';
+import { BaseFragment } from '../../schema/Base/Base';
 import {
     Fulfillment,
     FulfillmentFragment,

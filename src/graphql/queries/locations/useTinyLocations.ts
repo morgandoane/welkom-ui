@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { TinyBaseFragment } from '../../schema/Base/Base';
 import { LocationFilter } from '../../schema/Location/inputs/LocationFilter';
 import {
     TinyLocation,
@@ -8,6 +9,7 @@ import { PaginationResult } from '../../schema/Pagination/Pagination';
 import { getQueryHook } from './../../types';
 
 export const TinyLocations = gql`
+    ${TinyBaseFragment}
     ${TinyLocationFragment}
     query TinyLocations($filter: LocationFIlter!) {
         locations(filter: $filter) {

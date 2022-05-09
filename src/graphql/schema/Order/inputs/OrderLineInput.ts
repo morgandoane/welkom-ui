@@ -1,22 +1,7 @@
-import { AppointmentInput } from '@src/schema/Appointment/AppointmentInput';
-import { ContentInput } from '@src/schema/Content/ContentInput';
-import { Field, InputType } from 'type-graphql';
-import { OrderLine } from '../OrderLine';
+import { AppointmentInput } from '../../Appointment/AppointmentInput';
+import { ContentInput } from '../../Content/ContentInput';
 
-@InputType()
-export class OrderLineInput {
-    @Field(() => AppointmentInput)
-    appointment!: AppointmentInput;
-
-    @Field(() => [ContentInput])
-    contents!: ContentInput[];
-
-    public async validateOrderLine(): Promise<OrderLine> {
-        return {
-            ...this,
-            contents: await Promise.all(
-                this.contents.map((content) => content.validateContentInput())
-            ),
-        };
-    }
+export interface OrderLineInput {
+    appointment: AppointmentInput;
+    contents: ContentInput[];
 }

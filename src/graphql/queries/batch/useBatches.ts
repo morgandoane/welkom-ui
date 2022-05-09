@@ -1,15 +1,13 @@
 import { getQueryHook } from './../../types';
 import { TinyBatch, TinyBatchFragment } from './../../schema/Batch/Batch';
 import { gql } from '@apollo/client';
-import { TinyItemFragment } from '../items/useTinyItems';
-import { TinyLocationFragment } from '../locations/useTinyLocations';
 import { PaginationResult } from '../../schema/Pagination/Pagination';
 import { BatchFilter } from '../../schema/Batch/inputs/BatchFilter';
+import { TinyBaseFragment } from '../../schema/Base/Base';
 
 export const BatchesQuery = gql`
+    ${TinyBaseFragment}
     ${TinyBatchFragment}
-    ${TinyItemFragment}
-    ${TinyLocationFragment}
     query BatchesQuery($filter: BatchFilter!) {
         batches(filter: $filter) {
             count

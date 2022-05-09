@@ -1,10 +1,14 @@
-import { OrderQueueContentFragment } from '../../schema/OrderQueue/OrderQueueContentFragment';
 import { gql } from '@apollo/client';
 import { getQueryHook } from '../../types';
-import { OrderQueue } from '../../schema/OrderQueue/OrderQueue';
+import {
+    OrderQueue,
+    OrderQueueFragment,
+} from '../../schema/OrderQueue/OrderQueue';
+import { OrderQueueLineFragment } from '../../schema/OrderQueue/OrderQueueLine';
 
 export const OrderQueueQuery = gql`
-    ${OrderQueueContentFragment}
+    ${OrderQueueFragment}
+    ${OrderQueueLineFragment}
     query OrderQueueQuery {
         orderQueue {
             _id
