@@ -1,14 +1,17 @@
 import { getQueryHook } from './../../types';
-import { ItineraryFilter } from './../../schema/Itinerary/ItineraryFilter';
-import { ItineraryList } from './../../schema/Itinerary/ItineraryList';
 import { gql } from '@apollo/client';
 import { BaseFragment } from '../../fragments/BaseFragment';
 import { AppFileFragment } from '../../schema/AppFile/AppFile';
 import { BolFragment } from '../../schema/Bol/Bol';
 import { FulfillmentFragment } from '../../schema/Fulfillment/Fulfillment';
-import { ItineraryFragment } from '../../schema/Itinerary/Itinerary';
+import {
+    ItineraryFragment,
+    TinyItinerary,
+} from '../../schema/Itinerary/Itinerary';
 import { VerificationFragment } from '../../schema/Verification/Verification';
 import { TinyOrderFragment } from '../orders/useOrders';
+import { ItineraryFilter } from '../../schema/Itinerary/inputs/ItineraryFilter';
+import { PaginationResult } from '../../schema/Pagination/Pagination';
 
 export const ItinerariesQuery = gql`
     ${BaseFragment}
@@ -29,7 +32,7 @@ export const ItinerariesQuery = gql`
 `;
 
 export interface ItinerariesRes {
-    itineraries: ItineraryList;
+    itineraries: PaginationResult<TinyItinerary>;
 }
 
 export interface ItinerariesArgs {

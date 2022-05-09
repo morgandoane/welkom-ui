@@ -1,28 +1,23 @@
-import { TinyUnit } from './../Unit/Unit';
-import { TinyItem } from './../Item/Item';
-import { Lot } from '../Lot/Lot';
-import { TinyLocation } from '../../queries/locations/useTinyLocations';
+import { gql } from '@apollo/client';
+import { TinyItem } from '../Item/Item';
+import { TinyUnit } from '../Unit/Unit';
 
 export interface Content {
-    quantity: number;
-    unit: TinyUnit;
-}
-
-export interface ItemContent extends Content {
     item: TinyItem;
+    client_unit: TinyUnit;
+    client_qty: number;
+    base_qty: number;
 }
 
-export type BolItemContent = ItemContent;
-
-export interface ItemPluralContent extends Content {
-    items: TinyItem[];
-}
-
-export interface OrderContent extends ItemContent {
-    location: TinyLocation;
-    due: Date;
-}
-
-export interface LotContent extends Content {
-    lot: Lot;
-}
+export const ContentFragment = gql`
+    fragment ContentFragment on Content {
+        item {
+            ...TinyItemFragment
+        }
+        client_unit {
+            ...TinyUnitFragment
+        }
+        client_qty
+        base_qty
+    }
+`;

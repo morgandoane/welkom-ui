@@ -1,83 +1,61 @@
-import { TinyItemFragment } from './../../queries/items/useTinyItems';
-import { BaseFragment } from './../../fragments/BaseFragment';
-import {
-    ProductionLine,
-    ProductionLineFragment,
-} from './../ProductionLine/ProductionLine';
-import { TinyProfile } from './../Profile/Profile';
-import { TinyItem } from './../Item/Item';
-import { TinyLocation } from './../../queries/locations/useTinyLocations';
-import { ProceduralLot } from './../Lot/extensions/ProceduralLot/ProceduralLot';
-import {
-    RecipeVersion,
-    RecipeVersionFragment,
-} from './../RecipeVersion/RecipeVersion';
-import { Base } from './../Base/Base';
+import { Base, TinyBase } from '../Base/Base';
 import { TinyLot } from '../Lot/Lot';
+import { TinyLocation } from '../Location/Location';
+import { BatchContent } from './BatchContent';
+import { BatchStatus } from './BatchStatus';
+import { TinyRecipeVersion } from '../RecipeVersion/RecipeVersion';
 import { gql } from '@apollo/client';
 
 export interface Batch extends Base {
-    date_completed?: Date;
-    recipe_version: RecipeVersion;
-    lot: ProceduralLot;
-    production_line?: ProductionLine;
-    item: TinyItem;
+    status: BatchStatus;
     location: TinyLocation;
+    recipe_version: TinyRecipeVersion;
+    lot: TinyLot;
+    contents: BatchContent[];
+}
+
+export interface TinyBatch extends TinyBase {
+    status: BatchStatus;
+    location: TinyLocation;
+    recipe_version: TinyRecipeVersion;
+    lot: TinyLot;
+    contents: BatchContent[];
 }
 
 export const BatchFragment = gql`
     fragment BatchFragment on Batch {
         ...BaseFragment
-        date_completed
-        lot {
-            ...ProceduralLotFragment
-        }
-        production_line {
-            ...ProductionLineFragment
-        }
+        status
         location {
             ...TinyLocationFragment
         }
         recipe_version {
-            ...RecipeVersionFragment
+            ...TinyRecipeVersionFragment
         }
-        item {
-            ...TinyItemFragment
+        lot {
+            ...TinyLotFragment
+        }
+        contents {
+            ...BatchContentFragment
         }
     }
 `;
 
-export interface TinyBatch {
-    _id: string;
-    created_by: TinyProfile;
-    date_created: Date;
-    date_completed: Date | null;
-    lot: TinyLot;
-    production_line: ProductionLine | null;
-    location: TinyLocation | null;
-}
-
 export const TinyBatchFragment = gql`
     fragment TinyBatchFragment on Batch {
-        _id
-        created_by {
-            user_id
-            email
-            name
-            picture
-            given_name
-            family_name
-        }
-        date_created
-        date_completed
-        lot {
-            ...TinyProceduralLotFragment
-        }
-        production_line {
-            ...ProductionLineFragment
-        }
+        ...TinyBaseFragment
+        status
         location {
             ...TinyLocationFragment
+        }
+        recipe_version {
+            ...TinyRecipeVersionFragment
+        }
+        lot {
+            ...TinyLotFragment
+        }
+        contents {
+            ...BatchContentFragment
         }
     }
 `;

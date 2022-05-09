@@ -1,145 +1,79 @@
-import { FulfillmentType } from './../Fulfillment/Fulfillment';
-import { TinyProfile } from './../Profile/Profile';
 import { gql } from '@apollo/client';
-import { TinyLocation } from './../../queries/locations/useTinyLocations';
-import { TinyCompany } from './../Company/Company';
-import { Base } from '../Base/Base';
-import { Fulfillment } from '../Fulfillment/Fulfillment';
-import { BolItemContent } from '../Content/Content';
-
-export enum BolStatus {
-    Pending = 'Pending',
-    Partial = 'Partial',
-    Complete = 'Complete',
-}
-
-export interface BolAppointment {
-    _id: string;
-    location?: TinyLocation | null;
-    company: TinyCompany;
-    date: Date;
-}
-
-export interface BolOrder {
-    _id: string;
-    code: string;
-}
-
-export interface BolItinerary {
-    _id: string;
-    code: string;
-    carrier?: TinyCompany | null;
-    orders: BolOrder[];
-}
-
-export interface BolSignature {
-    profile: TinyProfile;
-    fulfillment_type: FulfillmentType;
-    confidence: number;
-}
+import { Appointment } from '../Appointment/Appointment';
+import { Base, TinyBase } from '../Base/Base';
+import { Content } from '../Content/Content';
+import { Expense } from '../Expense/Expense';
+import { BolItinerary } from '../Itinerary/Itinerary';
+import { BolDocumentation } from './BolDocumentation';
 
 export interface Bol extends Base {
     itinerary: BolItinerary;
-    code?: string | null;
-    seal?: string | null;
-    status: BolStatus;
-    from: BolAppointment;
-    to: BolAppointment;
-    contents: BolItemContent[];
-    shipments: Fulfillment[];
-    receipts: Fulfillment[];
-    orders: BolOrder[];
+    from: Appointment;
+    to: Appointment;
+    contents: Content[];
+    documentation: BolDocumentation | null;
+    itinerary_expenses: Expense[];
+    lot_codes: string[];
 }
+
+export interface TinyBol extends TinyBase {
+    itinerary: BolItinerary;
+    from: Appointment;
+    to: Appointment;
+    contents: Content[];
+    documentation: BolDocumentation | null;
+    itinerary_expenses: Expense[];
+    lot_codes: string[];
+}
+
+export type FulfillmentBol = TinyBol;
 
 export const BolFragment = gql`
     fragment BolFragment on Bol {
-        _id
-        seal
-        signatures {
-            profile {
-                user_id
-                picture
-                name
-                email
-                given_name
-                family_name
-            }
-            fulfillment_type
-            confidence
-        }
+        ...BaseFragment
         itinerary {
-            _id
-            code
-            carrier {
-                _id
-                name
-            }
-            orders {
-                _id
-                code
-            }
+            ...TinyItineraryFragment
         }
-        orders {
-            _id
-            code
-        }
-        date_created
-        deleted
-        status
-        code
         from {
-            _id
-            date
-            company {
-                _id
-                name
-            }
-            location {
-                _id
-                label
-                address {
-                    city
-                }
-            }
+            ...AppointmentFragment
         }
         to {
-            _id
-            date
-            company {
-                _id
-                name
-            }
-            location {
-                _id
-                label
-                address {
-                    city
-                }
-            }
+            ...AppointmentFragment
         }
         contents {
-            quantity
-            item {
-                _id
-                unit_class
-                english
-                spanish
-            }
-            unit {
-                _id
-                class
-                english
-                spanish
-                english_plural
-                spanish_plural
-                base_per_unit
-            }
+            ...BolContentFragment
         }
-        shipments {
-            ...FulfillmentFragment
+        documentation {
+            ...BolDocumentationFragment
         }
-        receipts {
-            ...FulfillmentFragment
+        itinerary_expenses {
+            ...ExpenseFragment
         }
+        lot_codes
+    }
+`;
+
+export const TinyBolFragment = gql`
+    fragment TinyBolFragment on Bol {
+        ...TinyBaseFragment
+        itinerary {
+            ...TinyItineraryFragment
+        }
+        from {
+            ...AppointmentFragment
+        }
+        to {
+            ...AppointmentFragment
+        }
+        contents {
+            ...BolContentFragment
+        }
+        documentation {
+            ...BolDocumentationFragment
+        }
+        itinerary_expenses {
+            ...ExpenseFragment
+        }
+        lot_codes
     }
 `;

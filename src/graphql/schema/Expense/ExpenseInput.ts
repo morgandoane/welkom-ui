@@ -1,20 +1,12 @@
-import { Expense, ExpenseKey } from './Expense';
+import { Ref } from '../../types';
+import { Company } from '../Company/Company';
+import { ExpenseClass } from './ExpenseClass';
 
-export interface CreateExpenseInput {
+export interface ExpenseInput {
+    customer: Ref<Company>;
+    vendor: Ref<Company>;
+    class: ExpenseClass;
     amount: number;
-    key: ExpenseKey;
-    against: string;
-    customer: string;
-    vendor: string;
     invoice?: string;
-    note?: string;
-}
-
-export interface UpdateExpenseInput {
-    deleted?: boolean;
-    amount?: number;
-    customer?: string;
-    vendor?: string;
-    invoice?: string;
-    note?: string;
+    comment?: string;
 }

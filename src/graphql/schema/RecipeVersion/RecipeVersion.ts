@@ -1,36 +1,46 @@
-import { TinyItemFragment } from './../../queries/items/useTinyItems';
-import { TinyItem } from './../Item/Item';
 import { gql } from '@apollo/client';
-import { RecipeSection } from './../RecipeStep/RecipeStep';
-import { Base } from './../Base/Base';
+import { TinyRecipe } from '../../queries/recipe/useTinyRecipe';
+import { Base, TinyBase } from '../Base/Base';
+import { RecipeSection } from '../RecipeSection/RecipeSection';
 
 export interface RecipeVersion extends Base {
-    recipe: {
-        _id: string;
-        name: string;
-        item: TinyItem;
-    };
+    recipe: TinyRecipe;
     sections: RecipeSection[];
     parameters: string[];
-    base_units_produced: number;
-    note?: string;
+    base_qty: number;
+}
+
+export interface TinyRecipeVersion extends TinyBase {
+    recipe: TinyRecipe;
+    sections: RecipeSection[];
+    parameters: string[];
+    base_qty: number;
 }
 
 export const RecipeVersionFragment = gql`
     fragment RecipeVersionFragment on RecipeVersion {
         ...BaseFragment
         recipe {
-            _id
-            name
-            item {
-                ...TinyItemFragment
-            }
+            ...TinyRecipeFragment
         }
         sections {
             ...RecipeSectionFragment
         }
         parameters
-        base_units_produced
-        note
+        base_qty
+    }
+`;
+
+export const TinyRecipeVersionFragment = gql`
+    fragment TinyRecipeVersionFragment on RecipeVersion {
+        ...TinyBaseFragment
+        recipe {
+            ...TinyRecipeFragment
+        }
+        sections {
+            ...RecipeSectionFragment
+        }
+        parameters
+        base_qty
     }
 `;

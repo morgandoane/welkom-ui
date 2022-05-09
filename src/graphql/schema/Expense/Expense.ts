@@ -1,26 +1,32 @@
-import { TinyCompany } from './../Company/Company';
-import { Base } from '../Base/Base';
+import { TinyCompany } from '../Company/Company';
+import { Itinerary } from '../Itinerary/Itinerary';
+import { Fulfillment } from '../Fulfillment/Fulfillment';
+import { ExpenseClass } from './ExpenseClass';
+import { Ref } from '../../types';
+import { gql } from '@apollo/client';
 
-export enum ExpenseKey {
-    Bol = 'Bol',
-    Itinerary = 'Itinerary',
-    Lot = 'Lot',
-    Order = 'Order',
-}
-
-export const expenseLabels: Record<ExpenseKey, string> = {
-    [ExpenseKey.Lot]: 'Item Procurement',
-    [ExpenseKey.Bol]: 'Bulk Procurement',
-    [ExpenseKey.Itinerary]: 'Transportation',
-    [ExpenseKey.Order]: 'Product Order',
-};
-
-export interface Expense extends Base {
-    against: string;
-    amount: number;
-    key: ExpenseKey;
+export interface Expense {
+    root: Ref<Itinerary | Fulfillment>;
     customer: TinyCompany;
     vendor: TinyCompany;
-    note?: string | null;
-    invoice?: string | null;
+    class: ExpenseClass;
+    amount: number;
+    invoice?: string;
+    comment?: string;
 }
+
+export const ExpenseFragment = gql`
+    fragment ExpenseFragment on Expense {
+        root
+        customer {
+            ...TinyCompanyFragment
+        }
+        vendor {
+            ...TinyCompanyFragment
+        }
+        class
+        amount
+        invoice
+        comment
+    }
+`;

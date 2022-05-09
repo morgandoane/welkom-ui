@@ -1,45 +1,45 @@
-import { TinyProfile } from './../Profile/Profile';
-import { TinyUnit } from './../Unit/Unit';
-import { TinyCompany } from './../Company/Company';
-import { Conversion } from './../Conversion/Conversion';
-import { AppFile } from '../AppFile/AppFile';
-import { Base } from '../Base/Base';
-import { UnitClass } from '../Unit/Unit';
-import { ItemCategory } from '../../queries/itemCategories/ItemCategory';
-
-export enum ItemType {
-    Product = 'Product',
-    Cookie = 'Cookie',
-}
+import { gql } from '@apollo/client';
+import { Base, TinyBase } from '../Base/Base';
+import { UnitClass } from '../Unit/UnitClass';
 
 export interface Item extends Base {
-    type: ItemType | null;
-    unit_class: UnitClass;
+    tags: string[];
+    identifier?: string;
     english: string;
     spanish: string;
-    files: AppFile[];
-    conversions: Conversion[];
-    default_vendor?: TinyCompany | null;
-    default_unit?: TinyUnit | null;
-    upc: string | null;
-    to_base_unit: number;
-    category: ItemCategory | null;
+    unit_class: UnitClass;
+    conversion: number;
 }
 
-export interface TinyItem {
-    _id: string;
-    type: ItemType | null;
-    unit_class: UnitClass;
+export interface TinyItem extends TinyBase {
+    tags: string[];
+    identifier?: string;
     english: string;
     spanish: string;
-    default_vendor?: TinyCompany | null;
-    default_unit?: TinyUnit | null;
-    order_queue_qty?: number | null;
-    created_by: TinyProfile;
-    modified_by: TinyProfile;
-    date_modified: Date;
-    date_created: Date;
-    to_base_unit: number;
-    upc: string | null;
-    category: ItemCategory | null;
+    unit_class: UnitClass;
+    conversion: number;
 }
+
+export const ItemFragment = gql`
+    fragment ItemFragment on Item {
+        ...BaseFragment
+        tags
+        identifier
+        english
+        spanish
+        unit_class
+        conversion
+    }
+`;
+
+export const TinyItemFragment = gql`
+    fragment TinyItemFragment on Item {
+        ...TinyBaseFragment
+        tags
+        identifier
+        english
+        spanish
+        unit_class
+        conversion
+    }
+`;

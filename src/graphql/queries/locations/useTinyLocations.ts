@@ -1,26 +1,11 @@
-import { ProductionLine } from './../../schema/ProductionLine/ProductionLine';
-import { LocationFIlter as LocationFilter } from './../../schema/Location/LocationFilter';
 import { gql } from '@apollo/client';
+import { LocationFilter } from '../../schema/Location/inputs/LocationFilter';
+import {
+    TinyLocation,
+    TinyLocationFragment,
+} from '../../schema/Location/Location';
+import { PaginationResult } from '../../schema/Pagination/Pagination';
 import { getQueryHook } from './../../types';
-import { Pagination } from '../../schema/Pagination/Pagination';
-
-export const TinyLocationFragment = gql`
-    fragment TinyLocationFragment on Location {
-        _id
-        label
-        address {
-            city
-        }
-        company {
-            _id
-            name
-        }
-        production_lines {
-            _id
-            name
-        }
-    }
-`;
 
 export const TinyLocations = gql`
     ${TinyLocationFragment}
@@ -34,21 +19,8 @@ export const TinyLocations = gql`
     }
 `;
 
-export interface TinyLocation {
-    _id: string;
-    label?: string | null;
-    address?: {
-        city: string;
-    } | null;
-    company: {
-        _id: string;
-        name: string;
-    };
-    production_lines: ProductionLine[];
-}
-
 export interface TinyLocationsRes {
-    locations: Pagination<TinyLocation>;
+    locations: PaginationResult<TinyLocation>;
 }
 
 export interface TinyLocationsArgs {

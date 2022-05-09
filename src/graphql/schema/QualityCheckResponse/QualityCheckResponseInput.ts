@@ -1,4 +1,7 @@
+import { Ref } from '../../types';
+import { QualityCheck } from '../QualityCheck/QualityCheck';
+
 export interface QualityCheckResponseInput {
-    qualityCheck: string;
+    qualityCheck: Ref<QualityCheck>;
     response: string;
 }

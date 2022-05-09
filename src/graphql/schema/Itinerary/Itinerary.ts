@@ -1,34 +1,52 @@
-import { TinyOrder } from './../../queries/orders/useOrders';
-import { TinyCompany } from './../Company/Company';
 import { gql } from '@apollo/client';
-import { Base } from '../Base/Base';
-import { Bol } from '../Bol/Bol';
-import { AppFile } from '../AppFile/AppFile';
+import { TinyBol } from '../../queries/bols/useTinyBols';
+import { Base, TinyBase } from '../Base/Base';
+import { Expense } from '../Expense/Expense';
+import { ItineraryDocumentation } from './ItineraryDocumentation';
 
 export interface Itinerary extends Base {
-    code: string;
-    bols: Bol[];
-    carrier?: TinyCompany | null;
-    orders: TinyOrder[];
-    files: AppFile[];
+    documentation?: ItineraryDocumentation | null;
+    expenses: Expense[];
+    bols: TinyBol[];
+}
+
+export interface BolItinerary extends TinyBase {
+    documentation?: ItineraryDocumentation | null;
+    expenses: Expense[];
+}
+
+export interface TinyItinerary extends TinyBase {
+    documentation?: ItineraryDocumentation | null;
+    expenses: Expense[];
+    bols: TinyBol[];
 }
 
 export const ItineraryFragment = gql`
     fragment ItineraryFragment on Itinerary {
-        ...BaseFragment
-        code
-        carrier {
-            _id
-            name
+        ...Base
+        documentation {
+            ...ItineraryDocumentationFragment
+        }
+        expenses {
+            ...ExpenseFragment
         }
         bols {
-            ...BolFragment
+            ...TinyBolFragment
         }
-        orders {
-            ...TinyOrderFragment
+    }
+`;
+
+export const TinyItineraryFragment = gql`
+    fragment TinyItineraryFragment on Itinerary {
+        ...TinyBase
+        documentation {
+            ...ItineraryDocumentationFragment
         }
-        files {
-            ...AppFileFragment
+        expenses {
+            ...ExpenseFragment
+        }
+        bols {
+            ...TinyBolFragment
         }
     }
 `;

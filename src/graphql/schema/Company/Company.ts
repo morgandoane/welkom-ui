@@ -1,22 +1,33 @@
-import { TinyProfile } from './../Profile/Profile';
-import { AppFile } from './../AppFile/AppFile';
-import { Contact, TinyContact } from './../Contact/Contact';
-import { Base } from '../Base/Base';
-import { Location } from '../Location/Location';
+import { gql } from '@apollo/client';
+import { TinyBase, Base } from '../Base/Base';
+import { CompanyLocation } from '../Location/Location';
 
 export interface Company extends Base {
     name: string;
-    locations: Location[];
-    contacts: Contact[];
-    files: AppFile[];
+    locations: CompanyLocation[];
 }
 
-export interface TinyCompany {
-    _id: string;
+export interface TinyCompany extends TinyBase {
     name: string;
-    created_by: TinyProfile;
-    modified_by?: TinyProfile | null;
-    date_created: Date;
-    date_modified?: Date | null;
-    contacts: TinyContact[];
+    locations: CompanyLocation[];
 }
+
+export const CompanyFragment = gql`
+    fragment CompanyFragment on Company {
+        ...BaseFragment
+        name
+        locations {
+            ...CompanyLocationFragment
+        }
+    }
+`;
+
+export const TinyCompanyFragment = gql`
+    fragment TinyCompanyFragment on Company {
+        ...TinyBaseFragment
+        name
+        locations {
+            ...CompanyLocationFragment
+        }
+    }
+`;

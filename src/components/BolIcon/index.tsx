@@ -8,7 +8,7 @@ import {
     MdWarning,
 } from 'react-icons/md';
 import { TinyBol } from '../../graphql/queries/bols/useTinyBols';
-import { Bol, BolStatus } from '../../graphql/schema/Bol/Bol';
+import { Bol } from '../../graphql/schema/Bol/Bol';
 
 export interface BolIconProps {
     bol: TinyBol | Bol;

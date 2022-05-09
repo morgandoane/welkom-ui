@@ -1,21 +1,19 @@
 import { gql } from '@apollo/client';
-import { Base } from './../Base/Base';
+import { TinyProfile } from '../Profile/Profile';
+import { VerificationState } from './VerificationState';
 
-export enum VerificationStatus {
-    Verified = 'Verified',
-    Warning = 'Warning',
-    Problem = 'Problem',
-}
-
-export interface Verification extends Base {
-    status: VerificationStatus;
-    notes?: string;
+export interface Verification {
+    verified_by: TinyProfile;
+    state: VerificationState;
+    note?: string;
 }
 
 export const VerificationFragment = gql`
     fragment VerificationFragment on Verification {
-        ...BaseFragment
-        status
-        notes
+        verified_by {
+            ...TinyProfileFragment
+        }
+        state
+        note
     }
 `;

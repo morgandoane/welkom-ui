@@ -1,40 +1,39 @@
 import { gql } from '@apollo/client';
-import { ItemPluralContent } from './../Content/Content';
+import { TinyItem } from '../Item/Item';
+import { TinyUnit } from '../Unit/Unit';
+import { RecipeStepType } from './RecipeStepType';
 
-export interface RecipeSection {
+export interface IngredientStep {
     _id: string;
-    label?: string;
-    steps: RecipeStep[];
+    type: RecipeStepType.Ingredient;
+    items: TinyItem[];
+    client_unit: TinyUnit;
+    client_qty: number;
+    base_qty: number;
 }
 
-export interface RecipeStep {
+export interface InstructionStep {
     _id: string;
-    instruction?: string;
-    content?: ItemPluralContent;
+    type: RecipeStepType.Instruction;
+    english: string;
+    spanish: string;
 }
+
+export type RecipeStep = IngredientStep | InstructionStep;
 
 export const RecipeStepFragment = gql`
     fragment RecipeStepFragment on RecipeStep {
         _id
-        instruction
-        content {
-            quantity
-            unit {
-                ...TinyUnitFragment
-            }
-            items {
-                ...TinyItemFragment
-            }
+        type
+        items {
+            ...TinyItemFragment
         }
-    }
-`;
-
-export const RecipeSectionFragment = gql`
-    fragment RecipeSectionFragment on RecipeSection {
-        _id
-        label
-        steps {
-            ...RecipeStepFragment
+        client_unit {
+            ...TinyUnitFragment
         }
+        client_qty
+        base_qty
+        english
+        spanish
     }
 `;

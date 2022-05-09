@@ -1,16 +1,10 @@
 import { getQueryHook } from './../../types';
-import { BaseFragment } from './../../fragments/BaseFragment';
-import { AppProfile, ProfileFragment } from './../profiles/AppProfile';
-import { ProfileIdentifier } from './../../schema/ProfileIdentifier/ProfileIdentifier';
+import { ProfileFragment } from './../profiles/AppProfile';
 import { gql } from '@apollo/client';
-
-export interface ManagedProfile extends AppProfile {
-    identifier: ProfileIdentifier | null;
-}
+import { Profile } from '../../schema/Profile/Profile';
 
 export const ManagedProfile = gql`
     ${ProfileFragment}
-    ${BaseFragment}
     query ManagedProfile($id: String!) {
         profile(id: $id) {
             ...ProfileFragment
@@ -27,7 +21,7 @@ export interface ManagedProfileArgs {
 }
 
 export interface ManagedProfileRes {
-    profile: ManagedProfile;
+    profile: Profile;
 }
 
 export const useManagedProfile = getQueryHook<

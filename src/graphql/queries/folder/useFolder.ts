@@ -1,34 +1,29 @@
 import { TinyUnitFragment } from './../../schema/Unit/Unit';
-import {
-    RecipeSectionFragment,
-    RecipeStepFragment,
-} from './../../schema/RecipeStep/RecipeStep';
+import { RecipeStepFragment } from './../../schema/RecipeStep/RecipeStep';
 import { RecipeVersionFragment } from './../../schema/RecipeVersion/RecipeVersion';
 import { TinyItemFragment } from './../items/useTinyItems';
 import { RecipeFragment } from './../../schema/Recipe/Recipe';
 import { getQueryHook } from './../../types';
 import { BaseFragment } from './../../fragments/BaseFragment';
-import { Folder, FolderFragment } from './../../schema/Folder/Folder';
 import { gql } from '@apollo/client';
+import { RecipeFolder } from '../../schema/RecipeFolder/RecipeFolder';
 
 export const FolderQuery = gql`
     ${BaseFragment}
-    ${FolderFragment}
     ${RecipeFragment}
     ${TinyItemFragment}
     ${RecipeVersionFragment}
-    ${RecipeSectionFragment}
     ${RecipeStepFragment}
     ${TinyUnitFragment}
     query FolderQuery($id: ObjectId) {
-        folder(id: $id) {
+        recipefolder(id: $id) {
             ...FolderFragment
         }
     }
 `;
 
 export interface FolderRes {
-    folder: Folder;
+    recipefolder: RecipeFolder;
 }
 
 export interface FolderArgs {

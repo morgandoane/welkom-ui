@@ -1,6 +1,14 @@
+import { gql } from '@apollo/client';
+import { UserRole } from '../../../auth/UserRole';
+
+export interface UserMetaDataInput {
+    prefers_dark_mode?: boolean;
+    phone_number?: string;
+}
+
 export interface AppMetaData {
-    created_by: string;
-    require_password_rest: boolean;
+    created_by?: string;
+    require_password_reset?: boolean;
 }
 
 export interface UserMetaData {
@@ -26,15 +34,18 @@ export interface ProfileIdentity {
     profileData?: ProfileIdentityData;
 }
 
-export interface Profile {
+export interface TinyProfile {
+    user_id: string;
     email: string;
+    roles: UserRole[];
     name: string;
+}
+
+export interface Profile extends TinyProfile {
     email_verified?: boolean | undefined;
     username?: string | undefined;
     phone_number?: string | undefined;
     phone_verified?: boolean | undefined;
-    user_id?: string | undefined;
-    _id?: string | undefined;
     created_at?: string | undefined;
     updated_at?: string | undefined;
     identities?: ProfileIdentity[] | undefined;
@@ -52,11 +63,32 @@ export interface Profile {
     family_name?: string | undefined;
 }
 
-export interface TinyProfile {
-    user_id: string;
-    email: string;
-    name: string;
-    picture?: string;
-    given_name?: string;
-    family_name?: string;
-}
+export const ProfileFragment = gql`
+    fragment ProfileFragment on Profile {
+        email_verified
+        username
+        phone_number
+        phone_verified
+        created_at
+        updated_at
+        picture
+        nickname
+        multifactor
+        last_ip
+        last_login
+        last_password_reset
+        logins_count
+        blocked
+        given_name
+        family_name
+    }
+`;
+
+export const TinyProfileFragment = gql`
+    fragment TinyProfileFragment on Profile {
+        user_id
+        email
+        roles
+        name
+    }
+`;

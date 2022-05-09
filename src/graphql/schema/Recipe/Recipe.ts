@@ -1,41 +1,42 @@
-import { RecipeVersion } from './../RecipeVersion/RecipeVersion';
-import { RecipeSection } from './../RecipeStep/RecipeStep';
 import { gql } from '@apollo/client';
-import { TinyItem } from './../Item/Item';
-import { Base } from '../Base/Base';
-import { Folder } from '../Folder/Folder';
-import { DateGroup } from '../DateGroup/DateGroup';
+import { Base, TinyBase } from '../Base/Base';
+import { TinyItem } from '../Item/Item';
+import { RecipeFolder } from '../RecipeFolder/RecipeFolder';
 
 export interface Recipe extends Base {
-    name: string;
     item: TinyItem;
-    folder?: Folder;
-    version_date_groups: DateGroup[];
-    active?: RecipeVersion | null;
-    sections: RecipeSection[];
-    parameters: string[];
-    note: string;
-    base_units_produced: number;
+    folder: RecipeFolder;
+    label: string;
+}
+
+export interface TinyRecipe extends TinyBase {
+    item: TinyItem;
+    folder: RecipeFolder;
+    label: string;
 }
 
 export const RecipeFragment = gql`
     fragment RecipeFragment on Recipe {
         ...BaseFragment
-        name
         item {
             ...TinyItemFragment
         }
         folder {
-            _id
-            name
+            ...TinyRecipeFolderFragment
         }
-        version_date_groups {
-            year
-            month
-            count
+        label
+    }
+`;
+
+export const TinyRecipeFragment = gql`
+    fragment TinyRecipeFragment on Recipe {
+        ...TinyBaseFragment
+        item {
+            ...TinyItemFragment
         }
-        active {
-            ...RecipeVersionFragment
+        folder {
+            ...TinyRecipeFolderFragment
         }
+        label
     }
 `;

@@ -3,11 +3,11 @@ import { AppFileFragment } from './../../schema/AppFile/AppFile';
 import { BaseFragment } from './../../fragments/BaseFragment';
 import { BolFragment } from './../../schema/Bol/Bol';
 import { getQueryHook } from './../../types';
-import { Pagination } from './../../schema/Pagination/Pagination';
 import { gql } from '@apollo/client';
 import { Bol } from '../../schema/Bol/Bol';
-import { BolFilter } from '../../schema/Bol/BolFilter';
 import { FulfillmentFragment } from '../../schema/Fulfillment/Fulfillment';
+import { BolFilter } from '../../schema/Bol/inputs/BolFilter';
+import { PaginationResult } from '../../schema/Pagination/Pagination';
 
 export const BolsQuery = gql`
     ${BolFragment}
@@ -30,7 +30,7 @@ export interface BolsArgs {
 }
 
 export interface BolsRes {
-    bols: Pagination<Bol>;
+    bols: PaginationResult<Bol>;
 }
 
 export const useBols = getQueryHook<BolsRes, BolsArgs>(BolsQuery);

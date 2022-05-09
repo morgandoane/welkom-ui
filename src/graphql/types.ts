@@ -35,3 +35,5 @@ export const getMutationHook =
     <Res = any, Args = any>(doc: DocumentNode) =>
     (options?: MutationHookOptions<Res, Args>): MutationTuple<Res, Args> =>
         useMutation(doc, options);
+
+export type Ref<T> = string;

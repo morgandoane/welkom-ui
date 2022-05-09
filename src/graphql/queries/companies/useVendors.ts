@@ -1,7 +1,7 @@
 import { TinyCompany } from './../../schema/Company/Company';
 import { gql, QueryHookOptions, QueryResult, useQuery } from '@apollo/client';
-import { CompanyFilter } from '../../schema/Company/CompanyFilter';
-import { Pagination } from '../../schema/Pagination/Pagination';
+import { CompanyFilter } from '../../schema/Company/inputs/CompanyFilter';
+import { PaginationResult } from '../../schema/Pagination/Pagination';
 
 export const Vendors = gql`
     query Vendors($filter: CompanyFilter!) {
@@ -17,11 +17,11 @@ export const Vendors = gql`
 
 export const useVendors = (
     options?: QueryHookOptions<
-        { companies: Pagination<TinyCompany> },
+        { companies: PaginationResult<TinyCompany> },
         { filter: CompanyFilter }
     >
 ): QueryResult<
-    { companies: Pagination<TinyCompany> },
+    { companies: PaginationResult<TinyCompany> },
     { filter: CompanyFilter }
 > => useQuery(Vendors, options);
 
